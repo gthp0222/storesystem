@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#141313">
+<title>脂寶烤烤樂｜脂本燒肉</title>
+<meta name="description" content="脂本燒肉候位遊戲：每關 25 秒，玩滿 15 局享主廚招待，每週烤神榜贏 A5 和牛。">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:type" content="website">
+<meta property="og:title" content="脂寶烤烤樂｜脂本燒肉">
+<meta property="og:description" content="候位也能吃到主廚的心意。每關 25 秒，玩滿 15 局享主廚招待。">
+<meta property="og:image" content="https://gthp0222.github.io/storesystem/zhiben-game/og-image.png">
+<meta property="og:url" content="https://gthp0222.github.io/storesystem/zhiben-game/">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   脂本燒肉 CIS（小平房設計 V4）— 色碼集中於此，換色只改這裡
+   黑＝專業｜金＝嚴選｜緋＝肉品｜米白＝油脂｜銀＝輔助
+   ===================================================================== */
+:root{
+  --ink:#141313; --ink-1:#1a1919; --ink-2:#211f1e; --ink-3:#2c2927;
+  --gold:#b1946d; --gold-hi:#dcc39b; --gold-lo:#7a6447; --gold-line:rgba(177,148,109,.32);
+  --hi:#b25046; --hi-hi:#d06a5c;
+  --washi:#faf7e8; --washi-2:#d9d4c4; --silver:#b4b5b4; --dim:#8d8a84;
+  --serif:"Noto Serif TC",serif; --sans:"Noto Sans TC",system-ui,sans-serif; --num:"Cormorant Garamond","Noto Serif TC",serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{margin:0;height:100%;background:var(--ink);color:var(--washi);font-family:var(--sans);font-weight:400;overflow:hidden;touch-action:manipulation;-webkit-font-smoothing:antialiased}
+body{background:
+  radial-gradient(90% 55% at 50% 112%, rgba(178,80,70,.20), transparent 62%),
+  radial-gradient(70% 40% at 50% -8%, rgba(177,148,109,.10), transparent 70%), var(--ink)}
+/* 細緻紙紋（雜訊）＋ 極淡青海波 */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.035;
+  background-image:radial-gradient(circle at 50% 100%, transparent 11px, var(--gold) 12px, transparent 13px, transparent 18px, var(--gold) 19px, transparent 20px);
+  background-size:44px 22px}
+#app{position:relative;z-index:1;height:100%;max-width:480px;margin:0 auto;
+  padding:calc(env(safe-area-inset-top) + 14px) 18px calc(env(safe-area-inset-bottom) + 14px);display:flex;flex-direction:column}
+.screen{display:none;flex:1;flex-direction:column;min-height:0;animation:fadeIn .35s ease}
+.screen.on{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}}
+.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll>*{flex-shrink:0}
+button{font-family:var(--sans);cursor:pointer;border:0;background:none;color:inherit}
+.logo{display:block;margin:0 auto}
+.eyebrow{font-family:var(--num);letter-spacing:.42em;font-size:11px;color:var(--gold);text-transform:uppercase;text-align:center}
+.hair{height:1px;background:linear-gradient(90deg,transparent,var(--gold-line),transparent);margin:14px 0}
+.hair.dot{position:relative}
+.hair.dot::after{content:"";position:absolute;left:50%;top:-2px;width:5px;height:5px;transform:translateX(-50%) rotate(45deg);background:var(--gold)}
+.num{font-family:var(--num);font-weight:600;font-variant-numeric:lining-nums tabular-nums}
+
+/* 按鈕：金箔 */
+.btn{position:relative;overflow:hidden;display:block;width:100%;padding:16px 18px;border-radius:2px;font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:.5em;text-indent:.5em;
+  color:#1a1610;background:linear-gradient(115deg,#8f7553 0%,#cdb184 22%,#efdcb6 38%,#c3a679 55%,#9c8058 78%,#c8ad83 100%);
+  box-shadow:0 0 0 1px rgba(255,240,210,.25) inset,0 10px 28px -10px rgba(177,148,109,.55);transition:transform .12s}
+.btn::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);animation:sheen 3.6s ease-in-out infinite}
+@keyframes sheen{0%,55%{left:-70%}100%{left:130%}}
+.btn:active{transform:scale(.98)}
+.btn.line{background:transparent;color:var(--gold-hi);box-shadow:0 0 0 1px var(--gold-line) inset;font-family:var(--sans);font-weight:500;font-size:14px;letter-spacing:.25em;text-indent:.25em;padding:13px}
+.btn.line::after{display:none}
+.btn[disabled]{opacity:.35;pointer-events:none}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.ico{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===== 名字 ===== */
+#entry{justify-content:center;text-align:center;gap:6px}
+.field{width:100%;background:transparent;border:0;border-bottom:1px solid var(--gold-line);color:var(--washi);font-family:var(--serif);font-size:24px;text-align:center;padding:12px 4px;outline:none;letter-spacing:.12em;user-select:text;-webkit-user-select:text}
+.field:focus{border-bottom-color:var(--gold)}
+.field::placeholder{color:#55524d}
+.stores{display:flex;gap:8px;margin:18px 0 6px;justify-content:center}
+.stores button{flex:1;padding:12px 4px;font-family:var(--serif);font-size:15px;letter-spacing:.2em;color:var(--washi-2);box-shadow:0 0 0 1px var(--ink-3) inset;border-radius:2px;transition:.2s}
+.stores button.on{color:#1a1610;background:var(--gold);box-shadow:none}
+.small{font-size:12px;color:var(--dim);line-height:1.7}
+
+/* ===== 首頁 ===== */
+#home{justify-content:space-between}
+.player{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--washi-2)}
+.player b{font-family:var(--serif);color:var(--washi);font-weight:700;letter-spacing:.08em;font-size:15px}
+.player .store{color:var(--gold);margin-left:8px;letter-spacing:.15em;font-size:12px}
+.player button{color:var(--dim);font-size:12px;letter-spacing:.1em}
+.home-hero{position:relative;text-align:center;padding-top:6px}
+.title{font-family:var(--serif);font-weight:900;font-size:40px;letter-spacing:.18em;text-indent:.18em;margin:12px 0 2px;
+  background:linear-gradient(180deg,#f1e2c4,#c9ad80 55%,#8b7050);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{font-family:var(--serif);font-size:13px;letter-spacing:.42em;text-indent:.42em;color:var(--washi-2)}
+.mascot-wrap{position:relative;height:150px;display:flex;align-items:center;justify-content:center;margin-top:6px}
+.mascot-wrap svg{width:132px;height:132px;animation:bob 3s ease-in-out infinite;filter:drop-shadow(0 10px 18px rgba(0,0,0,.55))}
+.mascot-wrap::before{content:"";position:absolute;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(220,195,155,.16),transparent 62%)}
+@keyframes bob{50%{transform:translateY(-5px)}}
+.treat{display:flex;align-items:center;gap:14px;padding:14px 16px;box-shadow:0 0 0 1px var(--gold-line) inset;border-radius:2px;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent)}
+.treat .ringwrap{position:relative;width:58px;height:58px;flex:none}
+.treat .ringwrap svg{width:58px;height:58px;transform:rotate(-90deg)}
+.treat .ringwrap span{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--num);font-size:20px;color:var(--gold-hi)}
+.treat h4{margin:0;font-family:var(--serif);font-size:16px;letter-spacing:.12em}
+.treat p{margin:3px 0 0;font-size:12px;color:var(--dim);line-height:1.5}
+.treat.ready{box-shadow:0 0 0 1px var(--gold) inset;background:linear-gradient(120deg,rgba(177,148,109,.16),rgba(177,148,109,.02))}
+.treat.ready h4{color:var(--gold-hi)}
+.stat3{display:grid;grid-template-columns:repeat(3,1fr);margin:12px 0}
+.stat3 div{text-align:center;padding:4px 0}
+.stat3 div+div{border-left:1px solid var(--ink-3)}
+.stat3 b{display:block;font-family:var(--num);font-size:24px;color:var(--washi);font-weight:600;line-height:1.1}
+.stat3 span{font-size:11px;color:var(--dim);letter-spacing:.15em}
+.nav{display:flex;margin-top:12px;border-top:1px solid var(--ink-3)}
+.nav button{flex:1;padding:12px 0 2px;font-size:12px;letter-spacing:.12em;color:var(--washi-2);display:flex;flex-direction:column;align-items:center;gap:5px}
+.nav button .ico{color:var(--gold)}
+
+/* ===== 遊戲 ===== */
+#game{gap:8px}
+.hud{display:flex;align-items:flex-end;justify-content:space-between}
+.lv{font-family:var(--serif);letter-spacing:.25em;font-size:13px;color:var(--gold)}
+.lv b{font-size:24px;color:var(--washi);letter-spacing:.1em;font-weight:900;margin:0 2px}
+.total{text-align:right;font-size:10px;letter-spacing:.3em;color:var(--dim)}
+.total b{display:block;font-family:var(--num);font-size:30px;color:var(--gold-hi);letter-spacing:0;line-height:1;font-weight:600}
+.goalbar{position:relative;height:22px}
+.goalbar .track{position:absolute;left:0;right:0;top:9px;height:4px;background:var(--ink-3);border-radius:2px;overflow:hidden}
+.goalbar .fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold-lo),var(--gold-hi));transition:width .2s}
+.goalbar.met .fill{background:linear-gradient(90deg,var(--gold),#fff1cf)}
+.goalbar .txt{position:absolute;right:0;top:-6px;font-size:11px;color:var(--washi-2);letter-spacing:.08em}
+.goalbar .txt b{font-family:var(--num);font-size:15px;color:var(--washi);font-weight:600}
+.timerow{display:flex;align-items:center;gap:10px}
+.timer{font-family:var(--num);font-size:22px;font-weight:600;min-width:42px;color:var(--washi)}
+.timer.warn{color:var(--hi-hi);animation:pulse .5s ease-in-out infinite alternate}
+@keyframes pulse{to{opacity:.55}}
+.tbar{flex:1;height:2px;background:var(--ink-3)}
+.tbar div{height:100%;background:var(--washi-2);width:100%}
+.chip{font-size:11px;color:var(--dim);letter-spacing:.15em;white-space:nowrap}
+.chip b{color:var(--gold-hi);font-family:var(--num);font-size:14px}
+.iconbtn{width:34px;height:34px;display:grid;place-items:center;color:var(--washi-2);box-shadow:0 0 0 1px var(--ink-3) inset;border-radius:2px}
+.status{display:flex;justify-content:space-between;align-items:center;height:28px}
+.combo{font-family:var(--serif);font-size:14px;letter-spacing:.15em;color:var(--washi-2);opacity:0;transition:opacity .2s}
+.combo.on{opacity:1}
+.combo b{font-family:var(--num);font-size:26px;color:var(--gold-hi);margin-right:4px;letter-spacing:0}
+.combo i{font-style:normal;font-family:var(--num);font-size:13px;color:var(--ink);background:var(--gold);padding:1px 6px;margin-left:6px;border-radius:1px}
+.fever{display:flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.25em;color:var(--dim)}
+.fever .g{width:96px;height:3px;background:var(--ink-3);overflow:hidden}
+.fever .g div{height:100%;width:0;background:linear-gradient(90deg,var(--hi),var(--hi-hi));transition:width .2s}
+.callout{position:relative;height:44px;display:flex;align-items:center;justify-content:center}
+.badges{display:flex;gap:6px;justify-content:center;transition:opacity .2s}
+.callout.busy .badges{opacity:0}
+.badge{font-size:11px;letter-spacing:.2em;padding:2px 8px;color:#1a1610;background:var(--gold-hi);border-radius:1px;animation:fadeIn .3s}
+.badge.red{background:var(--hi);color:var(--washi)}
+
+.stage{position:relative;flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+.grill{position:relative;width:min(100%,58vh);aspect-ratio:1;border-radius:50%;
+  box-shadow:0 0 0 7px #2a2725,0 0 0 8px #4a443e,0 0 0 9px #1b1918,0 0 0 10px var(--gold-lo),0 30px 60px -10px rgba(0,0,0,.9),0 0 80px rgba(178,80,70,.18)}
+.grill canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:50%}
+.mesh{position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:
+   repeating-linear-gradient(90deg, transparent 0 calc(7.5% - 2px), rgba(30,28,26,.95) calc(7.5% - 2px) calc(7.5% - 1px), rgba(170,160,150,.55) calc(7.5% - 1px) 7.5%),
+   radial-gradient(circle, transparent 60%, rgba(0,0,0,.55) 100%)}
+.mesh::after{content:"";position:absolute;inset:-1px;border-radius:50%;box-shadow:inset 0 0 0 3px rgba(220,195,155,.12),inset 0 0 40px rgba(0,0,0,.8)}
+.grill.fever{box-shadow:0 0 0 7px #2a2725,0 0 0 8px #4a443e,0 0 0 9px #1b1918,0 0 0 10px var(--hi-hi),0 30px 60px -10px rgba(0,0,0,.9),0 0 90px rgba(208,106,92,.55)}
+.grill.awaken{box-shadow:0 0 0 7px #2a2725,0 0 0 8px #6f5c40,0 0 0 9px #1b1918,0 0 0 10px var(--gold-hi),0 30px 60px -10px rgba(0,0,0,.9),0 0 90px rgba(220,195,155,.55)}
+.spots{position:absolute;inset:10%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:1%}
+.spot{position:relative}
+.item{position:absolute;inset:2%;cursor:pointer;animation:drop .26s cubic-bezier(.2,1.4,.5,1)}
+@keyframes drop{from{transform:scale(1.35) translateY(-14px);opacity:0}}
+.item svg.ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+.item .food{position:absolute;inset:5%;width:90%;height:90%;transition:filter .2s}
+.item .food img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none}
+.item .food .cook,.item .food .sear{opacity:0}
+.item svg.food{position:absolute;inset:13%;width:74%;height:74%;filter:drop-shadow(0 4px 3px rgba(0,0,0,.55))}
+.item.ready .food{animation:sizzle .14s steps(2) infinite}
+.item .pz-glow{animation:pzBreath 1.2s ease-in-out infinite}
+@keyframes pzBreath{50%{opacity:.6}}
+.item .halo{position:absolute;inset:-6%;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .08s;
+  background:radial-gradient(circle,rgba(255,226,160,.85) 0%,rgba(255,200,110,.45) 38%,rgba(255,180,80,0) 68%)}
+.item.perf .halo{opacity:1;animation:haloPulse .28s ease-in-out infinite alternate}
+@keyframes haloPulse{from{transform:scale(.94)}to{transform:scale(1.06)}}
+.item.perf .food{filter:drop-shadow(0 0 6px #fff2c8) drop-shadow(0 0 14px #ffc96b) brightness(1.12)}
+.item.perf .pz{stroke:#fff;stroke-width:9}
+.item.perf .pz-glow{opacity:.9;stroke-width:18;animation:none}
+.item.perf .dot{r:5;fill:#fff}
+.item.perf::after{content:"完美";position:absolute;left:50%;bottom:-4%;transform:translateX(-50%);font-family:var(--serif);font-weight:900;font-size:12px;letter-spacing:.2em;color:#fff3cf;text-shadow:0 0 8px #ffc96b,0 1px 3px #000;pointer-events:none}
+@keyframes sizzle{50%{transform:translate(.6px,-.4px) rotate(.6deg)}}
+.item.burnt .food{filter:brightness(.2) saturate(.1) contrast(1.2)}
+.item.gone{animation:lift .38s ease-in forwards;pointer-events:none}
+@keyframes lift{to{transform:translateY(-46px) scale(.55);opacity:0}}
+.item.toss{animation:toss .4s ease-in forwards;pointer-events:none}
+@keyframes toss{to{transform:translateY(34px) rotate(50deg) scale(.5);opacity:0}}
+.item.special .food{animation:floaty .8s ease-in-out infinite}
+@keyframes floaty{50%{transform:translateY(-4px) rotate(-4deg)}}
+.pop{position:absolute;left:50%;top:30%;transform:translateX(-50%);white-space:nowrap;pointer-events:none;z-index:6;animation:popUp .85s ease-out forwards;text-shadow:0 2px 6px #000}
+.pop.p{font-family:var(--serif);font-weight:900;color:var(--gold-hi);font-size:16px;letter-spacing:.15em}
+.pop.g{font-family:var(--num);font-weight:600;color:var(--washi);font-size:18px}
+.pop.b{font-size:13px;color:var(--hi-hi);letter-spacing:.1em}
+@keyframes popUp{0%{transform:translate(-50%,8px) scale(.7);opacity:0}20%{transform:translate(-50%,0) scale(1.1);opacity:1}100%{transform:translate(-50%,-20px);opacity:0}}
+.banner{position:absolute;inset:0;z-index:20;pointer-events:none;display:flex;align-items:baseline;justify-content:center;gap:12px;white-space:nowrap;animation:bannerIn 1.15s ease-out forwards}
+.banner .k{font-family:var(--serif);font-weight:900;font-size:26px;line-height:44px;letter-spacing:.2em;color:var(--gold-hi);text-shadow:0 0 18px rgba(220,195,155,.55)}
+.banner .s{font-size:12px;letter-spacing:.2em;color:var(--washi)}
+.banner.red .k{color:var(--hi-hi);text-shadow:0 2px 0 #000,0 0 24px rgba(208,106,92,.7)}
+@keyframes bannerIn{0%{opacity:0;transform:scale(1.35)}18%{opacity:1;transform:scale(1)}82%{opacity:1}100%{opacity:0}}
+.coach{display:flex;align-items:center;gap:10px;min-height:46px}
+.coach svg{width:42px;height:42px;flex:none}
+.coach p{margin:0;font-size:13px;color:var(--washi-2);letter-spacing:.06em;line-height:1.5;border-left:1px solid var(--gold-line);padding-left:10px}
+
+/* 關卡卡片（覆蓋） */
+.overlay{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;background:rgba(14,13,13,.82);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.overlay.on{display:flex;animation:fadeIn .25s}
+#lvBox{width:100%;display:flex;justify-content:center}
+.lvcard{width:88%;max-width:360px;text-align:center;padding:30px 14px 22px;box-shadow:0 0 0 1px var(--gold-line) inset;background:linear-gradient(180deg,#201d1b,#161514)}
+.lvcard .kanji{white-space:nowrap;font-family:var(--serif);font-weight:900;font-size:34px;letter-spacing:.04em;color:var(--washi);line-height:1}
+.lvcard .kanji small{display:block;font-size:13px;letter-spacing:.5em;text-indent:.5em;color:var(--gold);font-weight:500;margin-bottom:10px}
+.lvcard .goal{white-space:nowrap;margin:16px 0 4px;font-size:13px;letter-spacing:.12em;color:var(--washi-2)}
+.lvcard .goal b{font-family:var(--num);font-size:30px;color:var(--gold-hi);letter-spacing:0;margin:0 4px;font-weight:600}
+.lvcard .note{font-size:12px;color:var(--dim);margin-bottom:18px;min-height:18px}
+.cd{font-family:var(--num);font-size:110px;font-weight:600;color:var(--gold-hi);animation:cd .8s ease-out}
+@keyframes cd{from{transform:scale(1.8);opacity:0}}
+
+/* ===== 結算 ===== */
+#over{text-align:center;gap:12px;padding-bottom:6px}
+.big{font-family:var(--num);font-size:76px;font-weight:600;line-height:.95;color:var(--gold-hi);text-shadow:0 0 30px rgba(220,195,155,.25)}
+.reach{font-family:var(--serif);letter-spacing:.3em;font-size:14px;color:var(--washi-2)}
+.reach b{color:var(--washi);font-size:20px}
+.near{display:inline-block;margin-top:6px;font-size:12px;letter-spacing:.15em;color:var(--hi-hi);box-shadow:0 0 0 1px rgba(208,106,92,.4) inset;padding:5px 12px}
+.newrec{display:inline-block;margin-top:6px;font-size:12px;letter-spacing:.3em;color:#1a1610;background:var(--gold-hi);padding:4px 12px}
+.title-card{display:flex;align-items:center;gap:14px;text-align:left;padding:12px 14px;box-shadow:0 0 0 1px var(--ink-3) inset}
+.title-card svg{width:48px;height:48px;flex:none}
+.title-card h3{margin:0;font-family:var(--serif);font-size:18px;letter-spacing:.15em;color:var(--gold-hi)}
+.title-card p{margin:2px 0 0;font-size:12px;color:var(--dim)}
+.ranks{display:grid;grid-template-columns:1fr 1fr;box-shadow:0 0 0 1px var(--ink-3) inset}
+.ranks div{padding:10px 4px}
+.ranks div+div{border-left:1px solid var(--ink-3)}
+.ranks b{display:block;font-family:var(--num);font-size:28px;color:var(--washi);font-weight:600}
+.ranks span{font-size:11px;letter-spacing:.2em;color:var(--dim)}
+.unlocks{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.unlock{width:76px;padding:8px 4px;box-shadow:0 0 0 1px var(--gold) inset;font-size:11px;animation:fadeIn .4s backwards}
+.unlock svg,.unlock img{width:46px;height:46px}
+.unlock.secret{box-shadow:0 0 0 1px var(--hi-hi) inset}
+
+/* ===== 招待券 ===== */
+#treat{justify-content:center;text-align:center}
+.ticket{position:relative;padding:28px 22px 24px;background:
+   radial-gradient(120% 80% at 50% 0%, rgba(220,195,155,.16), transparent 60%), linear-gradient(180deg,#221f1c,#171514);
+  box-shadow:0 0 0 1px var(--gold) inset,0 0 0 5px var(--ink),0 0 0 6px var(--gold-line);overflow:hidden}
+.ticket::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,240,210,.18),transparent);animation:sheen 2.8s linear infinite}
+.ticket h2{margin:8px 0 4px;font-family:var(--serif);font-size:30px;font-weight:900;letter-spacing:.35em;text-indent:.35em;color:var(--gold-hi)}
+.ticket .who{font-family:var(--serif);font-size:18px;letter-spacing:.15em;margin-top:12px}
+.ticket .meta{display:flex;justify-content:space-around;margin-top:18px;font-size:11px;letter-spacing:.25em;color:var(--dim)}
+.ticket .meta b{display:block;font-family:var(--serif);font-size:22px;color:var(--washi);letter-spacing:.2em;margin-top:4px}
+.ticket .meta .clock b{font-family:var(--num);letter-spacing:.05em;font-size:24px}
+.stamp{position:absolute;right:16px;top:16px;border:2px solid var(--hi-hi);color:var(--hi-hi);font-family:var(--serif);font-weight:900;padding:2px 10px;transform:rotate(-12deg);font-size:18px;letter-spacing:.2em;display:none}
+.ticket.used .stamp{display:block}
+.hold{position:relative;margin-top:18px}
+.hold .prog{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(177,148,109,.25);pointer-events:none}
+
+/* ===== 排行／圖鑑／玩法 ===== */
+.ptitle{display:flex;align-items:center;margin-bottom:10px}
+.ptitle h2{flex:1;margin:0;font-family:var(--serif);font-size:24px;letter-spacing:.25em;color:var(--washi)}
+.tabs{display:flex;box-shadow:0 0 0 1px var(--ink-3) inset;margin-bottom:10px}
+.tabs button{flex:1;padding:10px 2px;font-size:13px;letter-spacing:.15em;color:var(--dim);font-family:var(--serif)}
+.tabs button.on{color:#1a1610;background:var(--gold)}
+.week{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.12em;color:var(--dim);margin-bottom:8px}
+.week b{color:var(--gold-hi);font-weight:500}
+.prize{font-size:12px;color:var(--washi-2);line-height:1.7;padding:10px 12px;box-shadow:0 0 0 1px var(--gold-line) inset;margin-bottom:10px}
+.prize b{color:var(--gold-hi);font-weight:500}
+.brow{display:flex;align-items:center;gap:10px;padding:11px 6px;border-bottom:1px solid var(--ink-3);font-size:14px}
+.brow .no{width:28px;text-align:center;font-family:var(--num);font-size:20px;color:var(--dim);font-weight:600}
+.brow.r1 .no{color:var(--gold-hi)}.brow.r2 .no{color:var(--silver)}.brow.r3 .no{color:#b98a64}
+.brow .nm{flex:1;font-family:var(--serif);letter-spacing:.06em}
+.brow .nm small{display:block;font-family:var(--sans);font-size:10px;color:var(--dim);letter-spacing:.15em;margin-top:1px}
+.brow .lvl{font-size:11px;color:var(--dim);letter-spacing:.1em}
+.brow .sc{font-family:var(--num);font-size:20px;color:var(--gold-hi);min-width:62px;text-align:right;font-weight:600}
+.brow.me{background:linear-gradient(90deg,rgba(177,148,109,.16),transparent)}
+.note{font-size:11px;color:var(--dim);line-height:1.7;margin-top:10px}
+.dexgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.card{text-align:center;padding:10px 4px 8px;box-shadow:0 0 0 1px var(--ink-3) inset;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent)}
+.card.got{box-shadow:0 0 0 1px var(--gold-line) inset}
+.card svg,.card img{width:56px;height:56px}
+.card h4{margin:4px 0 0;font-family:var(--serif);font-size:13px;letter-spacing:.08em}
+.card .r{font-size:9px;letter-spacing:.3em;color:var(--gold)}
+.card:not(.got) svg,.card:not(.got) img{filter:brightness(0) opacity(.3)}
+.card:not(.got) h4{color:#55524d}
+.sec{display:flex;gap:12px;align-items:center;padding:12px;box-shadow:0 0 0 1px var(--ink-3) inset;margin-bottom:8px}
+.sec .seal{width:36px;height:36px;margin:0 6px 0 8px;flex:none;display:grid;place-items:center;font-family:var(--serif);font-weight:900;font-size:18px;color:#55524d;box-shadow:0 0 0 1px #3a3633 inset;transform:rotate(45deg)}
+.sec .seal span{transform:rotate(-45deg)}
+.sec.got .seal{color:var(--washi);background:var(--hi);box-shadow:none}
+.sec h4{margin:0;font-family:var(--serif);font-size:15px;letter-spacing:.1em}
+.sec p{margin:3px 0 0;font-size:12px;color:var(--dim);line-height:1.5}
+.sec.got h4{color:var(--gold-hi)}
+.secttl{font-family:var(--serif);letter-spacing:.3em;color:var(--gold);font-size:13px;margin:16px 0 8px}
+.detail{margin-top:10px;padding:12px;box-shadow:0 0 0 1px var(--gold-line) inset;font-size:12px;line-height:1.7;color:var(--washi-2);display:none}
+.detail.on{display:block;animation:fadeIn .25s}
+.detail b{font-family:var(--serif);color:var(--gold-hi);font-size:15px;letter-spacing:.1em}
+.steps{counter-reset:s}
+.step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--ink-3);font-size:14px;line-height:1.65;color:var(--washi-2)}
+.step::before{counter-increment:s;content:counter(s);font-family:var(--num);font-size:30px;color:var(--gold);line-height:1;min-width:20px}
+.step b{color:var(--washi);font-weight:500}
+/* 票券 */
+.vlist .v{display:flex;gap:14px;align-items:center;padding:14px;box-shadow:0 0 0 1px var(--gold-line) inset;margin-bottom:10px;cursor:pointer;background:linear-gradient(120deg,rgba(177,148,109,.10),transparent)}
+.vlist .v .vi{width:46px;height:46px;flex:none;display:grid;place-items:center;font-family:var(--serif);font-weight:900;font-size:20px;color:#1a1610;background:var(--gold)}
+.vlist .v h4{margin:0;font-family:var(--serif);font-size:16px;letter-spacing:.1em;color:var(--washi)}
+.vlist .v p{margin:3px 0 0;font-size:12px;color:var(--dim);line-height:1.5}
+.vlist .v .st{margin-left:auto;font-size:11px;letter-spacing:.15em;color:var(--gold-hi);white-space:nowrap}
+.vlist .v.off{opacity:.45;box-shadow:0 0 0 1px var(--ink-3) inset;background:none}
+.vlist .v.off .vi{background:var(--ink-3);color:var(--dim)}
+.vlist .v.off .st{color:var(--dim)}
+.empty{text-align:center;color:var(--dim);font-size:13px;line-height:1.8;padding:30px 10px}
+.nav button{position:relative}
+.nav .dotb{position:absolute;top:8px;right:calc(50% - 18px);min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--hi);color:#fff;font-size:10px;line-height:16px;letter-spacing:0;display:none}
+.nav .dotb.on{display:block}
+.vcode{margin-top:14px;font-family:var(--num);font-size:22px;letter-spacing:.18em;color:var(--gold-hi)}
+.vcode small{display:block;font-family:var(--sans);font-size:10px;letter-spacing:.3em;color:var(--dim);margin-bottom:2px}
+.ticket .exp{margin-top:12px;font-size:11px;color:var(--dim);letter-spacing:.12em}
+/* 核銷鍵盤 */
+.pinbox{max-width:320px}
+.pins{display:flex;justify-content:center;gap:16px;margin:16px 0 6px}
+.pins i{width:14px;height:14px;border-radius:50%;box-shadow:0 0 0 1px var(--gold) inset}
+.pins i.on{background:var(--gold-hi);box-shadow:none}
+.pins.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.pinerr{height:18px;font-size:12px;color:var(--hi-hi);letter-spacing:.08em;margin-bottom:8px}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.keypad button{padding:14px 0;font-family:var(--num);font-size:24px;color:var(--washi);box-shadow:0 0 0 1px var(--ink-3) inset;background:rgba(255,255,255,.02)}
+.keypad button:active{background:rgba(177,148,109,.25)}
+.keypad button.fn{font-family:var(--sans);font-size:13px;letter-spacing:.15em;color:var(--dim)}
+/* 戰績圖預覽 */
+.cardprev{max-width:380px}
+.cardprev img{display:block;width:100%;margin:0 0 14px;box-shadow:0 0 0 1px var(--gold-line);-webkit-user-select:auto;user-select:auto;-webkit-touch-callout:default}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 28px);transform:translateX(-50%);background:rgba(250,247,232,.95);color:#1a1610;padding:10px 18px;font-size:13px;letter-spacing:.08em;z-index:99;opacity:0;transition:opacity .25s;pointer-events:none;max-width:88%;text-align:center}
+.toast.on{opacity:1}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:80;padding:24px}
+.modal.on{display:flex;animation:fadeIn .2s}
+.modal .box{background:#1c1a19;box-shadow:0 0 0 1px var(--gold-line) inset;padding:24px;max-width:340px;width:100%;text-align:center}
+.modal h3{font-family:var(--serif);color:var(--gold-hi);margin:0 0 10px;letter-spacing:.2em}
+.modal p{font-size:14px;color:var(--washi-2);line-height:1.7;margin:0 0 18px}
+</style>
+</head>
+<body>
+<!-- 共用 SVG 定義：漸層、油花柔化、烙紋 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="gBeef" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#d4525a"/><stop offset="1" stop-color="#8f2630"/></radialGradient>
+    <radialGradient id="gA5" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#e98a8e"/><stop offset="1" stop-color="#b8475a"/></radialGradient>
+    <radialGradient id="gPork" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#f4c0b4"/><stop offset="1" stop-color="#d58b82"/></radialGradient>
+    <radialGradient id="gIber" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#d9706c"/><stop offset="1" stop-color="#a5454a"/></radialGradient>
+    <radialGradient id="gChick" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#fbe0cf"/><stop offset="1" stop-color="#e7b298"/></radialGradient>
+    <radialGradient id="gCook" cx=".4" cy=".3" r=".85"><stop offset="0" stop-color="#a5603a"/><stop offset=".7" stop-color="#6e3a1f"/><stop offset="1" stop-color="#4e2614"/></radialGradient>
+    <radialGradient id="gCookL" cx=".4" cy=".3" r=".85"><stop offset="0" stop-color="#d9a06a"/><stop offset="1" stop-color="#a1683c"/></radialGradient>
+    <radialGradient id="gPrawnR" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#c9d3d6"/><stop offset="1" stop-color="#7f9097"/></radialGradient>
+    <radialGradient id="gPrawnC" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#ff9a6a"/><stop offset="1" stop-color="#d4452e"/></radialGradient>
+    <linearGradient id="gSaba" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3c5566"/><stop offset=".45" stop-color="#8ea2ad"/><stop offset="1" stop-color="#e8ecee"/></linearGradient>
+    <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8f7553"/><stop offset=".4" stop-color="#f3e2bd"/><stop offset=".6" stop-color="#cdb184"/><stop offset="1" stop-color="#8f7553"/></linearGradient>
+    <filter id="fFat" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.1"/></filter>
+    <pattern id="pSear" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="14" height="14" fill="none"/><rect width="4" height="14" fill="#1d0f08"/></pattern>
+  </defs>
+</svg>
+
+<div id="app">
+  <!-- 名字輸入 -->
+  <section class="screen" id="entry">
+    <img class="logo" id="logoA" alt="脂本燒肉" style="width:150px">
+    <div class="hair dot" style="margin:22px 0"></div>
+    <div class="eyebrow">Player Name</div>
+    <input class="field" id="nameIn" maxlength="10" placeholder="輸入你的名字" autocomplete="off">
+    <div class="small" style="margin-top:6px">名字會出現在排行榜上（1–10 字）</div>
+    <div class="stores" id="storePick"></div>
+    <div class="small" id="storeHint">選擇你所在的分店</div>
+    <div style="height:22px"></div>
+    <button class="btn" id="btnEnter">入 席</button>
+  </section>
+
+  <!-- 首頁 -->
+  <section class="screen" id="home">
+    <div class="player"><div><b id="pName"></b><span class="store" id="pStore"></span></div><button id="btnRename">更換</button></div>
+    <div class="home-hero">
+      <img class="logo" id="logoB" alt="脂本燒肉" style="width:128px;margin-top:10px">
+      <div class="title">脂寶烤烤樂</div>
+      <div class="tag">一火一刻・剛好就是最好</div>
+      <div class="mascot-wrap" id="heroMascot"></div>
+    </div>
+    <div>
+      <div class="treat" id="treatCard">
+        <div class="ringwrap"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="#2c2927" stroke-width="3"/><circle id="treatRing" cx="30" cy="30" r="26" fill="none" stroke="#dcc39b" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 999"/></svg><span id="treatN">0</span></div>
+        <div style="flex:1"><h4 id="treatH">主廚招待</h4><p id="treatP">今天玩滿 15 局，招待一份主廚小點</p></div>
+      </div>
+      <div class="stat3">
+        <div><b class="num" id="hBest">0</b><span>最高分</span></div>
+        <div><b class="num" id="hLv">—</b><span>最高關</span></div>
+        <div><b class="num" id="hRank">—</b><span>本店排名</span></div>
+      </div>
+      <button class="btn" id="btnStart">開 始 挑 戰</button>
+      <div class="nav">
+        <button data-go="howto"><svg class="ico" viewBox="0 0 24 24"><path d="M4 5h7a3 3 0 0 1 3 3v11a2 2 0 0 0-2-2H4z"/><path d="M20 5h-5a3 3 0 0 0-3 3"/><path d="M20 5v12h-6"/></svg>玩法</button>
+        <button data-go="board"><svg class="ico" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg>排行榜</button>
+        <button data-go="dex"><svg class="ico" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>圖鑑</button>
+        <button data-go="wallet"><svg class="ico" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z"/><path d="M9 6v12" stroke-dasharray="2 2"/></svg>票券<span class="dotb" id="walletDot"></span></button>
+        <button id="btnMute"><svg class="ico" viewBox="0 0 24 24" id="muteIco"></svg><span id="muteTxt">靜音</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 遊戲 -->
+  <section class="screen" id="game">
+    <div class="hud">
+      <div style="display:flex;align-items:center;gap:10px"><button class="iconbtn" id="gMute" aria-label="音效"></button><div class="lv">第 <b id="gLv">1</b> 關</div></div>
+      <div class="total">TOTAL<b id="gTotal">0</b></div>
+    </div>
+    <div class="goalbar" id="goalbar"><div class="track"><div class="fill" id="gGoalFill"></div></div><div class="txt">本關 <b id="gLvScore">0</b> / <span id="gTarget">0</span></div></div>
+    <div class="timerow"><div class="timer" id="gTime">25</div><div class="tbar"><div id="gTbar"></div></div><div class="chip">今日 <b id="gDaily">0</b>/15 局</div></div>
+    <div class="status">
+      <div class="combo" id="gCombo"><b id="gComboN">0</b>連擊<i id="gMult">×1</i></div>
+      <div class="fever">火力<div class="g"><div id="gFever"></div></div></div>
+    </div>
+    <div class="callout" id="callout"><div class="badges" id="badges"></div></div>
+    <div class="stage" id="stage">
+      <div class="grill" id="grill"><canvas id="fx"></canvas><div class="mesh"></div><div class="spots" id="spots"></div></div>
+    </div>
+    <div class="coach"><div id="coachM"></div><p id="coachT">光圈走進金色區時，輕點夾起</p></div>
+    <div class="overlay" id="lvOverlay"><div id="lvBox"></div></div>
+  </section>
+
+  <!-- 結算 -->
+  <section class="screen scroll" id="over">
+    <img class="logo" id="logoC" alt="脂本燒肉" style="width:92px">
+    <div class="eyebrow" style="margin-top:4px">Result</div>
+    <div>
+      <div class="big" id="oScore">0</div>
+      <div class="reach">闖到第 <b id="oLv">1</b> 關</div>
+      <div id="oTags"></div>
+    </div>
+    <div class="title-card"><div id="oMascot"></div><div><h3 id="oTitle"></h3><p id="oTitleP"></p></div></div>
+    <div class="ranks">
+      <div><b id="oStoreRank">—</b><span id="oStoreLbl">本店週排名</span></div>
+      <div><b id="oAllRank">—</b><span>總榜週排名</span></div>
+    </div>
+    <div class="treat" id="oTreat"></div>
+    <div id="oUnlockWrap" style="display:none"><div class="eyebrow" style="margin:4px 0 8px">New Unlock</div><div class="unlocks" id="oUnlocks"></div></div>
+    <button class="btn" id="btnAgain">再 挑 戰</button>
+    <div class="row"><button class="btn line" data-go="board">排行</button><button class="btn line" id="btnCard">戰績圖</button><button class="btn line" id="btnShare">複製文字</button><button class="btn line" data-go="home">首頁</button></div>
+  </section>
+
+  <!-- 主廚招待券 -->
+  <section class="screen" id="treat">
+    <div class="ticket" id="ticket">
+      <div class="stamp">已核銷</div>
+      <img class="logo" id="logoD" alt="脂本燒肉" style="width:110px">
+      <div class="eyebrow" style="margin-top:14px" id="tEye">Chef's Treat</div>
+      <h2 id="tTitle">主廚招待</h2>
+      <div class="small" id="tDesc"></div>
+      <div class="who" id="tWho"></div>
+      <div class="vcode"><small>票券編號</small><span id="tVcode"></span></div>
+      <div class="meta"><div>今日暗號<b id="tCode"></b></div><div class="clock">即時時間<b id="tClock"></b></div></div>
+      <div class="exp" id="tExp"></div>
+    </div>
+    <button class="btn" id="btnRedeem" style="margin-top:18px">服 務 人 員 核 銷</button>
+    <div class="small" style="margin-top:10px" id="tNote">請出示即時畫面，截圖無效。由服務人員輸入本店核銷碼完成核銷。</div>
+    <button class="btn line" data-go="back" style="margin-top:14px">返回</button>
+  </section>
+
+  <!-- 我的票券 -->
+  <section class="screen scroll" id="wallet">
+    <div class="ptitle"><h2>我的票券</h2><button class="iconbtn" data-go="back"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="vlist" id="vList"></div>
+    <div class="note">主廚招待：當日有效、每人每日一次、每桌上限 2 份。週排行獎：下週一至週日有效。所有票券須由服務人員輸入核銷碼才算使用。</div>
+  </section>
+
+  <!-- 排行榜 -->
+  <section class="screen scroll" id="board">
+    <div class="ptitle"><h2>排行榜</h2><button class="iconbtn" data-go="back"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="tabs" id="bTabs"></div>
+    <div class="week"><span>本週 <b id="bWeek"></b></span><span>結算倒數 <b id="bLeft"></b></span></div>
+    <div class="prize" id="bPrize"></div>
+    <div id="bList"></div>
+    <div class="note">每週一 00:00 重新計分，每人每店只取本週最高分。※ 原型為示意排行（本機紀錄＋示意對手），正式版接雲端排行榜。</div>
+  </section>
+
+  <!-- 圖鑑 -->
+  <section class="screen scroll" id="dex">
+    <div class="ptitle"><h2>圖鑑</h2><button class="iconbtn" data-go="back"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="small" id="dexCount"></div>
+    <div class="secttl">食 材</div>
+    <div class="dexgrid" id="dexGrid"></div>
+    <div class="detail" id="dexDetail"></div>
+    <div class="secttl">隱 藏 秘 技</div>
+    <div id="secList"></div>
+  </section>
+
+  <!-- 玩法 -->
+  <section class="screen scroll" id="howto">
+    <div class="ptitle"><h2>玩法</h2><button class="iconbtn" data-go="back"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="steps">
+      <div class="step"><div>肉會落在烤網上，外圈的<b>光點</b>慢慢繞行。走進<b>金色區</b>＝熟度剛好，肉會輕輕滋滋作響。</div></div>
+      <div class="step"><div>這時<b>輕點一下夾起</b>得分；正中央的<b>亮金刻度</b>是「完美烤點」，分數 ×1.5。</div></div>
+      <div class="step"><div>太早夾＝還沒熟；太晚＝<b>烤焦</b>扣分，連擊歸零。焦肉點一下清掉。</div></div>
+      <div class="step"><div>每關 <b>25 秒</b>，本關分數達到<b>門檻</b>就闖下一關，越後面越快、金色區越短。總分上排行榜。</div></div>
+      <div class="step"><div>每打完一關算 <b>1 局</b>。今天玩滿 <b>15 局</b>，出示畫面即享<b>主廚招待</b>。</div></div>
+      <div class="step"><div>烤網上藏著<b>秘密</b>：特別的夾法、稀有食材、偶爾現身的訪客……自己找找看。</div></div>
+    </div>
+    <button class="btn" data-go="home" style="margin-top:16px">明 白</button>
+  </section>
+</div>
+
+<div class="modal" id="modal"><div class="box"><h3 id="mT"></h3><p id="mP"></p><button class="btn" id="mOk">好</button></div></div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="pinModal"><div class="box pinbox"><h3>服務人員核銷</h3><p class="small" style="margin:0" id="pinSub">請輸入本店 4 位數核銷碼</p>
+  <div class="pins" id="pinDots"><i></i><i></i><i></i><i></i></div><div class="pinerr" id="pinErr"></div>
+  <div class="keypad" id="keypad"></div><button class="btn line" id="pinCancel">取消</button></div></div>
+<div class="modal" id="cardModal"><div class="box cardprev"><img id="cardImg" alt="戰績圖"><p style="margin:0 0 14px;font-size:12px">也可以長按圖片儲存，分享到 IG 限動或 LINE</p>
+  <div class="row"><button class="btn" id="cardSave">下 載</button><button class="btn line" id="cardClose">關閉</button></div></div></div>
+
+<script>
+/* 脂寶烤烤樂｜擬真食材插畫產生器
+   每種食材產生 raw（生）、cooked（熟）、sear（烙紋）三層 SVG，啟動時一次轉成 PNG，遊戲中只做淡入淡出，手機也順。 */
+const FoodArt = (()=>{
+  function rng(seed){ let s=(seed>>>0)||1; return ()=>{ s^=s<<13; s>>>=0; s^=s>>17; s^=s<<5; s>>>=0; return s/4294967296; }; }
+  const f=n=>n.toFixed(1);
+  // 有機外形：超橢圓＋多頻率擾動，Catmull-Rom 平滑
+  function blob(cx,cy,rx,ry,n,irr,seed,rot){
+    const r=rng(seed), N=56, ph=[r()*6,r()*6,r()*6], pts=[], cr=Math.cos(rot||0), sr=Math.sin(rot||0);
+    for(let i=0;i<N;i++){ const a=i/N*Math.PI*2, c=Math.cos(a), s=Math.sin(a);
+      const se=Math.pow(Math.pow(Math.abs(c),n)+Math.pow(Math.abs(s),n),-1/n);
+      const k=1+irr*(Math.sin(a*3+ph[0])*.5+Math.sin(a*5+ph[1])*.3+Math.sin(a*11+ph[2])*.2);
+      const x=c*se*rx*k, y=s*se*ry*k; pts.push([cx+x*cr-y*sr, cy+x*sr+y*cr]); }
+    let d=`M${f(pts[0][0])} ${f(pts[0][1])}`;
+    for(let i=0;i<N;i++){ const p0=pts[(i-1+N)%N],p1=pts[i],p2=pts[(i+1)%N],p3=pts[(i+2)%N];
+      d+=` C${f(p1[0]+(p2[0]-p0[0])/6)} ${f(p1[1]+(p2[1]-p0[1])/6)} ${f(p2[0]-(p3[0]-p1[0])/6)} ${f(p2[1]-(p3[1]-p1[1])/6)} ${f(p2[0])} ${f(p2[1])}`; }
+    return d+'Z';
+  }
+  // 霜降油花：隨機漫步細線（A5 的網狀 sashi）
+  function sashi(seed,count,x0,y0,w,h,wmin,wmax,steps){
+    const r=rng(seed); let out='';
+    for(let i=0;i<count;i++){ let x=x0+r()*w, y=y0+r()*h, a=r()*Math.PI*2; let d=`M${f(x)} ${f(y)}`; const n=(steps||8)+Math.floor(r()*8);
+      for(let j=0;j<n;j++){ a+= (r()-.5)*1.4; const L=4+r()*9; x+=Math.cos(a)*L; y+=Math.sin(a)*L; d+=` L${f(x)} ${f(y)}`; }
+      out+=`<path d="${d}" stroke-width="${f(wmin+r()*(wmax-wmin))}"/>`; }
+    return out;
+  }
+  // 五花層次：橫向波浪油層
+  function bands(seed,ys,x0,x1,amp){
+    const r=rng(seed); return ys.map(([y,w])=>{ let d=`M${x0} ${f(y)}`; const ph=r()*6, fr=.04+r()*.05;
+      for(let x=x0;x<=x1;x+=8){ d+=` L${x} ${f(y+Math.sin(x*fr+ph)*amp+(r()-.5)*2)}`; } return `<path d="${d}" stroke-width="${w}"/>`; }).join('');
+  }
+  // 松阪豬：沿弧線的平行細紋
+  function streaks(seed,count,cx,cy,r0,r1,a0,a1){
+    const r=rng(seed); let out='';
+    for(let i=0;i<count;i++){ const R=r0+(r1-r0)*i/count+(r()-.5)*3; const s=a0+r()*.15, e=a1-r()*.15;
+      let d=''; for(let k=0;k<=14;k++){ const a=s+(e-s)*k/14; const rr=R+Math.sin(k*.9+i)*1.6; d+=(k?' L':'M')+f(cx+Math.cos(a)*rr)+' '+f(cy+Math.sin(a)*rr); }
+      out+=`<path d="${d}" stroke-width="${f(.8+r()*2.2)}"/>`; }
+    return out;
+  }
+  // 共用 defs：油花柔化、肉纖維紋理、光澤
+  const DEFS = (id)=>`
+   <filter id="b1" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.3"/></filter>
+   <filter id="b2" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="2.6"/></filter>
+   <filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter>
+   <filter id="tex" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.035 0.55" numOctaves="3" seed="${id.length*7}"/>
+     <feColorMatrix type="matrix" values="0 0 0 0 0.15  0 0 0 0 0.02  0 0 0 0 0.02  0 0 0 1.4 -0.55"/></filter>
+   <filter id="mai" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" seed="${id.length*3}"/>
+     <feColorMatrix type="matrix" values="0 0 0 0 0.16  0 0 0 0 0.07  0 0 0 0 0.03  0 0 0 2.2 -1.0"/></filter>
+   <radialGradient id="gloss" cx=".32" cy=".26" r=".55"><stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".5" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+   <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient>
+   <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8f7553"/><stop offset=".35" stop-color="#fff0c8"/><stop offset=".55" stop-color="#d9bb86"/><stop offset=".8" stop-color="#a88a5c"/><stop offset="1" stop-color="#f6e2b6"/></linearGradient>`;
+  const svg=(id,body)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="256" height="256"><defs>${DEFS(id)}</defs>${body}</svg>`;
+  const shadow=(d)=>`<path d="${d}" transform="translate(4 9)" fill="#000" opacity=".5" filter="url(#sh)"/>`;
+  const clip=(d)=>`<clipPath id="c"><path d="${d}"/></clipPath>`;
+  const surface=(d)=>`<g clip-path="url(#c)"><rect width="200" height="200" filter="url(#tex)" opacity=".55"/><rect width="200" height="200" fill="url(#edge)"/></g><path d="${d}" fill="url(#gloss)"/>`;
+  const cookedSurf=(d)=>`<g clip-path="url(#c)"><rect width="200" height="200" filter="url(#mai)"/><rect width="200" height="200" fill="url(#edge)"/></g><path d="${d}" fill="url(#gloss)" opacity=".7"/>`;
+  const grillMarks=(d,rot)=>`<g clip-path="url(#c)" filter="url(#b1)" opacity=".85"><g transform="rotate(${rot||32} 100 100)" fill="#1e0d06">
+     <rect x="-40" y="52" width="280" height="11"/><rect x="-40" y="86" width="280" height="12"/><rect x="-40" y="121" width="280" height="11"/><rect x="-40" y="155" width="280" height="10"/></g></g>`;
+  const R={};
+
+  /* ---------- 牛肉類 ---------- */
+  function beef(id,opt){
+    const d=blob(100,100,opt.rx,opt.ry,opt.n,opt.irr,opt.seed,opt.rot);
+    const fatRaw = opt.fat(opt.seed);
+    R[id]={
+      raw: svg(id, `${clip(d)}${shadow(d)}<path d="${d}" fill="${opt.rawBase}"/><g clip-path="url(#c)"><path d="${d}" fill="${opt.rawDeep}" opacity=".55" transform="translate(6 10)"/></g>
+        <g clip-path="url(#c)" fill="none" stroke="${opt.fatRaw}" stroke-linecap="round" filter="url(#b1)" opacity=".95">${fatRaw}</g>${surface(d)}
+        <path d="${d}" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.2"/>${opt.extra||''}`),
+      cooked: svg(id, `${clip(d)}${shadow(d)}<path d="${d}" fill="${opt.ckBase}"/><g clip-path="url(#c)"><path d="${d}" fill="${opt.ckDeep}" opacity=".6" transform="translate(5 9)"/></g>
+        <g clip-path="url(#c)" fill="none" stroke="${opt.fatCk}" stroke-linecap="round" filter="url(#b1)" opacity="${opt.fatCkOp||.9}">${fatRaw}</g>${cookedSurf(d)}
+        <path d="${d}" fill="none" stroke="rgba(60,25,10,.6)" stroke-width="2.4"/>${opt.extra||''}`),
+      sear: svg(id, `${clip(d)}${grillMarks(d,opt.markRot)}`)
+    };
+  }
+  // A5 和牛霜降：櫻桃紅肉身＋細密網狀霜降
+  beef('a5',{rx:72,ry:56,n:3.4,irr:.06,seed:11,rot:-.12,rawBase:'#c4404c',rawDeep:'#9e2734',fatRaw:'#fff4ee',ckBase:'#9a5634',ckDeep:'#6e3a20',fatCk:'#e9b97a',fatCkOp:.5,
+    fat:s=>sashi(s,70,30,40,140,120,1.4,4.6,9)+sashi(s+5,40,30,40,140,120,.6,1.6,6), markRot:28});
+  // 金箔 A5：同上＋金箔
+  beef('gold',{rx:72,ry:56,n:3.4,irr:.06,seed:11,rot:-.12,rawBase:'#c4404c',rawDeep:'#9e2734',fatRaw:'#fff4ee',ckBase:'#9a5634',ckDeep:'#6e3a20',fatCk:'#e9b97a',fatCkOp:.5,
+    fat:s=>sashi(s,70,30,40,140,120,1.4,4.6,9)+sashi(s+5,40,30,40,140,120,.6,1.6,6), markRot:28,
+    extra: (()=>{ const r=rng(77); let g='<g>'; for(let i=0;i<7;i++){ const x=50+r()*100, y=55+r()*90, sz=8+r()*14; let p=''; for(let k=0;k<6;k++){ const a=k/6*6.28+r()*.6, rr=sz*(.6+r()*.5); p+=(k?'L':'M')+f(x+Math.cos(a)*rr)+' '+f(y+Math.sin(a)*rr); }
+       g+=`<path d="${p}Z" fill="url(#gold)" stroke="#fff6da" stroke-width=".6" opacity=".96"/><path d="M${f(x-sz*.4)} ${f(y)} L${f(x+sz*.3)} ${f(y-sz*.2)}" stroke="#8f7553" stroke-width=".7" opacity=".6"/>`; } return g+'</g>'; })()});
+  // 安格斯牛五花：紅白相間的層次油
+  beef('angus',{rx:82,ry:42,n:4.2,irr:.07,seed:23,rot:-.16,rawBase:'#b52f38',rawDeep:'#83202a',fatRaw:'#f6e6da',ckBase:'#7c3c22',ckDeep:'#542713',fatCk:'#e9bd82',
+    fat:s=>bands(s,[[72,10],[93,5],[112,14],[133,6]],10,190,3)+sashi(s+9,14,30,60,140,80,.8,2,5), markRot:36});
+  // 伊比利豬：深粉紅＋一側白色脂肪邊＋中等油花
+  beef('iberico',{rx:74,ry:52,n:2.4,irr:.08,seed:31,rot:.2,rawBase:'#c4525a',rawDeep:'#97343e',fatRaw:'#f8ece4',ckBase:'#8b4a2b',ckDeep:'#5e2e17',fatCk:'#efc890',
+    fat:s=>sashi(s,26,50,55,110,90,.8,2.6,7), markRot:24,
+    extra: `<g clip-path="url(#c)"><path d="M10 120 Q30 40 110 30 L40 20 L0 60Z" fill="#f6e8dc" filter="url(#b1)" opacity=".95"/><path d="M14 118 Q34 46 108 36" stroke="#e8cbbb" stroke-width="2" fill="none" opacity=".7"/></g>`});
+
+  /* ---------- 松阪豬：淡粉紅扇形＋平行細紋 ---------- */
+  (function(){ const d=blob(100,108,76,50,2.2,.05,41,.0)+'';
+    const st=streaks(41,13,100,175,62,128,-2.55,-.6);
+    R.pork={ raw: svg('pork',`${clip(d)}${shadow(d)}<path d="${d}" fill="#eaa69b"/><g clip-path="url(#c)"><path d="${d}" fill="#cf7f77" opacity=".45" transform="translate(5 9)"/></g>
+        <g clip-path="url(#c)" fill="none" stroke="#fdf1ec" stroke-linecap="round" filter="url(#b1)" opacity=".9">${st}</g>${surface(d)}<path d="${d}" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.2"/>`),
+      cooked: svg('pork',`${clip(d)}${shadow(d)}<path d="${d}" fill="#c98a5c"/><g clip-path="url(#c)"><path d="${d}" fill="#9a5f36" opacity=".5" transform="translate(5 9)"/></g>
+        <g clip-path="url(#c)" fill="none" stroke="#f6dcb0" stroke-linecap="round" filter="url(#b1)" opacity=".85">${st}</g>${cookedSurf(d)}<path d="${d}" fill="none" stroke="rgba(90,45,20,.55)" stroke-width="2.2"/>`),
+      sear: svg('pork',`${clip(d)}${grillMarks(d,20)}`) }; })();
+
+  /* ---------- 嫩雞腿：帶皮、凹凸 ---------- */
+  (function(){ const d=blob(100,100,74,54,2,.13,53,.3);
+    const skin=`<g clip-path="url(#c)"><path d="M20 60 Q70 20 170 50 L190 0 L0 0Z" fill="#f7dcc0" opacity=".9" filter="url(#b2)"/>${sashi(53,18,30,30,140,60,1,2.4,4).replace(/<path /g,'<path stroke="#fbe9d6" fill="none" ')}</g>`;
+    R.chicken={ raw: svg('chicken',`${clip(d)}${shadow(d)}<path d="${d}" fill="#f0bea8"/><g clip-path="url(#c)"><path d="${d}" fill="#d89b88" opacity=".5" transform="translate(5 9)"/></g>${skin}${surface(d)}`),
+      cooked: svg('chicken',`${clip(d)}${shadow(d)}<path d="${d}" fill="#d29a5a"/><g clip-path="url(#c)"><path d="${d}" fill="#a2652f" opacity=".5" transform="translate(5 9)"/><path d="M20 60 Q70 20 170 50 L190 0 L0 0Z" fill="#e3ad62" opacity=".8" filter="url(#b2)"/></g>${cookedSurf(d)}<path d="${d}" fill="none" stroke="rgba(110,60,20,.55)" stroke-width="2.2"/>`),
+      sear: svg('chicken',`${clip(d)}${grillMarks(d,40)}`) }; })();
+
+  /* ---------- 鮮大蝦：C 字捲曲、殼節、尾扇、蝦頭與觸鬚 ---------- */
+  (function(){
+    const cx=100, cy=104, R0=50, segs=7;
+    const mk=(shell,dark,band,leg)=>{
+      let g=''; const pts=[];
+      for(let i=0;i<segs;i++){ const t=i/(segs-1); const a=(-35+t*215)*Math.PI/180; const th=30-t*17;
+        pts.push([cx+Math.cos(a)*R0, cy+Math.sin(a)*R0, a, th]); }
+      // 腳
+      let legs=''; for(let i=1;i<5;i++){ const [x,y,a]=pts[i]; const ix=x-Math.cos(a)*22, iy=y-Math.sin(a)*22; legs+=`<path d="M${f(ix)} ${f(iy)} q${f(-Math.cos(a)*10+4)} ${f(-Math.sin(a)*10+6)} ${f(-Math.cos(a)*16)} ${f(-Math.sin(a)*16+10)}" stroke="${leg}" stroke-width="1.8" fill="none" stroke-linecap="round"/>`; }
+      // 尾扇
+      const [tx,ty,ta]=pts[segs-1]; const tdx=Math.cos(ta+Math.PI/2), tdy=Math.sin(ta+Math.PI/2);
+      const tail=[-0.55,0,0.55].map(o=>{ const ang=ta+Math.PI/2+o; const ex=tx+Math.cos(ang)*30, ey=ty+Math.sin(ang)*30;
+        return `<path d="M${f(tx)} ${f(ty)} Q${f(tx+Math.cos(ang-.25)*22)} ${f(ty+Math.sin(ang-.25)*22)} ${f(ex)} ${f(ey)} Q${f(tx+Math.cos(ang+.25)*22)} ${f(ty+Math.sin(ang+.25)*22)} ${f(tx)} ${f(ty)}Z" fill="${dark}" opacity=".95"/>`; }).join('');
+      // 殼節（由尾往頭畫，讓前節蓋住後節）
+      for(let i=segs-1;i>=0;i--){ const [x,y,a,th]=pts[i]; const deg=a*180/Math.PI+90;
+        g+=`<ellipse cx="${f(x)}" cy="${f(y)}" rx="${f(th*.95)}" ry="${f(th)}" transform="rotate(${f(deg+90)} ${f(x)} ${f(y)})" fill="${shell}"/>`;
+        g+=`<path d="M${f(x+Math.cos(a+Math.PI/2)*th*.55)} ${f(y+Math.sin(a+Math.PI/2)*th*.55)} A${f(th)} ${f(th)} 0 0 1 ${f(x-Math.cos(a+Math.PI/2)*th*.55)} ${f(y-Math.sin(a+Math.PI/2)*th*.55)}" stroke="${band}" stroke-width="2.6" fill="none" opacity=".85"/>`; }
+      // 蝦頭
+      const [hx,hy,ha]=pts[0]; const hdx=Math.cos(ha-Math.PI/2), hdy=Math.sin(ha-Math.PI/2);
+      const head=`<path d="M${f(hx-14)} ${f(hy+6)} Q${f(hx+hdx*40-10)} ${f(hy+hdy*40)} ${f(hx+hdx*46+8)} ${f(hy+hdy*44+4)} Q${f(hx+hdx*30+22)} ${f(hy+hdy*20+16)} ${f(hx+16)} ${f(hy+10)}Z" fill="${dark}"/>
+        <path d="M${f(hx+hdx*44+6)} ${f(hy+hdy*42+2)} L${f(hx+hdx*66+10)} ${f(hy+hdy*62-2)}" stroke="${dark}" stroke-width="3" stroke-linecap="round"/>
+        <g stroke="${leg}" stroke-width="1.3" fill="none"><path d="M${f(hx+hdx*40)} ${f(hy+hdy*38)} q20 -30 52 -36"/><path d="M${f(hx+hdx*38+4)} ${f(hy+hdy*36)} q30 -10 54 6"/></g>
+        <circle cx="${f(hx+hdx*30+6)}" cy="${f(hy+hdy*30+2)}" r="4" fill="#111"/><circle cx="${f(hx+hdx*30+7)}" cy="${f(hy+hdy*30+1)}" r="1.2" fill="#fff"/>`;
+      const shape=pts.map(p=>`<ellipse cx="${f(p[0])}" cy="${f(p[1])}" rx="${f(p[3])}" ry="${f(p[3])}"/>`).join('');
+      return svg('prawn',`<g transform="translate(5 10)" fill="#000" opacity=".45" filter="url(#sh)">${shape}</g>${legs}${tail}${g}${head}
+        <g fill="url(#gloss)">${shape}</g>`);
+    };
+    R.prawn={ raw: mk('#aab8bd','#7d8e95','#e8f0f2','#8a9aa0'), cooked: mk('#f07a44','#d24a2b','#fff3e6','#c8532f'), sear: svg('prawn','') };
+  })();
+
+  /* ---------- 挪威鯖魚：銀藍魚皮＋虎斑紋，切片 ---------- */
+  (function(){ const d='M18 104 C30 66 92 52 150 62 L186 50 C180 74 180 98 188 122 L150 124 C96 142 32 140 18 104 Z';
+    const stripes=(c,w)=>{ const r=rng(61); let s=''; for(let i=0;i<9;i++){ const x=40+i*14+r()*4; s+=`<path d="M${x} 66 Q${x+8} 76 ${x-2} 86 T${x+4} 102" stroke="${c}" stroke-width="${w}" fill="none" stroke-linecap="round"/>`; } return s; };
+    R.saba={ raw: svg('saba',`${clip(d)}${shadow(d)}<path d="${d}" fill="#c9d3d8"/>
+        <g clip-path="url(#c)"><rect x="0" y="40" width="200" height="56" fill="#3f5a69"/><rect x="0" y="86" width="200" height="16" fill="#8fa5b0" filter="url(#b2)"/><rect x="0" y="112" width="200" height="40" fill="#eef1f2"/>${stripes('#14232e',3.4)}<path d="M20 118 Q100 126 182 116" stroke="#e7cfc4" stroke-width="6" fill="none" filter="url(#b1)"/></g>
+        <path d="${d}" fill="url(#gloss)"/><path d="${d}" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.2"/><circle cx="34" cy="98" r="0" />`),
+      cooked: svg('saba',`${clip(d)}${shadow(d)}<path d="${d}" fill="#c98f52"/>
+        <g clip-path="url(#c)"><rect x="0" y="40" width="200" height="60" fill="#8a5a2c"/><rect x="0" y="108" width="200" height="40" fill="#e8c48a"/>${stripes('#3a1e0c',4)}<rect width="200" height="200" filter="url(#mai)"/></g>
+        <path d="${d}" fill="url(#gloss)" opacity=".8"/><path d="${d}" fill="none" stroke="rgba(70,35,12,.6)" stroke-width="2.2"/>`),
+      sear: svg('saba',`${clip(d)}${grillMarks(d,60)}`) }; })();
+
+  /* ---------- 鮮香菇：深褐菌傘＋十字刻花 ---------- */
+  (function(){ const d=blob(100,100,70,64,2,.05,71,0);
+    const cracks=(()=>{ const r=rng(72); let s=''; for(let i=0;i<22;i++){ const a=r()*6.28, r0=20+r()*30, r1=r0+8+r()*14; s+=`<path d="M${f(100+Math.cos(a)*r0)} ${f(100+Math.sin(a)*r0)} L${f(100+Math.cos(a+.08)*r1)} ${f(100+Math.sin(a+.08)*r1)}" stroke-width="${f(1+r()*1.6)}"/>`; } return s; })();
+    const mk=(base,rim,crack,cut)=>svg('shiitake',`${clip(d)}${shadow(d)}<radialGradient id="cap" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="${base}"/><stop offset="1" stop-color="${rim}"/></radialGradient>
+      <path d="${d}" fill="url(#cap)"/><g clip-path="url(#c)" stroke="${crack}" fill="none" stroke-linecap="round" opacity=".7">${cracks}</g>
+      <g stroke="${cut}" stroke-width="11" stroke-linecap="round"><path d="M72 72 L128 128"/><path d="M128 72 L72 128"/></g>
+      <g stroke="rgba(0,0,0,.25)" stroke-width="2" stroke-linecap="round"><path d="M74 76 L126 128"/><path d="M126 76 L74 128"/></g><path d="${d}" fill="url(#gloss)"/>`);
+    R.shiitake={ raw: mk('#9a6a46','#5e3b22','#d9c2a2','#f2e6d2'), cooked: mk('#6e4326','#3b2112','#b3916a','#d9b886'), sear: svg('shiitake','') }; })();
+
+  /* ---------- 奶油玉米：一截玉米、整排玉米粒 ---------- */
+  (function(){ const d='M30 62 Q30 48 46 48 L154 48 Q170 48 170 62 L170 138 Q170 152 154 152 L46 152 Q30 152 30 138 Z';
+    const kern=(hi,lo,char)=>{ let s=''; const r=rng(81); for(let row=0;row<6;row++) for(let c=0;c<9;c++){ const x=44+c*14.2+(row%2)*7, y=58+row*16.5; const burnt=char&&r()<.18;
+      s+=`<ellipse cx="${f(x)}" cy="${f(y)}" rx="6.6" ry="7.6" fill="${burnt?'#5a3315':hi}"/><ellipse cx="${f(x-1.6)}" cy="${f(y-2.4)}" rx="2.4" ry="2.2" fill="#fff" opacity="${burnt?.1:.55}"/><ellipse cx="${f(x)}" cy="${f(y+5)}" rx="5" ry="2" fill="${lo}" opacity=".5"/>`; } return s; };
+    const cyl=`<linearGradient id="cyl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset=".22" stop-color="#000" stop-opacity="0"/><stop offset=".38" stop-color="#fff" stop-opacity=".25"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></linearGradient>`;
+    const ends=(c)=>`<ellipse cx="32" cy="100" rx="9" ry="52" fill="${c}"/><ellipse cx="168" cy="100" rx="9" ry="52" fill="${c}"/>`;
+    R.corn={ raw: svg('corn',`${cyl}${clip(d)}${shadow(d)}${ends('#e7d39a')}<path d="${d}" fill="#d9b450"/><g clip-path="url(#c)">${kern('#f6dc7a','#c99a2e',false)}<rect width="200" height="200" fill="url(#cyl)"/></g>`),
+      cooked: svg('corn',`${cyl}${clip(d)}${shadow(d)}${ends('#c9a35a')}<path d="${d}" fill="#c78a2a"/><g clip-path="url(#c)">${kern('#f0b947','#a8691c',true)}<rect width="200" height="200" fill="url(#cyl)"/></g><path d="${d}" fill="url(#gloss)" opacity=".5"/>`),
+      sear: svg('corn','') }; })();
+
+  /* ---------- 生日肉蛋糕：層層和牛片＋金色蠟燭 ---------- */
+  (function(){ const layer=(y,c)=>`<path d="M30 ${y} Q100 ${y-14} 170 ${y} L170 ${y+16} Q100 ${y+2} 30 ${y+16}Z" fill="${c}"/>`;
+    const fatline=y=>`<path d="M36 ${y} Q70 ${y-8} 100 ${y-3} T164 ${y}" stroke="#fff3ec" stroke-width="3" fill="none" filter="url(#b1)"/>`;
+    const body=`<ellipse cx="100" cy="166" rx="78" ry="16" fill="#000" opacity=".45" filter="url(#sh)"/><ellipse cx="100" cy="160" rx="74" ry="14" fill="#2a2523"/>
+      ${layer(132,'#a52c36')}${fatline(140)}${layer(116,'#c03c47')}${fatline(124)}${layer(100,'#b8343f')}${fatline(108)}${layer(84,'#c84a54')}${fatline(92)}
+      <clipPath id="top"><ellipse cx="100" cy="84" rx="68" ry="12"/></clipPath><ellipse cx="100" cy="84" rx="70" ry="13" fill="#d4525c"/>${'<g clip-path="url(#top)" fill="none" stroke="#fff3ec" stroke-width="2.4" filter="url(#b1)">'+sashi(91,30,34,72,132,24,1,2.4,4)+'</g>'}
+      <rect x="95" y="34" width="10" height="46" rx="2" fill="url(#gold)"/><path d="M100 8 C110 20 108 30 100 34 C92 30 90 20 100 8Z" fill="#ffb35c"/><path d="M100 18 C104 24 103 29 100 31 C97 29 96 24 100 18Z" fill="#fff2c6"/>`;
+    R.cake={ raw: svg('cake',body), cooked: svg('cake',body), sear: svg('cake','') }; })();
+
+  /* ---------- 福袋 ---------- */
+  (function(){ const b=`<ellipse cx="100" cy="172" rx="56" ry="10" fill="#000" opacity=".45" filter="url(#sh)"/>
+     <path d="M52 92 Q40 168 100 172 Q160 168 148 92 Q130 76 100 76 Q70 76 52 92Z" fill="#b25046"/><path d="M52 92 Q40 168 100 172 Q160 168 148 92" fill="none" stroke="#7d332c" stroke-width="2"/>
+     <path d="M70 80 Q78 46 100 62 Q122 46 130 80" fill="#9e463d"/><path d="M62 88 Q100 104 138 88" stroke="url(#gold)" stroke-width="7" fill="none" stroke-linecap="round"/>
+     <circle cx="100" cy="130" r="25" fill="url(#gold)"/><circle cx="100" cy="130" r="20" fill="none" stroke="#8f7553" stroke-width="1.5"/><rect x="92" y="122" width="16" height="16" fill="#b25046" stroke="#8f7553" stroke-width="1.2"/>
+     <g fill="#8f7553"><rect x="97" y="108" width="6" height="7"/><rect x="97" y="145" width="6" height="7"/><rect x="78" y="127" width="7" height="6"/><rect x="115" y="127" width="7" height="6"/></g>
+     <path d="M52 92 Q40 168 100 172 Q160 168 148 92 Q130 76 100 76 Q70 76 52 92Z" fill="url(#gloss)"/>`;
+    R.bag={ raw: svg('bag',b), cooked: svg('bag',b), sear: svg('bag','') }; })();
+
+  /* 轉成 PNG（只做一次） */
+  const IMG={};
+  async function rasterize(size){
+    size=size||256; const jobs=[];
+    for(const id in R) for(const layer of ['raw','cooked','sear']){
+      jobs.push(new Promise(ok=>{ const im=new Image(); im.onload=()=>{ const c=document.createElement('canvas'); c.width=c.height=size; c.getContext('2d').drawImage(im,0,0,size,size);
+        (IMG[id]=IMG[id]||{})[layer]=c.toDataURL('image/png'); ok(); }; im.onerror=()=>{ (IMG[id]=IMG[id]||{})[layer]=''; ok(); };
+        im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(R[id][layer]); }));
+    }
+    await Promise.all(jobs); return IMG;
+  }
+  return { R, IMG, rasterize };
+})();
+
+</script>
+<script>
+(function(){
+"use strict";
+/* ================================================================
+   設定（營運可調）
+   ================================================================ */
+const CFG = {
+  LEVEL_TIME: 25,          // 每關秒數（＝1 局）
+  CHEF_GOAL: 15,           // 今日局數達標 → 主廚招待
+  API_URL: '',             // 正式版：Apps Script / Firebase 排行榜 API；留空＝本機示意
+  WEEK_TZ_OFFSET: 8,       // 週結算以台灣時間計
+  TABLE_LIMIT: 2,          // 主廚招待每桌上限（由 POS 管控）
+  // 各店核銷碼（原型示意值）。正式版改由後端驗證，不放在網頁原始碼裡。
+  STAFF_PIN: { yl:'1101', ch:'2202', bt:'3303' },
+  PIN_MAX_FAIL: 5, PIN_LOCK_MIN: 5
+};
+const STORES = [{id:'yl',name:'員林店'},{id:'ch',name:'彰化店'},{id:'bt',name:'北屯店'}];
+// 各關門檻（本關分數）：第 n 關需達成 TARGETS[n-1]，之後每關 +280
+const TARGETS = [250, 400, 560, 740, 940, 1160, 1400, 1660];
+const target = L => L<=TARGETS.length ? TARGETS[L-1] : TARGETS[TARGETS.length-1] + (L-TARGETS.length)*280;
+const KANJI = ['壱','弐','参','肆','伍','陸','漆','捌','玖','拾'];
+const kanji = L => String(L);   // 關卡一律用阿拉伯數字，大家都看得懂
+function levelParams(L){
+  return { spawn: Math.max(.40, .86 - .055*(L-1)), speed: Math.min(1.75, 1 + .075*(L-1)), win: Math.max(.58, 1 - .05*(L-1)) };
+}
+const TITLES = ['烤肉學徒','烤網新手','炭火師','燒肉職人','熟成職人','霜降匠','和牛名人','脂本烤神','烤神・極'];
+const titleOf = L => TITLES[Math.min(TITLES.length-1, L-1)];
+const TITLE_DESC = ['夾子拿穩了嗎？再來一局！','手感來了，下一關就過','火候抓得漂亮','可以幫全桌代烤了','職人等級的手感','霜降油花逃不過你的眼睛','名人級的火候判斷','傳說中的烤神降臨','已超越脂本主廚'];
+const WORDS = ['霜降','炭火','雪花','脂香','金網','職人','厚切','炙燒','月見','熟成','和牛','備長','焦香','一刻'];
+
+/* ================================================================
+   安全儲存
+   ================================================================ */
+const S = { get(k,d){ try{ const v=localStorage.getItem('zb2_'+k); return v==null?d:JSON.parse(v);}catch(e){return d;} },
+            set(k,v){ try{ localStorage.setItem('zb2_'+k, JSON.stringify(v)); }catch(e){} } };
+const $ = s=>document.querySelector(s), $$ = s=>Array.from(document.querySelectorAll(s));
+const tw = ()=>{ const d=new Date(); return new Date(d.getTime() + (CFG.WEEK_TZ_OFFSET*60 + d.getTimezoneOffset())*60000); };
+const ymd = d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today = ()=>ymd(tw());
+const dayIdx = ()=>{ const d=tw(); return Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5); };
+function weekStart(){ const d=tw(); const k=(d.getDay()+6)%7; return new Date(d.getFullYear(),d.getMonth(),d.getDate()-k); }
+const weekKey = ()=>ymd(weekStart());
+function lastWeekKey(){ const w=weekStart(); return ymd(new Date(w.getFullYear(),w.getMonth(),w.getDate()-7)); }
+function weekRange(wk){ const [y,m,d]=wk.split('-').map(Number); const a=new Date(y,m-1,d), b=new Date(y,m-1,d+6); return `${a.getMonth()+1}/${a.getDate()}–${b.getMonth()+1}/${b.getDate()}`; }
+function seeded(seed){ let s=Math.abs(seed)%2147483647||7; return ()=>(s=s*16807%2147483647)/2147483647; }
+function hashStr(t){ let h=0; for(const c of t) h=(h*31+c.charCodeAt(0))|0; return h; }
+
+/* ================================================================
+   食材（數值為遊戲設定；對應脂本菜單）
+   ws/we＝金色區、burn＝焦掉的時間（秒，第一關基準）
+   ================================================================ */
+const CUTS = [
+ {id:'angus',  name:'安格斯牛',   pts:10, ws:1.9, we:3.3, burn:4.2, w:22, tier:'常備', tip:'來自美國的黑毛安格斯，肉味濃郁。烤到表面出現焦香梅納反應最美味。'},
+ {id:'iberico',name:'伊比利豬',   pts:12, ws:2.1, we:3.5, burn:4.4, w:16, tier:'常備', tip:'西班牙伊比利豬吃橡實長大，脂肪帶有堅果香，有「會走路的橄欖」之稱。'},
+ {id:'pork',   name:'手切松阪豬', pts:15, ws:2.2, we:3.5, burn:4.4, w:14, tier:'常備', tip:'一頭豬只有兩小塊的豬頸肉，手切保留纖維，口感脆彈。'},
+ {id:'chicken',name:'嫩雞腿',     pts:12, ws:2.4, we:3.9, burn:4.8, w:10, tier:'常備', tip:'小朋友最愛！雞肉一定要烤到全熟，切開沒有粉紅色才安全。'},
+ {id:'prawn',  name:'鮮大蝦',     pts:18, ws:2.0, we:3.2, burn:4.0, w:8,  tier:'海味', tip:'蝦殼由灰轉紅是因為「蝦紅素」遇熱被釋放。店內大蝦由服務人員桌邊代烤。'},
+ {id:'saba',   name:'挪威鯖魚',   pts:20, ws:2.6, we:4.2, burn:5.1, w:7,  tier:'會員', tip:'冰冷的挪威海讓鯖魚油脂豐厚。加入脂本會員即贈一份。'},
+ {id:'shiitake',name:'鮮香菇',    pts:6,  ws:1.5, we:3.7, burn:4.6, w:7,  tier:'時蔬', tip:'刻上十字花，湯汁會鎖在傘內。金色區最寬，最適合小小烤肉師。'},
+ {id:'corn',   name:'奶油玉米',   pts:6,  ws:1.5, we:3.7, burn:4.6, w:7,  tier:'時蔬', tip:'玉米粒微焦的地方最香甜——那是糖分焦糖化的味道。'},
+ {id:'a5',     name:'A5和牛霜降', pts:50, ws:1.5, we:2.1, burn:2.7, w:3,  tier:'稀有', minL:2, tip:'日本和牛最高等級。A＝出肉率最高、5＝肉質最高。金色區最短，屏息以待。'},
+ {id:'cake',   name:'生日肉蛋糕', pts:100,ws:1.9, we:3.0, burn:3.8, w:0,  tier:'傳說', tip:'每局最多出現一次，夾到 +3 秒。真實版本：壽星來脂本就送。'},
+ {id:'gold',   name:'金箔A5和牛', pts:300,ws:1.4, we:2.0, burn:2.6, w:0,  tier:'秘藏', secret:true, tip:'只在第參關之後、極低機率現身的傳說之肉。見過的人不多。'}
+];
+const CUT = Object.fromEntries(CUTS.map(c=>[c.id,c]));
+
+/* 隱藏秘技（達成條件不直接公開，只給提示） */
+const SECRETS = [
+ {id:'kids',  name:'親子套餐', bonus:60,  hint:'小朋友最愛的三樣，連續夾起', how:'連續夾起玉米、雞腿、香菇（順序不拘）'},
+ {id:'surf',  name:'海陸雙享', bonus:80,  hint:'海裡的、陸上的，連續三夾', how:'連續夾起大蝦、鯖魚、安格斯（順序不拘）'},
+ {id:'pig',   name:'豬豬雙響', bonus:40,  hint:'兩種豬，接連完美', how:'伊比利豬與松阪豬接連「完美」夾起'},
+ {id:'triple',name:'職人三連', bonus:50,  hint:'同一種肉，三次完美不間斷', how:'同一種食材連續三次完美'},
+ {id:'moon',  name:'月見和牛', bonus:150, hint:'火最旺的時候，獻給最好的肉', how:'火力全開中，完美夾起 A5 和牛'},
+ {id:'mascot',name:'抓到脂寶', bonus:0,   hint:'有時候，會有人偷偷跳上烤網', how:'脂寶現身時點他，+3 秒'},
+ {id:'clean', name:'零焦之關', bonus:100, hint:'一整關，乾乾淨淨', how:'一關內零烤焦且完美 ≥ 8 次'},
+ {id:'gold',  name:'金箔傳說', bonus:0,   hint:'閃著金光的那一片……', how:'夾起金箔 A5 和牛'}
+];
+
+/* ================================================================
+   食材插畫：raw 與 cooked 兩層交叉淡入，烙紋依熟度浮現
+   ================================================================ */
+const SHAPE = {
+  angus:'M12 30 Q14 18 30 19 L74 21 Q90 23 89 38 L87 66 Q85 81 69 80 L27 78 Q11 77 11 61Z',
+  a5:'M14 22 Q14 14 24 14 L78 15 Q88 16 87 26 L86 74 Q86 85 75 85 L25 85 Q13 85 13 74Z',
+  gold:'M14 22 Q14 14 24 14 L78 15 Q88 16 87 26 L86 74 Q86 85 75 85 L25 85 Q13 85 13 74Z',
+  iberico:'M10 52 Q10 22 46 18 Q84 16 90 44 Q93 74 60 82 Q20 88 10 52Z',
+  pork:'M8 72 Q12 20 50 16 Q88 20 92 72 Q50 88 8 72Z',
+  chicken:'M14 56 Q10 26 42 20 Q78 14 88 44 Q94 76 58 82 Q20 88 14 56Z',
+  shiitake:'M50 14 Q88 14 90 50 Q88 86 50 86 Q12 86 10 50 Q12 14 50 14Z',
+  corn:'M18 36 Q18 30 26 30 L74 30 Q82 30 82 36 L82 64 Q82 70 74 70 L26 70 Q18 70 18 64Z'
+};
+function meatSVG(id, rawFill, cookFill, marble, extra){
+  const p = SHAPE[id];
+  return `<svg viewBox="0 0 100 100" class="food"><defs><clipPath id="cl-${id}-__U"><path d="${p}"/></clipPath></defs>
+   <g class="raw"><path d="${p}" fill="${rawFill}"/></g>
+   <g class="cook" opacity="0"><path d="${p}" fill="${cookFill}"/></g>
+   <g class="fat" filter="url(#fFat)">${marble}</g>
+   <g class="sear" opacity="0" clip-path="url(#cl-${id}-__U)"><rect width="100" height="100" fill="url(#pSear)" opacity=".55"/></g>
+   ${extra||''}<path d="${p}" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1"/></svg>`;
+}
+const W = (d,o)=>`<path d="${d}" stroke="#fff6ef" stroke-width="${o||3}" fill="none" stroke-linecap="round" opacity=".85"/>`;
+const ART = {
+  angus: meatSVG('angus','url(#gBeef)','url(#gCook)', W('M18 36 q16 -6 30 2 t36 -2')+W('M16 56 q20 6 36 -2 t34 4',2.5)+W('M26 70 q14 -4 26 2',2)),
+  a5: meatSVG('a5','url(#gA5)','url(#gCookL)', W('M18 26 q12 10 26 0 t30 4 t8 2',3.5)+W('M16 42 q12 -8 24 2 t36 -4',3.5)+W('M18 58 q16 8 30 -2 t32 4',3.5)+W('M22 74 q14 -4 26 2 t28 -2',3)+W('M30 34 l5 5 M58 50 l5 5 M42 66 l4 4 M70 32 l3 3 M24 50 l4 3',2.5)),
+  gold: meatSVG('gold','url(#gA5)','url(#gCookL)', W('M18 26 q12 10 26 0 t30 4',3.5)+W('M16 42 q12 -8 24 2 t36 -4',3.5)+W('M18 58 q16 8 30 -2 t32 4',3.5)+W('M22 74 q14 -4 26 2 t28 -2',3),
+        `<g fill="url(#gGold)"><path d="M30 30 l12 -4 4 9 -10 6z"/><path d="M58 46 l14 2 -3 11 -12 -3z"/><path d="M36 62 l9 -1 2 8 -10 2z"/><path d="M66 22 l7 1 -1 6 -7 -1z"/></g>`),
+  iberico: meatSVG('iberico','url(#gIber)','url(#gCook)', `<path d="M10 52 Q10 22 46 18 Q30 30 26 52 Q24 74 40 84 Q16 80 10 52Z" fill="#f8e6da" opacity=".9"/>`+W('M44 40 q12 4 30 0',2)+W('M42 60 q14 4 34 -2',2)),
+  pork: meatSVG('pork','url(#gPork)','url(#gCookL)', W('M20 66 Q28 36 50 28',2.5)+W('M34 72 Q44 46 64 36',2.5)+W('M52 74 Q62 54 80 50',2.5)+W('M14 60 Q20 46 30 38',1.8)),
+  chicken: meatSVG('chicken','url(#gChick)','url(#gCookL)', W('M28 40 Q48 32 70 42',3)+W('M26 60 Q50 54 74 62',2.5), `<path d="M14 56 Q10 26 42 20 Q60 18 72 24 Q46 30 30 46 Q20 58 22 74 Q15 66 14 56Z" fill="#fff3ea" opacity=".35"/>`),
+  shiitake: meatSVG('shiitake','#9a6a48','#5c3a22', '', `<ellipse cx="50" cy="50" rx="31" ry="27" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="2"/><path d="M36 38 L64 62 M64 38 L36 62" stroke="#f5ead9" stroke-width="7" stroke-linecap="round"/>`),
+  corn: meatSVG('corn','#f1d675','#e3a63c', '', (()=>{ let s='<g>'; for(let r=0;r<3;r++) for(let c=0;c<6;c++) s+=`<ellipse cx="${27+c*9.2+(r%2)*4}" cy="${40+r*10}" rx="4" ry="4.2" fill="#fbe9a6" opacity=".8"/>`; return s+'</g><g class="char" opacity="0"><circle cx="36" cy="44" r="3" fill="#5a3416"/><circle cx="60" cy="56" r="3" fill="#5a3416"/><circle cx="70" cy="42" r="2.4" fill="#5a3416"/></g>'; })()),
+  prawn:`<svg viewBox="0 0 100 100" class="food"><g class="raw"><path d="M78 30 Q94 52 76 74 Q58 90 34 82 Q16 76 20 60 Q30 72 46 70 Q66 66 66 48 Q66 36 58 30z" fill="url(#gPrawnR)"/></g>
+     <g class="cook" opacity="0"><path d="M78 30 Q94 52 76 74 Q58 90 34 82 Q16 76 20 60 Q30 72 46 70 Q66 66 66 48 Q66 36 58 30z" fill="url(#gPrawnC)"/></g>
+     <path d="M66 40 Q82 44 82 58 M62 56 Q76 64 70 76 M50 66 Q58 80 46 84" stroke="rgba(255,255,255,.45)" stroke-width="2" fill="none"/>
+     <path d="M20 60 Q10 54 12 44 Q18 52 26 54 M58 30 Q70 16 88 14 M60 32 Q76 24 92 26" stroke="#c9663f" stroke-width="1.6" fill="none"/><circle cx="62" cy="34" r="2" fill="#111"/><g class="sear"></g><g class="fat"></g></svg>`,
+  saba:`<svg viewBox="0 0 100 100" class="food"><g class="raw"><path d="M8 50 Q30 24 68 30 L92 20 L86 50 L92 80 L68 70 Q30 76 8 50z" fill="url(#gSaba)"/></g>
+     <g class="cook" opacity="0"><path d="M8 50 Q30 24 68 30 L92 20 L86 50 L92 80 L68 70 Q30 76 8 50z" fill="url(#gCookL)"/></g>
+     <path d="M24 38 q4 6 0 10 M36 33 q4 6 0 11 M48 31 q4 6 0 11 M60 31 q4 6 0 11" stroke="#1f2f3c" stroke-width="2.4" fill="none" opacity=".75"/>
+     <circle cx="20" cy="48" r="2.6" fill="#111"/><g class="sear" opacity="0"><path d="M30 40 L44 62 M46 36 L60 62 M62 36 L74 60" stroke="#2a1408" stroke-width="4"/></g><g class="fat"></g></svg>`,
+  cake:`<svg viewBox="0 0 100 100" class="food"><ellipse cx="50" cy="82" rx="38" ry="9" fill="#5e2620"/><rect x="12" y="44" width="76" height="38" fill="url(#gBeef)"/>
+     <path d="M12 56 q19 6 38 0 t38 0 M12 68 q19 -6 38 0 t38 0" stroke="#f8e6da" stroke-width="3.5" fill="none" filter="url(#fFat)"/><ellipse cx="50" cy="44" rx="38" ry="10" fill="#d4525a"/>
+     <path d="M22 42 q14 6 28 0 t28 2" stroke="#f8e6da" stroke-width="2.5" fill="none"/><rect x="47" y="18" width="6" height="22" fill="url(#gGold)"/><path d="M50 4 q8 8 0 14 q-8 -6 0 -14z" fill="#ffb26b"/><g class="raw"></g><g class="cook"></g><g class="sear"></g><g class="fat"></g></svg>`,
+  bag:`<svg viewBox="0 0 100 100" class="food"><path d="M24 44 Q20 86 50 88 Q80 86 76 44 Q66 36 50 36 Q34 36 24 44z" fill="#b25046"/><path d="M34 38 Q40 22 50 30 Q60 22 66 38" fill="#9e463d"/>
+     <path d="M30 42 Q50 50 70 42" stroke="url(#gGold)" stroke-width="4" fill="none"/><circle cx="50" cy="66" r="13" fill="none" stroke="url(#gGold)" stroke-width="2"/>
+     <text x="50" y="72" text-anchor="middle" font-family="Noto Serif TC,serif" font-weight="900" font-size="17" fill="#f3e2bd">福</text><g class="raw"></g><g class="cook"></g><g class="sear"></g><g class="fat"></g></svg>`
+};
+
+/* 吉祥物 脂寶 */
+function mascot(mood){
+  const eyes = mood==='happy' ? '<path d="M70 102 q8 -9 16 0 M114 102 q8 -9 16 0" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>'
+   : mood==='sad' ? '<ellipse cx="78" cy="104" rx="7" ry="8" fill="#fff"/><ellipse cx="122" cy="104" rx="7" ry="8" fill="#fff"/><circle cx="78" cy="106" r="4" fill="#111"/><circle cx="122" cy="106" r="4" fill="#111"/><path d="M68 92 l16 5 M132 92 l-16 5" stroke="#000" stroke-width="3" stroke-linecap="round"/>'
+   : '<ellipse cx="78" cy="104" rx="8" ry="10" fill="#fff"/><ellipse cx="122" cy="104" rx="8" ry="10" fill="#fff"/><circle cx="79" cy="106" r="5.5" fill="#111"/><circle cx="121" cy="106" r="5.5" fill="#111"/><circle cx="81" cy="103" r="2" fill="#fff"/><circle cx="123" cy="103" r="2" fill="#fff"/>';
+  const mouth = mood==='sad' ? '<path d="M92 148 q8 -6 16 0" stroke="#5a3a2e" stroke-width="3" fill="none" stroke-linecap="round"/>' : '<path d="M90 144 q10 10 20 0" stroke="#5a3a2e" stroke-width="3" fill="#c8584a" stroke-linecap="round"/>';
+  return `<svg viewBox="0 0 200 200"><defs><radialGradient id="mzS" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#4c433d"/><stop offset="1" stop-color="#1e1b19"/></radialGradient></defs>
+   <path d="M52 64 q-14 -22 2 -34 q4 18 16 26z M148 64 q14 -22 -2 -34 q-4 18 -16 26z" fill="url(#gGold)"/>
+   <ellipse cx="34" cy="98" rx="22" ry="12" transform="rotate(-25 34 98)" fill="#26221f"/><ellipse cx="36" cy="98" rx="12" ry="6" transform="rotate(-25 36 98)" fill="#c98a80"/>
+   <ellipse cx="166" cy="98" rx="22" ry="12" transform="rotate(25 166 98)" fill="#26221f"/><ellipse cx="164" cy="98" rx="12" ry="6" transform="rotate(25 164 98)" fill="#c98a80"/>
+   <ellipse cx="100" cy="110" rx="64" ry="66" fill="url(#mzS)"/>
+   <path d="M60 130 q10 -4 18 2 M124 72 q8 4 14 -2 M140 130 q-6 -6 -14 -2" stroke="#5a504a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+   <path d="M38 78 q62 -26 124 0 l-2 14 q-60 -22 -120 0z" fill="#b25046"/><text x="100" y="82" text-anchor="middle" font-family="Noto Serif TC,serif" font-weight="900" font-size="15" fill="#faf7e8">脂</text>
+   <path d="M160 82 q14 -6 18 4 q-10 0 -14 6z M160 86 q10 10 4 20 q-4 -10 -8 -12z" fill="#b25046"/>
+   ${eyes}<ellipse cx="60" cy="124" rx="10" ry="6" fill="#d97a6e" opacity=".45"/><ellipse cx="140" cy="124" rx="10" ry="6" fill="#d97a6e" opacity=".45"/>
+   <ellipse cx="100" cy="142" rx="34" ry="24" fill="#faf7e8"/><ellipse cx="88" cy="136" rx="4" ry="5" fill="#a07d6c"/><ellipse cx="112" cy="136" rx="4" ry="5" fill="#a07d6c"/>${mouth}</svg>`;
+}
+ART.mascot = mascot('happy').replace('<svg ','<svg class="food" ');
+
+/* Logo（官方白字版） */
+const LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAa4AAADbCAYAAAA1bXVcAAABUWlDQ1BJQ0MgUHJvZmlsZQAAeJx9kL9LAmEcxj+nhWA2RA0NDTdFwxWiQS0NahBFw2EFatN5/gS1l7uLENr6B4T+gwqa25IGGxsagqgpamtqKmgpeePuDI2oZ3k/PO/Dw5cHApOGELUhoN5wrPRKUs1kc2roGQUFT4Zpi4Sur7v8/f7U+72fvZ11u37//6twoWibwCcQNYXlgKIB+p4jXN4HJqxMNgdKy+Wyzycu530+9zKb6RQo14BqVowCKC+Alh/wywNcr+2avRvc6yPFxtaG2wNMsUwVG0ENgyYqOvE/8vNePsUOgiYWVcpUcFBJILyGIiqrNDCZQ0MlRpQYMXfn3n53vf20vnfwBEsdKeVF31vrwNkChNt9b2YRxkbgqi0My/CsIBAoleD1FEazMH4D4W27FI/510eSMPwo5ds0hA6h25Ly40jK7jEEH+Cy8QUDp2ITOrol5gAAl8ZJREFUeNrsvXdwHOedLXp6ck6YGaRBzpkIzFEMIimRClSgLFG2pH0l3X2W77NctXKVtVUrV6303spVlu9d6d5L7q4lW1SgAimJCWAASYAZOecwwGByzrnfHyApUkwAgQEBso8LZgmY6en+pvs73/cL5xBJiYmgQIEChamCzWZDoVRs5vF4leFQyOzxei+4nK4On98HMkpSA0Qh5mBQQ0CBAoWpIiUlZdvKFSsOlleUQyQUIRgMwuV2w2q1wmgwYFwzHhwcHNpqMBpqw6EwNWAUKOKiQIHC/UNWdtavn3/uuY+efOJJqFJSQBDET38kSdjtdoyMjrA6OjpOXrp0GZcvX16j0+vryWiUGjwKswq6UCikRoECBQp3RHx8fMlLL7148IUXfoHEpKQbSQsACAIcLheJiYkoLS1DQUE+hELhqxaLRW6z2Y5GKfKiQBEXBQoU5goMBgOPPbbV8NJLL0GlSrnr6wmCgFQqQ15eHgQC/pKxsTGx2WKuAZX+okCFCilQoDAXSElNeeWRRx5BRnrGtN4nEonw2NbHYDQa37JYLZ8Y9IYOajQpzAZo1BBQoEDhTliyePEnJcXFoNHp036vSCzGls2bUVVZ2c5gUOtkChRxUaBAIcbg8/koKixCUnIy7r2oIwdr16xFcnLy89SIUqCIiwIFCohx+fu/pqWngcVi3/Mx6HQ6Vq9ZjSVLFu9jsVnUoFKgiIsCBQqxQ1pa6jvx8fEzPk5qSirWrl2H9LT0P1CjSoEiLgoUKMQMiQmJiIuTz/xABIEVy5dj6dIl73G5XGpgKVDERYEChdhAoVRAIpHMyrHiExKwdu1aZGZm/js1shQo4qJAgcKsg8lkQCQSYzZ3SEsWL8HSpUve5PF51ABToIiLAgUKswsujwcej3uzSsYMECeXY/Xq1cjKyvorNcIUKOKiQIHCrILD4eSzZ1BNeDtUVlZhcVXVqzweteuiQBEXBQoUZhEsJistFk3DcXFxWLFiBTIyMqhcFwWKuChQoDB7oNPpYho9NlNEZWUVyhctepPNZlMDTYEiLgoUKMwOIpGIIxqJjaq7UqlERWUFkpKSXqFGmgIokd2FCRaLBQaDAYIgwGDQmQwmU85isdLYLHYWi81KY7PY2SwWM5XJZCbRaHReNBr12my2fRMTE390u93UAFKYdbjcrlqvzxuz41dUVCAvL/eT0dHRT0mSko6nQBEXFpyr7MoVB5OTVaDRCDAYDLBYbHDYbHA4HHC4HHDYHLDZbDBZTNDpdESjUZhMpnebm5rfrauvf3dkZOSPwWCQGkwKswa32x1yudyIRqOg0WgxUOVIR15ePs6dOw+Xy0UNOAWKuBYKlEpl/o4dTx986aVdSL4HIdPly1egrKzs3f0HDrzb0NBAUBMAhdlCJByB1+tBMBgEh8OJSZQhMzMDSqXy1y6X62NqxCmAynHNf0ikEt7jjz/W8+wzz94TaQGAQqHA9ieewJtv/hobNmwgJRIxVWNMYdbg8/kQCARidnwejwc2h51FjTQFase1AMAX8LFp40bPi794EZmZmTN2qF26ZCk4bA4IgvCcOHmCcDmpnReFmcPj8cDv80EsFsfk+F6vFwG/f4gaaQrUjmsBoKqyMvDiL15EfkEBMBvKBASBsrIyvPKrX2HZ0mUkm3N/yowFQgEKiwr/vGLF8tH09LSXmCwm9WUvYJjNFjgcjpgd3+vxwuf3t1MjTYHacS0AVFZWsgqLimY36U0QqKiowC9+8QJMJtN3be1tz5DRuanWotFpyMzM/O26tes+XLp0CeLi4tDf37/362++2dXW2rY1EolQX/oCxPj4WLXBaNiSm5cXk+P7/H4Eg0E1NdIUKOLCQhAwZSIWqgQ0Oh2rVq7C4ODQDr1BX6nX6ZtifS1isZhZXr4ouH37dqxfvwFKpRIAsKhsEYLB0BajwbhZo9HUUN/6wsPEhPZts9m8JVbHDwT8CAVDOmqkKVDEhYWT9I5FtRZfIMDmzY+iq6uz8cjRo0QoGMIsyvUkFhTkt8XHJygAEgwGA6mpqVi9ejWKiopvuB42h4O1a9bgwoUL1RPaCWKudn8UZg92u71jMl9KAiAw+03OUUSikRA10hQo4gKV9M7KzMLatWvR3tHxysjwyKeYge06h8MGCALpaen/vmnTpjcfWbcOycnJ8Hg9iEajSEhIhEgkuuX70zMyUF6+CA0NDalms3mM+uYXFgKBADxeD8LhMBgMZqwiDzwAXmq0KVDEtQCIy+f3xez4BI2GFctX4OzZs5+Mj41/Gg6Hp+XDxGKzERcX93RZadn+tLRU0Gg0ZGdnIzMjE06nEydPnoTeoIfX68PGjRuwbNnyW+brGAwGFi1ahMzMzP1ms7mK+uYXHqxWK5xOF2Qy2exHB/g8cDicAgBN1EhToIhrIey4/P6YfoZKpUJFRQUuXry0WqvV1t9xZ8WgQyFXVGZlZf6Yk52TpFAqkBCfgKrFVWAwGOjp7sHwyDDOnTuHvr6+/SMjoy84nc4Qn8+HSqUiF1ctBo3Fwu3UwMViUSX1rS9MDA+PQKudiAlxxcniIBaJt81FLpYCRVwUZiVUGFviImg0VFRUICcn54RWq72pPp5GoyEuLi4rMzNjf3Z2dml+fgGKi4uQm5sHiVgMEASGh4fw/fc/oOZYzd7BgYGXvV4fCBoBpUJZUl6+qL2kpBQVFeV3rI4UCoRQKJTg8rjweX3Ul7/AYDQaq202e0wKNKJkFCQZpXJcFCjiWgjwen09/oC/INafk52VjZycbNbFixcRCARAEASkUqk8PT39s5yc7C35+fkoKipCfl4+ZHFxN7ndnj59Bnv3frZcbzBcFAqEKCzM+HNubs5bZWWLsGTJEuTm5uJuhoBCkQgikRB0Gp364hciiNlpNbwNKcJms++jBpkCRVwLANFoxDsXVXZ8gQC5ObnIycnZTaPReNnZ2bvy8/NQVFSEgoJCKBRy0G5LKCRSU1Kwbdu2CyRJQi6XIysrC8VFxUhMSgKDTgdBEPB4PNBqtbBYzBAKhUhLTYNAKLyuvYxAdlY2lixZTHZ0dGSbTGZKKWEhTRJ0uiIWIrsAEA6HEYlEHNQoU6CIawGAy+WVzJWJ3uIli8Hhcl8XiYQoLCxCQnw86FPqISOwceNGrFm7FgQmK8BAELBZrThz+jS0Oi34fD6MRiO6urpAkiTWr1+PpMSkG3dcQiGefPJJcHlcGI2mt00m8xvUHbCAJgkGU86gM2Ll+YVIlCIuChRxLQjI5XJWrErhf47c3Dzk5ubdsxoH67qii472dhw/cQI1x2r26LS6d7Ozs6oTEhJKuVwu8vLyUFZaBrHk5uvi8fmg0WgIhUJa6tvHAvOKY6bFoll+MvJAgoySVI6LAkVcCwHJyUmQKxQL6pydTida21qh0WiwqGzR62tWr349IyMDRUXFSFGpIBKJwGDeutfHYbejv78fZot5D/XtLyxc9YGLDaimdAoUcS0YSKVSCK/LAy0EhMNhlJWVYfny5VAqlODxeLclqp/DHwiAwWAiJSXlo0g48rLdbqcaThcIOBwO2KzYhLUJgoiFIAcFirgoxAI0Gg00YmE9sTKZ9J57eeJkMmSkpyNOFrdjfHz8TVBKCVg4+VguWGxWjIiLBhpBo5QzKFDEtRAwudIkFl5d9D33lBGg0WlgMOig0+hiAA+0sCqDyUBhQeFnKlXyLo/HE7RYrJ8aTcYPbTZb72xqRy70HReNRgNBEJT3DQWKuB50EliI6O/vh1AgwOLFizEyMrrDaDS+/yCTVkV5eeMrv3qlsri4GE6Xk2U0GF+f0E68rtFMQKfTQq83NBkMhg/MFvPXXq8X81mAOJY5LhqNAEGjiIvCAiMugUAAhULxilgs2k4CIavFutdkMh2KtRwSxVmxA0mScLtcIAgC0WgUHq8HFosF4UgEY2Nj0Bv0DyxpxcXFJS5evFj7/HPPYeXKlTf0swFAwO+HwWDA+Ph4pUaj2afT6/ZZzBbYHQ44nU44nc4mp8tZ7XQ6a1xOV73X68X99jJjMJigx6gc/rpQIQUK85+4RGIRSoqLJyorK5MyMzIhi5OBJAGj0bCzv68fHZ2dPX19fcvtdruDJB+wyiMSD241FUnCYrHAZrUiEAzAaDDC5XKBoBFQq9Voamr+aNImAw+Ep5pMJisRS8TbOWxOgUIh31VeXoFNmzYiLy9/su/t57sXDgepaWlITUvD9RY3drsdNpsVNqut0ma3VdpstndsNhvsdjucTidcLhdcLlfQ5XLVulzuWpfLVet2u5t8Pl/MiY0giJsUVahQIYWHjrhSUlO2Pbpp08Ft27ahpLgE3J9JBjkdDnR1dxVcunTJ3tDQgI6OjiSL1ap7kOb6aJQESHIB5rlwG6fccbhcTgDAxMSkIKvFbMH5Cxeg1+swMaGtHhoafMLhcD4wPTtx8rjK7du2NVaUV4DL4yIxMRHp6RkQCASYbvEDlzv5ftyiktPlcsFus8HusLPsdvsWh92xxe6ww3Fll+Z2u6/8eODxeAa9Xk+Tx+u96PV4m7xeb5PP5/MGQ8F7DkdGIhFEY0SOVKiQwoIgrrT0tOd3Pr9z37PPPovk5OTb7MbEWL58BcrLy7F27VqcOXNGe/r0mQvd3d0rPB7PAzHwk4oBUdDp81u/z2azQafTQh4nB5fHhWZcA4PBgPj4eGRmZiISiWB0dBQ/HvwRY2PjEImE8Hi8kEgkcDgc6Onp+XB8fPx3LpfrgXt4eFxe5dKlS7F162MxDNMxIJVKIZVKb3sfeT0eOJxOOJ0OuJyubJfLle1yu3a6XJOE5vG44fV64fP54PP5EQj4EQgE4PcHPMFgYCwYDKmDoeBYKBTShkNhczgcNkUiEUc4Ejb7/f6eSCSMQDAYw1AhwaemYgrzlriUSmX+Mzt27Hv++edvubrETdVMXJSXVyA3Nw8V5RXLDx8+TNaePrVGp9XVL/TwYTgcQiQcnpfENak9OAG1Wo22tjaMj48jOTkZMlkcfD4f2GwWWGwWurq70NLSgkuXLqGxsanUZrN1iMXirFAopPN4PN5wJIwH2fXYZDbt0ev1u4PB4A3qInMJOp0OoUgEoUgEQHXHhZLP54XX44XX54Xf54fP5+P7/f6CQCBQEAgGEAwEEQwFEQ6FEQ6HEQqH4fV6kZ2dBW4MnLp/ChXSqB0XhflJXCw2C+sfeaTnySefnBJp4QazOT7WrF2LtPR0pKSm1H377XdvDw0N/SkajQIAZDKZPDc3p47D4RZoJjRvmYzGj8ORSIjH5WWJxKItkUjEbrNav/YHAqFwOIxIOIL7HyqMIjpPydfr9cJoNOLs2bPo7e21JyYmSq4K6QYCAWRlZaG3txdNTc04e+5smtn0k7OxyWR6aAR0XU4XOjs6odVOID09Y16fK51Oh0AghEAgnGf9jASV46Iwf4krLS3tnzZu3IjMzKyZHAMvvvgSBALBB/v2fV1qNpv3ZGVl/bh06VLJsqVLwePxMDwy/OHEhPbDcDgMgYAPmUyGcDgMo9G01+fzQa/TYXB4qC4aiXiZTGaSyWT+WKvT7om1NxZurmG48n/zTx1DrR6FdkILuVyO9evXS/g8PowmIyYmtGhta11TV1/fTkbJkNvt9k7HWflBRHNL8zv9ff3vzXfiwrxtxKeDRqOqCinMU+IqKy39IC8vDzO1R5DJZHjyyaeQEJ+wy2gy7ioqKkJBfgF4/MkwedmiRXd8v16vx0B//5pIJAImiwmdTre7r69/9/j4GAwGY5PRZPzQZDR97vF6Ylr4F8tKrXuFzWpFU3MTDhw4gL6+/g/k8rjXFQqFxGAwaru7uwptdruDkpa7EWr12Pt9/X3vrVy5EvxpFmVQAAoLC/DMMzuqx8bGr1ROOtvdHk+d3+fv9fv9Pf6AvyfgD+gCgQDC4TAeuApjCvOXuNhsNnJz86YdIsQddP62bN16T+9NSEhAQkLCDb/z+3zQGwyY0GgqJ7QTe4eHR/Z2dnaiq6urwGw2914NSc56bD9GHke4h9BgT083zpypQ23tyYM9vb1P+H1+EATxexIkpYN6BwSCATgcTgQCAYq47gGVFZUoKCicrJq022G320udLmepx+OBz+uD13e1qMQHv9+PgD8AfyCAwHU/wWBQ6/P72t0ud73D4TjocDo6Av4ARXIUcWGGSujJr2dmZtxU9j5fwOFykZ6ejvT09GtE1tffj4sXL/Y0NjagpaV1ud5guEjOIoFNSh/R7ntYcGR4GGfPncOJE8fR3NxCOJ1OXN9ITOHO4HK4SEiIv6nRmMLUbXN4PB54PB6SblNlfBWRcBh+vx8+v3+SyHw++Pw+BPyBJI/Xm+Rw2LdYLNb3LBYLrvbAORx22O2O/W63q97n87cHgoHBUDCkC4dDoXA4MlnqH40iSkapBRpFXDciPz9vd1pq2oIZFA6Xi7KyMhQVFuKRdetw6vTpC8ePHx/s6OjIcbvds1YGTNCI+9YBrdPp0dBwGSdOnMDZs+dKDUZDB/Xg4l6UX7KkUul9qyp8mEBnMMAXCO6+syVJeL1eWK1WmC1mWCyWHQ6HY4fX44XP70cwGEAwGEI4HML15DW5UCMn2yuvV7ghJxdx0WgUkWhksuIyFEIgEITP54XD4eyxWCyfGE3Gv7hcrlA0EqW+rIVOXHQ6Hbm5uUhWqRag5hwTuXl5SE1NRXFxUfaB/QfIk6dqC4wGYy9mXFUYQTRKYq43XU6nEx3t7ThZW4uTtSffGhkZ+ct8qLLEwlX559EIGjUQ820Xx+eDx+dDlZIyrYopkiRB4mbiil4lrittAsFAAD6/Hx63G1abtcCgN3ygmZj4QK0exeDgYNPg4OAWm91ufpDbQR5o4pLFybIyMjIgEokW7CBxuFysXLkK8fHxUCiVPd9///2OsfGxAzPZoYRCYUTCYcTKWfamzwsGMTAwgDN1dTh27FhTZ2dHldfro54AzDjcao5EKeJ/UAiPIIibpUQJgH5lEc5kMsEBgFuFhq/InfX09FS2tLaampub0dLakm02mYeosPsCI67srOzqlJSUeVdBd0/Xkp2DX/3yl+DxePu//PLLneox9df3RF4EQKfTZlxhOR0MDQ/hs88+w+EjR5IsFouOuvUxW8UZuoVmU0IhdsQXJ5dj1erVWLpsGQYG+lFTc2zw8OFDHwwMDP7+YW8dWVDElZubk52iSnlgBiwhMRHPPfccgsHgvi+/+nJMp9VdxD0k9IVC4ZTdg2cD6lE1mlta9lCkNbvw+/3wBwJXRJMpK18KuCbAXFhYhOSkZCQlJb79yaefKrq6ul6j8l+zA1qsnVMzMzMhVygeqEFLSEjAs888gy2bN1+QSCXTLpUUCoX5AoFgbnehBDWvxgLhUBg+nxehELWapnAzxBIJtj2+Db944YVX01LTXqFGZAEQV3Jy8m9TVCkPZMVVWno6nn32OSxZvMQz3esLBoNjgUAAZHTuVl9klARJkkHqlp99uN1u+HxUvpDCrcEXCLBly1asf+SRT4RU28T8J66srMwPk5KTHtjBKykpwdNPPYWsrKx/m877nC6nd3RUDbvdPqc7LgIEVbMdA7hcLni9HmogKNwW8fHxWL1mDTIyMz6jRmMeExdBAJmZmUhKfHCJi06nY/WaNdiwYcPbUqlUPNX3RSNRtLe3eYaGhzGXjbIsFiuVuuURkxaDB8Vuh0LswGIywWAw5NRIYP4WZwgEQqSlpUFyGx+hBwVSqRSbNz+Kzs5Oe119HTHV5GtnV1d6d1eXqaSkBGw2G3NgKQOpVLplXgwaATAZzKsGiiVcHreUx+VVcrncUi6XUzqh1b6tGR//dKHkjRwOirgo3B1WqxVOp7OGGol5TFwqlerfkhKT5r1R4myguLgE69atRX9/32qtVlc/pZvYYjU3NTdh5aqVyMrKjvk5qlJSkJOTjYsXL8ZkkqXRaYiTxWUlJyd/EBcn28Fmcyb9n7y+diaTmcjjcRVcLg88HhdcLg98Pg98Ph98vgACAR8CvgB8AR98Hh/d3d2ffPX1vi2dnZ0vLITmaIfD3uR2uyup6YTCncDj8cDhcAqokZjHxJWenvb2z8VsH9gQAIuFdWvXoaGhsc5grCamOtk2NjXt6u3p3ZuVmTUZW40hhEIhVq9ejYaGxhPNzc0bp9MQyeGwESeXr09MSPwXuVy+hs1mw+v1IhKJgMvlgs/jQSgUIiU1BZmZmYhXxoPL48Lj9sDtcZeymCwIrkj1CAQC8Pl8sJjM215zQWEhItHoTofdfnB0VP35fP/+7Xb7foq4KNwJw8NDuNxwGSaT6SNqNOYxcaWlpSH+ISEuAMjMysLKlSvQ1t62WTOumVI4QDOu+bx/oH/vWvfaORFprayswmOPPbbBYDRs1mg0NSABOoMOPo8PoUi4XiAQrBYIBKsFfMFqPp/PEvD54PF5EIslSEpKRGpqKhITEsHhcuF2uxAOhyHgT5KRQCgEh8OZlRJ/Pp+P0pISqFSqDxcCcdns9n1ul/s9ajqhcDt43B5YrVYEAoEhajTmKXHxeDyoVCmQSiQPzUDS6XSsWrkK58+fr9ZpdUQkEpmSOvv4+DjMZvOcEJdQKMS2bdvAYDCq29vbQKfTIZVKIZXKIJVIIJaIIRKJIRaJIBQJIRKKIBQKwZ4lQsK0GjgZoNMZ4oXw3TsdjiGnywmSjIKgdAsp3AJ5eXnYvm0bxsbGGxsaGgqnMj9QmGPiSkhIeD0hIQF0BuOhGsz0jAwsWbIETc3Ny6aqqOH1+uAPzJ37skqlwq6XXoLtscfAYDIhkUjAZM4/53RZXBzEYtGCKN8PBIIwm83wuD2UvQmFm6DTanG54TI6OjrgdrvrKSGAeUpcKpXqz8o5Vsvw+30IBUPgcLn3bSKm0+lYsXwF6uvrL+h1emIqeSShUAAelzfnosGJXO68vjFNRhPsdvuCKdUbHx+HwWigiIsCbuW6vm/fvmBdXT2bEtvF/O3jUqlUfIVyDomLJNHU1IS/fvIJfvjhe6jVakTuk6BlVnY2Fi1aBIlEMqUwl1gsgYByzr0Jly5fQld3d85COd+RkdGTOh0lA0nhZsgVCohEIhZFWvOYuGg0GpKTkyGPm7s+uwmtFj/++CM+/l8fE3/+84c7P/74I1RXV8NgMABzfLOwWCxUVVUhOzv76FTHi0aj8iI/h8VigdPhXDBMMKoefVmj0SBK5S4eWoSCQQT8fkR/ZnMjl8shFkuoAcI8DhUKhALExyvB481d+KuttRXNzS0fetweeNyerzUTmq8bG5v+ZcOGDe8+umkTCouKwOfz5+x8igqLUFhQsLytvQ3BwJ3lASORCCg/p9vuRMU2m82BhdFcquvq7IJhjQGJSUnUF/gAwulwYEI7AafTOdlAz+NCIpEgThYHFpuNcCQCp8OBQCAAYFKjUCwSgcvhgMNhgyAIULuueUpcCfEJf4iLi4t5X9JVeD0edHR2QjOh+d01MghH0NfX90eNZvyPnZ0d7scff5z/yLpHkJScPCfVcVKZDCWlJTh95szzarX667ut0sKUsvhNyMzMRGJS4r/YbLbfLYTzJaMk6s+efbukpOSDxx9//O728tNEJBxGMBhEMBRCOBxGJBKZnARJEgRBgEajgU6ng85ggMlggDkpLzRnz+FCRDAQQG9fL8bHxkGCBIvFBo/LBZfHBYfNAZPFBJPJBJvNAY/HQyAQgNfrhd1uRygUApPBRCQcgUgkAovNBvvKj9fnRTgUBpvNnvyOCAJMJhN0Oh2UJ9d8Ja6EK8Q1R2hvb0dDQ8Ogy+m66W8ejxd1dfWCkdHRbcPDwwefeuop5OcXzIlafVlZGXJysvfdjbh8ft+1FRqFn5CRno7EhMS3uru6f7dQznlwaPBPX+3bt4vL5ZauWbsWYrH4nrUPNZpxaCe0sNlscHs88Hq98Pt9CASCCIVCk8R1xV2AIAjQ6DTQ6QwwGAywWEywWJOTqEDAh0wqg0AgAJsz+TsOmwO+QACZTAbuPC/SiSWiJAmn04WBwUEYDQZ4vB7IZHEgCAJmswnhcBhsFhscLgcCgRAymQxCofCq5iBYLBZ4fB5YLPa1sL9EKr1J5o6MRsFgMMBgMijimsfExZfJZHO2Yjp79iy6urpy7rQFHx8bP/TFl18SGo2GfPEXv8DiJUtjHjrMzMhETk4uzp+/AK/XC8oSY3pISk6GUqlcUOEVMkqioaGhLBAMfGcwGnesX/8IUlNTwWAwpyAb5cCYWo2h4SEMDAyiv78fo6OjHxpNxr+4XK6xYCA47XGg0WkQCoRMhVLxa4lY/DSXyy3lcLiSxMQEbNiwAcuWLnuo7zEOh4Ply5YhJycHExMaGI1GcDgcOJ1OtLd3QKPRwGgyweNxX/D6fE2RSMRBI2g8JouZJBGLn05NSWVFo1HExclvu0hxu1wYGBjA6OgoKBPJeUxcV8RcMVclyD29vXA6nXd9rcvpQk3NMcJms4++4vWmrVm9BkKRKKYl54WFBUhKSvrt4ODgX+5sieGl7sSfQSQSQalUgsvlLqjxiUajaG1pfcZoNK7u6uysq1q8GBnp6ZDL5RCJxRAKBGCyWAgFg3A4HDAYDBgbG0P/QD+6u7vR3dOzxaA31IRCoZmfSyQKh8MRcjgcfwHwFwAQiUXYsnkLmZCQMKd53/kKOoOB+Ph4xMfHX1ekTOKRR9bDarXAbrPD6XIu97g9y70+L3w+PwIBPwKBIJhMBvg8PkCSiFwRE9Ab9AA5SYo8Pg9ejxfnzp9Hb2/v28EgZYc3L4mLwWRALo+DQDA3vSxdXV0YGRl5d6qvD4fDuHjxYnowGDwTiUTWPPLIesTS2K2wsBDp6ekf3om4HE5ntcfr2ULdiviZLQ6BhIR4SKXS9V6vt3ahnb92Qlv/zXffEqfPnM5PT8/Ym5CQUBkXJ4NYLAaLxUYwGIDVYsW4ZhyDg0Pb9Qb9oVAwhFgrpzy6aRP52quvoqiwCMQ8qGYNBYNwezyIRiNgsVhgMVlgslj3tdKWIAgIhUIIhUKkpWEqWpVob2/HsePH0N7egWg06hEIBHylQgE2hwO1Wg27w7GfeqrnKXGJReJEqVQ6mRSegxu+p7cXExMTf5zuiripqWktjUZrFPAFlatWr45ZzistNQ0Z6elgsVm3rS40Go1/sdlsFHHh1uZ7Upl058TERO1CPH8ySsJoNPUajaYq3HcXXj42bFhPvvrqqygqLp4XpAUARpMJJ04cx+ioejL/diUPdz2JTebsWGCz2eDxeJBKpRCJROBwuOBwOOCw2TcUokSjEYAEaLPoTBGNRGAymWCxWhCNRMFgMhAXJ4dUKkUkHEYoFIJSqcSiRWWIRqN8Op0Ovz+A9vZ2bXt7e7LL5aIe6PlKXHHyuFfFormRl9PpdRgeHobb7b6HfmUSzc3NVV9+9SUpl8tRWloak+orLo+HzMxMKOTy9RMT2ltOviaTqUar1SEQCMyJL9dCgkKugFQieR7AG9RozOQ+5GLd2rXka6++htKS0nnVN2jQ63H06FF7ff1Z6fV+bQwGA+zJAhM5m83OZrPZWRwup0AoEK5XKBTLpVIp+DweuFdscrhcDjgcDmg0GjweD8LhCEQiIeRyOZQKJeLj4xEnl0/pGbOYzdAbDAgGAyBAgMFgQCqTIRgMwGg0wmgwgsVmIS0tDWQ0ColUiiVLl2LJ0qUIhULQTkygr78fbW2tcLlctVTx1TwnLplUtksompswYX9fP8bGx/be6/vD4TDq6uqJvLw8Mjk5GXHy2DRMZ2VlITk5+YOJCe0tV90BfwCDAwMw6PVInUpc4gFFNBqBy+mCxWqB2+1GJBJB/0A/XC53LfWY3jvYbDZWrVxFvvbaayhbtGhWdyGzQlxGA6xW243PMQmEQ2GEQ2F4PB4zADOAi3dLU3A5XNBoNKbP5wuFwiEIhUIkxCf8ITk5+b0UlQqqlBRM/qtCakoqpDLZLf0C7Q47Bvr7YXfYQaPRwOPxkJebh6zsLPB5k55x4chkdaDZbAaTyQRLJgVAoLenB/sPHEBdfd17o6Oj/+z3+ambcL4Tl0QiKRDOQX6LJEn09fdDo9G8NZPjuN1unD595uDixUu2r12zJia7rrS0NCQkJNzRq6m1ve3Dvr6+t1QpKQ+NikY4HIbVaoVOq4VOp4NOr4dOp4PBYIDD4UA4HIbZbP5kZHTkNeoxxT0q7DOxdOlS92uvvYrKiso5CeFPFw67A26Pu37G91MoDFfIBQChnxqGnXA6nO/39/e/DwAsNgvx8fHbsjKzDubm5CAnJweZWZlITkoGQaPBaDRMhiIlUuQX5MPr9U7u+jhsSCVSMBhMCIVCZGdnIxgMIhKJAARxJdVAIBgIoPbUKXz73bcKq8Vqpu7ABUJcUqkUAmHsdfeikQiYTCYEfMFqt9t9IBQKgYzeW8l0T2/PE21tbWRlRUVMBFIVSiWUSuVkD8dtGo2Hh4Z/d+bMmbfy8vOQmrrwdl3hUAgGoxEmkxF0Oh08Lg9OpxN6vR5Olwt0Og0KhQIJ8QkIBAPQTmihmdBgbGwMarUaavXY21qt9k8erweghAUwW4LPFRUVba+99ip/6ZKlYLLmp9A+n88Hl8MpBfA1Yt4+E8T42Pih8bFx4syZM4iLk6Xm5OSczMjIyKbRaNBoJiAUClBUVAwWi4lIJAKFXAG5XI4JzQQIGgGRaNLqh06jIxAMwOPxQK0eBZ1Gh8vlQmNjA6xWirQWDnERk5pckjnQ5CJoBNatXQsej7dfq9XC6/XA6XTCZDJjQjvx7sTExB/dbveUJkG/z4+RkWGYzKaYEBebzUZ8fAJEQpH8dje03+/H8RMntuTl51fv2LFjwZQp+7xeDI8Mo72tHe0d7ZiYmACdzoBAIIDNZsPY+Nibdrt9P51OFyclJb2XokrZEQj4MTIy+vbExMSfqDaA2D0fxSXFX73yyq9KV65YCTaHM2/Plcfng8PhzrmdPUmSMJstY2azJefChRujkMeOHwcBApFIBDKZrESpVL5Fp9PFBI1gyqTS7RKJBHQ6A36/Dy6XCz6fv4dOp4lDoZBueHhkB7X4WkDEJRKKkJycPCe2DjQaHbl5ecjNy7u24nc4HNDpdBgZHXm3r6//3d7eXnT3dO/UarVf363M2Gy2wOGInSSePC4OYrF4m9Vq/fR2r9FoNDWHDx+25+XlShYvXjLnxo2Ythr6MOrO1KH+7Fk0NzeXGk3GjjvsenVGg/GZ1pZW6ombA+Tl5v3rL1/+5c516x4Bb54vgpgMBuh0+rwyDA34fyqmMBgMHQaDgQpXP6jElZmV+V1aWuotk50xvwgmE3FyOeLkchSXlGDL5iBG1aNoamrad/nS5X2XGxpeHdeMf3q7UF04HPZEwpGYPeEisQh8Pn85gE/v9LqmpibpsWPHyNSUVCQkJs7bm0aj0eCrr/bhm2+/KTXoDR3UYzR/kJ6e/tKLL/7inUc3bYIohg32s7bzmfxfiPrmKNwX4ioqLNyRkZ4xP1ZxLBZycnKRk52DVStX4ezZs59U11R/0tDQyLfb7TfFp+RyOV8sid2ij8vhgsVipeKubsheHD9+4q3iouIPH3vsMbDmWXm80+FAX38fampqcPDQoS0Uac0vJCYlLnvuuef2Pv7445DNoV7oTBAKhREJRxzUt0dhzomLTqcjPT3jBtkUzA/5BahSUvDcc88hPz8fX331lae6pibbZDINXZ8PSElRQaFQInZintEpryqHhof+crS6+sO8vDwUFBbOg4klBPXoKHp6etDb14empiZ7e0e70mF3UKvkeYS4uLjEJ5944sLTTz+NhITEBXPefr8PwWBATX2DFOacuIQiIU8eFzfvdgjX65EtKi8HX8AHg8kYPHjwUJrZbB4DAKlEKk9NSY2Z9FM0GoV2QguLxfLJVNUWzp8/rygrKzMlJSVBLJlbA7pgMDgp/Ov1wuVyoaenB6fPnEFDQ8NOre7u+UIKcw+hUIjNmx/V7nx+J9IWWC+g1+OF3+/vob5FCnNOXAqF4tcS6fx3+MzJycXLL7+MYCCoPnzkCN9ut3szMzO/S0mNXf/UxMQELjdchk6rO4CpmxKaa2pq6oqLi9asWrU65r1dZDQKzYTmivbjKMxmE9xuD+x2O7q7u95Qj43tiYQps8v5CA6Xg7Vr15K7XtqFnNzcBXf+LrcbXp+vifomKcw5cSkVyt9KJdIFccF5efnYtWsX3B6358TJk0ROdvYalUoVs5LbixcuoLml5Y3pqn13dHSsPX78OJmZmYVYnR8w2fnf0tyMU6dP4fyFC2+Pqcf+REnULJCHl8nAsqVLyV/98peT+oML0DTyiq0PlSulcB+IS6lMmisrk9lASWkpXn75ZYRCIbKwqAjxytjk5owGAy5euoTx8fE9031vIBDAyZO1O4uKivY9+eRTs2b4F41E4LriAaZWj6Kurg7HT5z4aKB/4DeU7cLCAY1GQ1lZ2Ylf/vJXqKycn6oY0yAuzIaIcDQanTwW1UdFERempOI9dx5cmCXbgsWLl4BBZ0AsEYMTIxfYpuYmtLe3f3iveSH1mPrrI0eO7MvLzUN5efmMJKn8fj9GR0bQ3tF+TZy4r69f3dHRkU4pVy885Obl/usvd728YeWKFTFpMCajUYAACIIWU9kvn8+LmXqPcblcbNywkYyPj8f58+f29PcPvEEtwijiuvMBGAwoFMoF0TPy8/NevGRJzI7vcrnQ0NCI0dHR382gyQWXLl8mjlZXk4lJSUhISMD0Et8eGI1GjI2Noa+/D01NTWhsbFxuMBgvRqOUG+tCRVpa2vO/eOGFd9avXx+Thn8yGoXD6QSTyYypikvAP2nIOJMdEpfHRfmi8tEXX/wFSkpKUVVZ+fr3P/zw+sVLFym9QIq4bg+xWJwoj4uLuRaa1WIBAEgkknmncH0r9Pb2oKurUztTWSO3y42j1UffyEhP3719+/ZbTlTBYBAWiwUWsxl2hx0OhxN2mw0GoxHj42MYGBg8ODQ89ITT6aTCKFjoHmXKkh07dux7/LHY9WoNDPTD5/MjMysLsW61iETC01psJiUlPZ2YmPiuSCQqlUolSEhIRGVlBYqLiiEWi7F161akpaUhtzrHdOLEyT0DgwNvXK+EQYEirqtmf/8kk8kQW12xKM6dO4f+gQEsrqpC2aJFEIvF83ZQo5EImpubMTAwuGE2jjc8PLznq6/3vcRgMtasW7sOHA4HFosFTpcTLpcLg4ND6O/rg06vh8ViqbNarZ+bLeY9brcb0Qi1s3pQIJFIeI8/9nj7Mzt2IDEpKSafYTQacfjIEWRnZaOkpARzIJ2Bqesa8rBly5b9mzZuhFQmhVyugEQiAZPJvPYaGp2O4pISJKtUKC4uef3EiROvX7x0cZdGo/n8dso5FB5C4kpIiH9LKottfkuvN+DU6VM4cvQocfZsfePatesqly5ZgoKCAkgkkpjYkcwEBoMBnZ1dMJvNvbP1cDc3Na/1uD3/1tnZ9TaPx4Ver4fNZofdbr8wPDL8jMVs0VG384MLHp+HDRvWe174xQvIyMiIWQ/fqVO1uHDhojY9PT0p1pENBpMJOoM+LUfp9PQ0LFmyBIzryAq3carYumULiouKcO581d4LFy7ubW9vf2dsfOx9yiOLIi7ExycgThZbeZnmpia0t3d84HK6cPlyQ1V3Tw/q6+u6ly1bVrBo0SIUFhYhIT4e9HlSWdXR2YGBwYFPZjOPFI1G0dPT8/ve3t7fXy21p/BwgMViYeWKleSuXS+jIL8gJgs1MhpFR0c7Dh48BKvVulfAF7wd6+vicjjg8Xig0WlTigy4PW4MDg7CZDYjcSpangSBlNRU7FSpsHLFSjS3NL93/vz5906fPrNFo9HUUHfWw0pcBJCQkIBYhgqDwSDaO9qhVqt/f33e5+LFS4Utra3Iysr6c1Vl5VtlpWUoKChARmYmRCLh5Mnh/nhTdXZ2Ykw99kasesOwQCo3KYLFrMipVVZWDPzqV79EeYwcjEOhIFpbW/H3v3+G5pZmVlZm5o8cLmdOFG0EAiE4bA6mkgsmoyRaW9uqBwcHtiROQ4SaoNGQkpqKlNRUZGRkQKPRVGs0GoK6ux5S4uJxeVAqFTGtPDKbTBgfH7/ljR3wB9Dd1f27np6e39Uoj5UUFxW3l5aWoiA/H1lZWUhJTZ1zbyudXo+BgQE4nA+Hlh+dTgdfwIdUKn1eKpXulEmlO6RSKSRiCSLRCMxmM/QGQ51Bb/iT2Ww+5PNTfTbTIf/CosK//vKXv8xeunRZTAqgfF4vLly8gL///TOcP3+e8Hg84HA4Bay5MJ4kSRAEMa3G6b7+vq1dXV1kZUXlPVm2yGRxSEtLh1DYDKoN5CElLqVS+ZI8Tg4ihpJEY+NjMBiMPXdbiRn0hg6D3kDU19dDpVK9XlhYuHv1qlVYv2EDkmKUyMYt3YyHoNFMVD9okzODwYBAKOBJJZMEJZVKt0ilEsikMsTJ46BQKCZ/5JP/ymQyRCIR6A16aMY1a8Y142s0Gg00mgkMDw9TVY5TQFZW1m93vfTSq2snTVNn/fgupxOnz5zG3/72t8Gm5uacYGCy94nJZCUyGcyYX5/FYoFep4PfP/Wck1gkXk2n0xEMBu+JuBISEvD0U08BIMmTJ2u3TGgnau7VPZ3CAiWuxMSEd+NiaJ9AkiT6+vowPj7+JqYRWhweHt4zPDy8p629bZvFaj343HPPzRl5TUxMwGQ2fbyQb4pJ1+b4p+Pj4/9JKpUul0olkEqliIuTQ6GQT9qZKxRQKOSQSmW40+o8IyMTGRmZAIBIJAKT0Yienp7tFy9dJGtPnfpwcGDwd1Sz6M1IViWvf/755z/c/OhmiGPgKu5wOHD82DF88umn+zs6O565XouSTqezaHRazK+xta0VPb09+yORqetgJicn/1tOTs49969d7d+MT4hHenpG9Xfffbent7f3jXCYqjh8iIgrMTuWxGWz2dDV2QWDwVB7L+8fHxs/9NVXX+1gMOj7n332WcTHJyDWduBanRZWq/XQbB9bIBQgIz3jrypV8qs0Gg3Dw8MfjIyM/n46q1XcpQAgMTHx+ezsrH1ZWdnIzcmBKkUFhUIxWXYsFt+1kgtTCCsmJCYiITERFRUVKCosemvv55/vbGpqSp6t63gQoFAosp5+6qmTTz7xBBTK2bfbcbtcOHbsGP7zv/5zT3dX9xs/LyKi0Wgx1z0MBYNobm7G0NDwM9NaGGonfj84OFRXvqh8Rs4JqalpePHFFyGVSF7/j//6z2BPd89vqKb8h4a4khAnl8fs5IaHhzCqVmtnshoaGxs78OVXX73K5/M/efKJJyGNYSGJ2+WC0WCE1+OdtWMSNAJZmVm/fWTdug+Xr1iOrMws0Gg0dHV3vX3s2PG3z50/V2o0GjvuNdwhlUrFOTk5J4uKCiuLi4pRXFyMjMzMmOcGxRIJtj72GHh8XtL//t/h7sbGpkJq1QuIxWLm1q1bB5977jmoUlJm/fiRSATnzp/D3/7+t4O3Iq2rubVYE5fNZsPY2Pi080xarbb+u+++20uS0V0bN25EamraPbuuCwQCbNmyBV6f981PPv10bGhw6E8UeT3gxMXmsJGQEA9RjHysAEA9qoZer39/pscZGR759Muvvloul8tf37hxEzgcToz6zfQwW8yzVklH0AgUFRbtfvHFX7y+detjUF63+s7IzER+fj6Kigrbz5yp83R0diTbbDbHrXJGBDH5kEplsqcFfMFqNpudzWazsmUyWUFhYRGWLF6MoqIiSOZYb5LJZGLN6jWwWCwFZovlt4MDg3/BQ96rtX79+uBLL76IrKzsWd/haDQadHV34auv9qGzs/OJ203SBAEQMa7KDQSDCIWC99TT2N7e/rLZbN4zPDRc9/LLu1BYVIx79xIU4fHHt4HJYH7w3f79r3Z0dBR6PB6KGR5U4lIoFJsVCkVMe6cMRiNsdtu+2ThWd1f3G/v37389NSUVpWVlMTlfrU4Ls9l8ErOYnP/lyy+/vm3btpvCIgRBICcnFymqFCyuWsyvP1tvb2pqQldXd6nJbOq42hcjEApQUV7hrqqq5CcnJUMkFoHL4YLD4UChVCA5KRncGCT+pwoWm4316zegu7v7Q4Pe8JeHtdKLzWZj1cpV5K9++UsUFhbO2o6HJKMYGxvDpUuXcPHCRbS0tr4zNj72/p2En4lJ5ooppBIJ4uPjweFwcC9hYq1WW//td98RSclJZEpq2oyMYOVyOXbs2IHU1NSCg4cOkqdPn9mi1WprqN3XA0hcyUlJH8jj5DE9uWg0gmgk6p2tBt4LFy4SlZX1ZEZGBoQxEAXWarUwmy17MEtW7E89+eSHjz766B1j+RwuF5VVVSgqKkJ/fz8uN1xub2trR09vzwfjY+O/X7pkKfl//9//iMqKypjrSc5gEYT1j6xHc0vL0eam5q0P3UPIoGPJksW2V195BYvKy2etV8vr9aKluRmHjxxGbe2p7RMTE4emMhkTBA00IrbFGQKhEMXFxUhKSnp9eHh4z71e34kTJ+syMjLWrFu7bkaCwxwuF6tWr0ZqWipyc/Oqjx49Mtje0ZHjcVO7rweKuFSqlFJlvDKmJ8fl8sDmsLMAzIrRnNPphFqtht1un33iIknodDpYrJavMePGTDpWrVql3bp165ST8xwuF6VlZSguLsaEVouO9va3u3u6366oqEBFecW8Ja2rWLRoERaVlW3p7urGw1aokZysen7Hjh2SJUuX3qC7hxkahJ46VYt9+74ebGltyZmOzBGdTsdcVBWmpaUhISH+D/dKXADQ1Ny0lvhP4rzH41m+fv0GKBSKGZ3T1aKNvLy87MOHD5Onz5zeodFoDlCanw/Kjis5GQq5ArG0PLDZbPD7/L2zdUwanYa4OHlMdltujwcGgwGzER/PSM/47dYtW5CdnXMP10hHSkoKUlJSsGnTJhA02oIwGRRLJChfVI66urrfDg4OPTS5LoJGYOnSpfuqqqpmLfeq0Whw8OBBfP311+8MDg6+P92QF4vFXDDGlGSURGNj4wqH0/EHg8Hw3rZt25Ceng4ajT4jf69Vq1YhPT0dBQX5+48erfa0trUKnA4nxRjzBLR77YWIi5NBIBAgllJPkUgEBI2YtU5IAV+AlBRVTJTlx8fHoNfrMdNmRg6Xg/Xr139YVVU148mDyWItKGfciopyFBQUfEij0R6aBzAlJeXpVStXIkU1OxWEo6Mj+OKLL/Dpp59u6e/vf/9e8jRsFnvWdn53gsfjhc/vb5+NNpT+vv73P/n004I9u/egubkZgVnYtatUKryw8wX87q23+C/sfIHMzsn+LYPJAIUFuuMSi8WJEnFsfbG4XC4e3bQJJEl6zp07V93f37/V7XbPjBQ4nHwOhxOTUt/u7m6MjI6+OdPjFBUWnVj/yDokTEOL7cGZxFNRUlKKCxcupprN5rEH/XoFAgE2P7p5/5KlS2cllDsyMozPP/8CBw4cqNLr9U0zWTyxWeyYX38oFEQ4FJ41s0ejwdj73f79hE6vJ5977lmsXLFyxu0vLDYbi5csQVp6OoqKCj+srq7+8HJDQ5LFYtFRqi8LjLiU8crfxtrKhMFkoryiAhmZmVi2dOmW8xfOk21tbabe3r4qi9U6Rt7DSpLBZCgY9NlfMbndbnR0dGJiYuLjmfotPfropg0lpWUx76OZj6AzGFhcVYlTp3JOms3mnAf5WjlcDtasWU0++eQTUKlUM99pjYzg888/x/4DB0oNekPHzBZ4XLDY7LkZiFm+zb1eL2pP1RJ6g373+Pj461u3bEVqWhpmuotXKpV4+qmnUZBfgJpjNdoTJ07u6+vve4GySFlAxJWUmPh2LBUzfjaZY90jj6Cqqgq9vb2Kyw0N6tbWFgwODb1rMpo+9ng85mAoOKUQnUwq2yUUCWPgGDuAvr5ez0xuYoIgsGTJEs+aNWsmPcYeUuQXFKK4uCi7ta0VPq/vwdxpCQVYvWoV+dqrr6KkuGTGi5SRkWF88cUXOHDg+6qZktaVyATmQmSXRtBAEARz9o1co+js6HzDbDLvGVOPNT733HMoLi6eMRnTGQwUFRcjJSUFJcUlO49WV+88d+7cFq1OW0MVbywA4kpOToZCoZzjh12IqsWLUbZoEdSjo+jp6Xl3Qqt91+l0wufzwW63o7u7e8/g4OAbt6tKUyqVr0sl0lmvJmxra8Xg4NCMyriTkpPWP/roJuTm5j3UN6RIJEJFRQXq6ur/pa+v748P2vUlJiYu27Bh/YWdO3eitKR0RjJa0WgEfX19+OqrfTh46GDpbJAWMNlTxpqDHBeNRgONoPFiZ0Crb/rmu28Jh9NJ/uM//jeUFJfMipeZSCzGpk2bkJObi+Li4urjx4972tpapQ6HMwQK85O4GAwGVCoV4uJk9+WEmUwmsnNykJ2Tc4OMjc1qRUNjw+u1J2tfv3Dx4qsajebTUCj0M+JSQCKd3d2M0+lEX28fjEZj/b0XUTDxyNp1J5cvXx4zVY+FhIryChQVFb47ODj4x+kIsC4ELFu27MI//MM/IDcnFyAI2Gw2BPx+SCQScLjcKR/H43ajuaUZ33zzDU6dOq2wWq3m2TSuZMwFcdFpoNFoMe1+93l9OHXqFJGVlUUmzaZEHUEgPT0dL730EkqKi/k1x2qCp06ffm94ePifr6rsU5hHVYVxcXEliYlJ4HC4mE+eUHKFAlu3bMV//3/+H/zmN29+8vjjj5GZmZmvc7nca3F0hUKB2d5xabVaaHU6zERnLzc39983btyI1JRU6o4EkJScjPLyciiVymV4wCSdysrKkJ6WDhCTeanm5iaYTEZEpygTFggE0NvTg6/2fYUPP/xL++EjR4jZJK2rDdH0OajspNPoMSeuq4vL2tra/Z2dncAsG5uyrxRv/ON/+0f89r//93cef+wxMiExoZKgUT6V914Qw4JQKASbzb5tGJ0x/Qa91N0JCfGYp857SElJwXPPPY+qyiq0trbuHhwa2q3RaGAwGLS5ObmzXsKv0+lgsZgP4p610oTY/Oijb5ZXVMS0ShMAQqEQbDYbHHY7AoEAomT0ln5YBI1AvDIecrk85ud0uxDS8uXLcfbsuQsGo4F4UPIHRYVF54sKC8FgMtHZ2YnLlxugVCqRlJR8S78tv88Ht9sNfyAAt8sFvUGPwcFBNDQ04nLD5QKj0dg725VtBEFMFjLMQXEQnU4HnU6bk4Rub1/vM5cuXyaLS0oQi/x8nFyObdu2o6CgEMXFJxtPnjyh7ujsTHc5KbNKTDkEK0JxUfFoSUlxmkQixblzZ02XLl9W3kqejDH95tj05YkJ87tUm0ajISs7G1nZ2QiHQjCZTNBoNEmJSUmzrq2o1Wlhtty7zFN+Xv755cuWQx5DlX2QJAYHB3Hx0iUMDPTDbDbD5/Pjdj0+NBqBrKwsbHt8G4qLi2OqR3k75GTnYOXKFejo6Fit1WrrF/pDmZAQX7l165blObm5aG5qQu2pWiQmJKKqquqW4atQMIi6ujpcvHQJHo8bdrsd4+OafSOjIy/E0oCTBDlrItFTUYih0ehzIpTp9/lx6tSpvWVlpbvWr98Qkz41gkZDdk4OklUqlJWVph07dow8febMOyMjo++HKM853CpFolQq17PZ7GyRULR56dIlOzZv3oySklLweDzEx8crmEwm6XK764KB4JjP52u32+377Q77EGO6N1paejpiLfU022X1iUlJSIyFkSRJQq/XwzYD/63ioqLlGRkZMR0Dg9GAb779Fvu+3pdtMpmGpjLpcXlcOBwO8o033ph1pfKpfm9rVq/BpUuX6gxGA3G90eFCg1wuT33iiScb161dh/7+PlQfrUZiUhLWr1+PhISEW95X7e3t+Nvf/476+npiTvN8JBAORxCNRGK+22bQGaDTaeK5urTunu6Xf/zxx10pKSkoLCxErJSEuVwuli9fgezsbJSVlr137Pjx9y5dulRlMBqaKLflyf7F7Oys70pLS3cUFhYhEgmDJEmsWrkKObm51163cuVKZGZkwO/3r/EH/PC4PTCZzR8cO3ZMPS3iipPF5aekqMDnC0AB8Pq8MJvM8Hi991xookpJiamnGQCo1WNobm5Wm4ymIUwjqX3ixMnSioqK9rTUtDlJ1v8cmVlZWLlyJdra2jdrNJqahXiPSKQS3uOPP6Z+4ontUKvVqK6pRnJyMh5/7DEk36p/iyTR29uLzz//HE3NTcT9KE7x+/0IhoLg0LkPzI4LAMKhME6fPsNPS0vzxMniEJ+QEGPxaCWeePJJFBUV4cTJk421tSfVHR2d6Q+rA4JAIEBeft6JpUuWbFi2bBkWlS1CJBLBiZMn0d/fh8KCQvxcueTnPY5+nw9a7UQaY3qimKl/ne9hwrmEyWiCxWq9Z5kniUSSpVQoYt4zw2GzwWIx0+5hp9bR3d0DyzpLzB/y2+VAVq9ahYsXL1br9XpioRlNcrlcrH9kvWfjxo3o6elBbW0tMjIy8fTTTyMtPf2m10fCYXR1d+Gzz/bi+MkTivuVH/F43PD5/DEvwGIwGKDT6fy5vDa73e49dOjwm+lpaR9t27YdvBgbptJoNOTk5kKlUmFRWVnaseNXw4cjd7SWwQNm2ZOTk717xYqVr69btw6LFi2CWCyG2WTCDz/+iC+++OKd5OTk9xgMBiLhMPr7+0Gj0ZCeng72z6qsJyYmMDY2Nr0cV2pq6vL4+HhQ+CkEZ7NZ1ff6fmW88rdzYd6oUqkQH58AgkZMj2TJSQ1Go9F4X4gLANLTM7By5Uq0trY9PTY2dmAh3R85Odmf5eRk4+LFi2hsbGovLSkp3bnzeWRmZt30WpfLhYaGBuzbtw/NLc1r/D6/mSCIOcs33XAuThe8Hg+kMb43J0OFc1/8MzQ89PH+Awf+NSU1VbJ0ydI5KUDi8nhYvmIFsnNyUFpa+l51dc17ly5dyjaZpxa6X4ggCALJquTNK5Yvr960aROWLV0G2ZXCGLvNhsOHD2Pv53vfYjFZqc8/9xyKiorQ3tGOo0ePoqSkBKlpN1dZ9/b2Qj029gFjOirWKSmpU7bZuPckqg80Gm3uJGdmuOOy2ez3bHSpkMvflEhiH+KXSqVISVFBKBDC6ZyewrXVaqtzupxr7tcY0+h0rFq5ChcvXtyv0+mIn/fmzWdEIlF7be2pCzab7eu1a9d8uGvXLmRn35wvHB4eQm1tLX788eBJvV7/fkV5eZ1GM7G/rb3tmRlNagQQJ4tLTElRfRQXF7eDy+WCRqMhFArB6/UGXS53rcvluvrT5PP7EI1E4fF64Q/458CH7P4QF0igoaFR+v3335MJCQnIyMjEXHrPPfnEk8jPz0d1dc3giRPH9/f19T/j8z1YKjFcLhdlZaXdjz32WMHVVh/iaosFSeL8+fP44ssv9wQDAfVLL770YW5eLs6eO4uzZ89CLBajqKgIXC7vZ04AUQwMDkI7of3nKROXUChEcnLSjJxGp1LscO7cOQyPjKCstBSFhYUzMoeLNYwmE+x2+4F7T9orIBFL5sA6g4bMjEwkJCT8wel0vn+nLb1UKqmUyWQvCQSCNXQ6Q5ySospm3+dFRFpaGpYtW4bGpqZt42PjhxbKw9vV3fWbhPiEyiee2N6466WXkHUrmxqSxJkzZ7B79+41Wp2uvqqq6kxqahq0Oh1vJol8FouFRYvKGtete6SyuLgI8fHx4PP5oNPoCAaDcLldLIfdscVut2+xO+yw2+1wOJxwu90oKSkGn8efk6pCOv3+OAH4/X4cP3GiNDMzs33n8zsxF5GP6xdjBQWFSE5KRklJ8Y4zZ+rIrq6udpPJ+HE4HDG5XK5ah9PhWKhtIFKpVLxmzRr7Cy/sRFXV4ptaPUKhENra20DQCOZLL+3av2njRrS2tuLQ4cPIy8vD0089jfRbFKw5HA6Mj4/D6XKGpkxcqmTVnxPiE2Iq/up0OlFzrAY//niQKC0tnXjyySeSNmzYiMm+sXnW0EeSMJlMsDvsF+/1EPHxyhmrV08VuXm5yMvLe089pn4/4A9cW5GLRCKkpab9NSMj/VWVKgVJSUmIVyohEovAZDDBYDKQlpZ+nz2raFAqlZCIJTvGsXCIS6VSbX76qaerX9i585YPIgCEwmFoNBrY7PZ6Go0Gq8X6+YkTx2vGxzXvz+j7zs3d/dqrr1Vu3LQJ3CkqcoRDoUk/OYIAn8+fAx1SKTZu2AilUklGIhGYzWa0tbWt0ep09XMRPjPoDR0//PDjvoz0jJ2PPPLInJutisRibNy4CeWLytHX11eq1Wp3h8IhWCxW9Pf3obev7yO1Wv0bt9uNhRJOTExMXLZ165YLv3jhF8jPz791GHZSlxUlJSWvLl26DHQaDWaLBWVlZdi+7XGkZ6TfZFvjdrnQ19cLg0EPkiSnnuNKS0t9K9b5rXHNOHQ6PVwuF86dO5es02lfHx0d3b169WpkZmYhTiYDg8lENBJBOBJBKBRCMBCAz++Dx+1BOBJGKBSGz+dFwB8ACRJCgRAqlQrK+PhZ7d3w+XywWa24V2FdLpeLxMREiOZoR5menoHnnnsWMqmU7O3ra49Go57k5KTlOTk5KCwsRH5ePhITE+elU7LVYkFrayt0Ou278/mh5fG4SExK+nUgEBgUCoTrn3rqqbeffuqpW1YPBgIBDAwMoL29DS6XCxXlFRODg4NbZuIGfD1KSopfLy0rnTJpXW1BEM+hwLNUKsWzzz6LJ596EuFwBHqdDjXHauoOHz68r79/4IW5CJ91dXW+cOD773eqUlQoLCy6L/dNnFyOFddVFkcjEWh1WnR2dL7Z1d315vDwMMY1mpMGveFPFoulxu/335fc593C0hnp6a88/fTTnzz7zLO3LD7CddXUGzZsvPbfFrMZS5cuQbwy/pa59GgkAr/fDzabgyVLlkKn0/8rYxqFGTFP0KtH1dDr9R/iWux/ZM/f//7ZnouXLh0tzC/YooxXgsViIRKJIBQKIxgMIOAPwOP1wOl0IhQKIxQKwu321Pl8vnYSZEgiFu/Yvm172rZt264lBmdlMrVaYXfY7/kGSlYl/zYpBg3RdyLKDRs2orSkFAODA6WRSAQZ6RlISEi4L6XumIbaR11dHWqOHXvPbLaMzb8+QQaSk5Ofz8/L25eTk4O4ODnsdhsyMzKxbt06yG9hJW+32VBfX4+6ujqEIxFkZWWCTqcnjYwMS2ZTrHghtK3QGYxrz0B2Tg4UCgVyc3J3Hj9+fOf5C+dfHddoPg2HYldNGg5HUFdfx8/OzvIo5IqY5/CnGkpUqVKgUqVgw8aN0Ot0GBkZ2TA+Pr5Bp9fBYrbA7rDD6XTB43Ff8Pn8HYFAYDAYCqpDoZAuHAqbwpGwORKOOCKRSCgSiSASjSASjiAajc466TGYDBQWFn723LPP7nrsscdv3ZuIO5fJ5+fng3UbDziCRoNEKkVcXBxkcTIMDw+9w5haRQwXKSkpMbfbGFWroTfo3/+511VzU/PW5qbmez3s78rLy0lilrXXzBYzHA5n8F5XJ8VFRR/GuvH4VlAolfPi4Zwqenq68f0PP2BwYPCfMc+SzxkZ6X8uKyt7q6qyCuXl5UhLS4PdYYfP64PySk7p5v44L2pra1FdUwOpVIKKslIYjSZcvHTpHZ1OP2sKIUKhEDweFwsNYokEmx59FAUFBaiorPykvr7+k6ampu06nfZQOEZN6Hab3Xvo8OF3MjOz3tu6deu8ErpmMplISU1FSmrqtbCZx+2G1WqFzWaD0+Vc7vV4l/v8PgT8AQSDQQRDIYTDIYTD4Ss/EUQik/+GwyGEQiGEgiEEg0EEggH4/QH4/X74fL52r8/b5PV4m1wu10mn09kbCARuS3RMJhNxcXGVFRXljU8/9TRWrlp1T+7y7LuM99WCor6+XtTV1aOnt3fPlIgrLTX1X1NUKTG1gXc4HFCrR+GwO8yznQBWKJQQi0Szer4WiwUOh+Oe8i3xSmXJ0qVLZ82u/UFGY2MjOjo6quZLDxedTkd6etqvV65Y+dGqVatQWVWFeKXyWsVUwtWH8Da5YK1Wi+MnTmB0dOQjgaD4zTNnzqCpqbnAaJo93UEanQaBQAgOe+E6DahSUvD8889jyZLFOH/u/MHzF86juaVlu06rOxSLe2FgYOD9H374/r309DQsWlQ+b41cCYKAQCiEQChEalraPaTmyWspFn8gAL/PB5/PB6/PC4/HU+p2e0pdLuerdrsDFosFFrMZZosFXq/HE4lEHARBY/L5fIVMKoVEKoVKlYwlS5YgJyd39lIxJIloNIpJoWICmvFxnL9wHsePn8Cly5cUVovVPCUmysvLeyclNSXmK+vBwaGe2VYKkEqkqVKpdNZ7NSwWK5xOZ829lACvXr26ffny5eDyeKCAu3hORRElox7Mk2qpqqoq+5YtW7B27VokJiTcTFB3mfBYbDZUKhUuXbq0Z9/XX/8mFkl3HpcHPp93XwSSZ7t5NzMzC+lp6Vi+YjkuXLhw8OLFS2hpadk1MTHx+Wy2RpBREhcuXCSysrLJ+PgEJMVCIm6eEB+LxQKLxbprxTYZjcLpcsJoNMLldPEjkTCfIGgQiURQKBQQiUSznuqYLHkfAIvFglQiRUdnB6qrq3HyZO0OjUZz4Kq+KmMqYa20tDQkxFAxg4xG0draiqGhoe2zfeyMjPSvkhJn/9ytViucLmf1dN+XlZ31L48+unlOe0cWMhSTLQM7jAbj+7ivVitJqx/bsrXumWefQUFB4T2vLlNUKuTkZIPP5y8HiY5YnCufzy+ZTlHGvCcwOh1ZWdnIyMic7Om7dHHv5UuX9zY2N705Pjb+cXCWBGzdbjeqq6t3ZWdn733yiSdirqox70mORoNYLIF4Dlp2QJJwu93o7+/HwOAAxCIxDAYDfvjxx/b29vaynxfq3JW4+Dw+EhMTY9q/ZbVa0d/fD4vFMoRZJ67M5YlJibM+yDabFS6Xa2y6sv1bt2x5d8nixTENuz5IkMlkEIlEmwHcN+LKyMh45dlnn/lkx44dSE1Nm9GxxsbG0NDQAIPBsCdW5xsIBIZMJhM8bjf4ggdHV5RGoyE9IwNp6elYtWo1Dh069NEXX36BocGhjzFrefbRz3/88YfdmZkZ/MWLl0xavFCIOYZHhnHp0iUYDEaw2Wy0trTi1JnT2zXjmkO3yrHR7m7HkPBrpVIZ0y9wZGQEGo1GezubDcyoV0QMgWB2Sdfn98NhdyAQCEwr77B0yVLy0U2PLqjiiPsNNufedBYxi30pzz333Ce/+MWLMyYtj9uNo9XVOFNXt8HjiV300+6we6ura9pPnToFp8PxQIa7VCoVtmzZjPy8/I9mtcVzUlVDcOjQIUxoNNQDOAcwm004ebIWXV1doNEItLS04MeDP/LHx8YP3a4whHb3MviUj+KV8TFWL1dDrze8HxtZGeasy8rY7XY4Xa5pNQVmZmb+9sknn0B+QQF1p04DwUAQoVBIez8+WygU4rHHtl546qknMdMeRpIk0dDYgCNHjtRpJ7S1MZc0amwo271nT/XX33yDkeFhRBaYQPGUFhUJicjNzYFYJJ7Vfg6fz4djx45vqT11Cm4XZQSJmPdpWiEWibBly1aEw2Fcvnw522533NFygzaFMAkSExNjmnxXj43BaDJ+HJvJR3BLd9mZlc/a4Ha7pqMCz3v8scc/XLFiJdgLQINxPsHpdMLj8V68H59dXr7I/cT2J2ZFOUStHsUPP/yIrq6utXPRPBqNRNHc3Lx19+7daz766CNU11TDZDQCD5CiK5vDwapVq1BcXDQ62xEhjUZT8+OPP/a0trbifljL4CFLB2zcuBFcDgctLa2w2qx3TRnR7tbEmJ2VjTh5HGKpijA2pobb7Y5Jc6hQKAJnlsnCZrfB5XK1T/UcVq5c6Xls61ZQyvqY07aDGT5M8vXr1/MLZmGH7PV4UFNTg7Pnzq6ZazFVrVZb/8133xJ//vOH7/31k7+ipaUF/gdI0LWsbBG2b9+elJ6e/vpsq8K1tLQUHjx4EGNjaupBRGx79zgcDk6fOY2mpibWVExjGXe2Zcg5kZWdBSYzdjJAff19UKvVMXEGlYglqSKh8K4lyvcSKnS53Sen8tqC/IK/PrNjB/Ly8+fdDeP3+2GxWGA2m2Cz2uDxehAXF4fcnFxIZbL73stCRqPQG/Sw2221c/3ZRUWFA+WLymeluKG5pRk1NTXtOq2u/n6MYyQcQW9v7z9PTEz8c3d3N/n4449j9eo1ty7nx8JTId+yeQt6enp263S6PbO5MAgEAjhx8mRVTm5O43PPxd1Tcy0FTKnJemxMjZ6eHjgcjin1ODBunwAFSkqKN9zKO2j2ivNIdHV1Y3RUvSsWx4+PV/6TVCaNSbO02+2uv/vnx5c89dRTry5dunRWdRLvFaFgEEaTCZrxcUxoJzAxMfmj0+lgNJn2ul3u+vj4+H+qrKzIrqqsRElpGWJdmHO3cdbr9PB6fXOe/C8sLJTcSW9tqtDrdDhy5Cg6O7vK7re+nMvlwsmTtcTw8MjrfX39ux9//DEUFhbNK6WIey3bptHoVxpWZxd6vb7pxx8PnszOyt6wes2a+2PD8oAjGomgqakJ/f39b071PbclLrFYwsvPz4cyhhVwVosFfX19sFgsvbEhrvg3ZVJZLFxU4XG7L97Nv2zlyhXtGzasn1PLBNxG9bu9ox1NTU0YGhrC0NCQemRk9AWz2Xzx502cw8PDe5qam1Bbe+rPK1eseGvFihUoLy+HQqGY89X52NgYdHp9cK4nfB6Ph7S0dMhmqNwfCYdRV1+Hs2fPvhnLKsLpLhaHh4f3fLb3sz2DgwPkU089hdWrVt9SU3GhwKDXQ60ehdfjjcnx29vbNx48dIhMSU1BVlY2xTSzfD92dHSgpuYYxjWaj2dMXNnZ2UczMzNj2m/U39+PkZHh9lglP+Pj4xGzHZfHo7vTa+JkcanLli1DenrGfb85/IEADh8+gs8++4yYygQaDATR3d39u4GBgd+dv3D+33fs2PHmE088OedqAkPDQ9BqtXOuUSiRStZLpZIZr65H1aOorT0FtVr98XybMDxuD07W1hLjGs2/jI2Nvbt923akZ2QsyL4lgVBwk+ngbAs9156qLVAo5D0vvfjSNd1ACjPvh+3u6sKnn36K8xfOE8HA1BvJabfPzeStSUuNbftMb18fxsbH34jV8ZXKeMz2jisYDMDlcuFug5yfn9eYO5v6XZiJvh4NHrcL0131h0IhdHV1/6a+vh56vW5ud4nhEAYHh6DT6/405xMhX7CaN8OJMBqN4tzZc2hpadkSnqel6GSURF9v3x8/+eTT7P/8z/9EV1cnwguwbF6hUEAeFwdaDE0pjQZj77fffbf862++xsTEBEU6s0Bavb09+PRvn+LYieN8p2N6zuy024VKsrJzYhomdLtcGBochNlsvhirxlWFQjHrygEupwtut+eu1gDZWdmKW/kw3Q9w2Bzw+IJ73j0nJydDfp1f0NyEfwwYGRmOSbUp7u4enMZgzizSYLPZ0N7eDp1OVzPf5xCTyTS0/8AB4j/+4z/Q3d0FMrqwnHd5PD6U8fEQxFiiSafVXfz6m2+2HDhwAEaDgSKfGUA9psYXX36J6uoahd1mn3aMl3ZrZWbVH9LT0sCKYc/R0PAQhkdGgqFgKCbHj5PJVsuk0lkPfUz2FXnuqu+YkJiAuDlyN8YUktdxcTIIhcJpl0XJ4mTy4qJixMcnYG7tTHowOjq67360HXk8nov3ahB6FRMTE9Dp9QumB8jlcuHo0Wriyy++xNDw0IIjr+SkJMjl8tdj/TmacU3Nvq/3vXHo8GFYLRaKgab/bKG1pQV/+9vfcbS6eo3Var0nN5Bbzuq5OTnvqVJUMXYe7cLI6MgLsTp+WlraXxNiYHzpdrtxt5JbOo0OgUBwV58ZzLHKQFxc3KvTra5bsniJqaKiYk4bpyPhMLq6u6EeG3vtfoyV0WjcM6HVYibirR6PB36/r2chTSperxdHq6uzz587Py05s3lBXMnJUCgUv56LzxoeGt7zxRdffHD8+HE4HkBJLcSwqvlsfT3+x//8H/jmm28UM2kPod0iTIK8vHwkJyXHbnXndKKnpwd6vf5A7DTmkrJj0Tjt8/sQDAbUd1bcIWPiNDoTpKalIiEh/g/TeU9KSsrTj27ahOzsua2k0uv16O/vg+Musi+xgtvtRnNzE0ZHR+75GGw2C0wmM3GhTS4mk2nIZDYvOLUIlUoFhUJROmcRgd6e3/9972f7z5w5Dc99CGdjAea02trasPfzvag9dYqwWq3mmcyPtFtMVr8uKMiH6Lpmu5GRYeh0s5ecHxwcxMDAoH06VSTTBYNOB51Gj0nTbiAYHMRd5Hbcbg8CAf+8uW8y0jOgUqkUU62U4/F4ePTRTftXrlwJzhxbZHR1d2FoePiT+0n8Fy5cLK2uviqThHvyxGKz2RIsUBFbYoE1Jivj4xGvjJ871wUSaGtre+Zvf/t7z/kL5x8oNZJYYHBwEF9+9SUaGhqJcGjmBUA3EdeiRYs+ys3J/ZlkjRd+v2/WtAlbJr23nojlQDFZzJjcxJNj4e+ZWpOyZ97cOLK4OOTk5EAqlaZOTUqndGDL5i1QzXGBSSQcRldXN8bGxt64n+NlMBg6vvtu/1tff/MNxsfHQZLRad/n82nHjWm1e9jvS1HMTMDhcJCYlASxWJw4l1WZDY0NhZ9++jc0NDZitnzBHjSMjo7iiy+/wMna2mzXLIkWM36uz1ZRUY6fV8PlF+SDmCUhMIPBgLa2NhgMhpjK30gk0rs6fN4LdHo9rBbr55iChYVvHq3CCIJAaWkpsrIyD5rN5jLc0elXIt64cVN2SUnJnDcdGwwGDA4OwOlwhnD/V4l/+fvf/95j0OurN2/ejJLSUohEIkwx5AabzV69ECea4eERaLVaKBeItqbNakVffz9GhodBkmRoruW0zp8/T3C5HJLLYWNReQXltYefhA96+3rx7Tff4uDhQ1Umo2nW/BYZP1PDNi1atOgGCZhwKIRgKAQWkzlZoTfDiay1pQU9Pd0fxTqG7na74PN6IZ1F1QqHw4GBgX6YLXcv4ff5fQjOswR3QUEhCgsLS9va2uH33z6MWVJSMrG4qiomxH839PX1Qa1WH5wvuxWNRlPzxVdfEl3dXd1r164tqKyoRG5eHuJkMtBuE3Z1Op1obmnG+Pj4mwtxwunu7q7q6+9rLC4uBiOGfYh6vR5mkwmhUAgmswlmsxmBQAA0Gg08Lg8isQhisfjKjwRisRg8LhfEdZXCOp0OR44cQXX1UXV3T0+hwzH3edFgMIjTp88QXC6XZHM4KCoqfqgNKEmShF6nw+WGBhw+fBjnzp/j30vJ+5SISygSYvny5ci+TtIkGomgq6sLTCYT2Tk5MBgMYLJY9yyF43a70djUhNFR9W9iPXiXL1/+oGFJw9ubZbJZy9G0trSgo7Ozeiol/MFgCKFwaF7dUFKpFJs2bQJBEKTFYoHfH0Ag4EcgEBj0+wM9gYB/0B8I9K5cuZKfmZV1XxK4ff19GB/XzKsJ3+f14eLFS4WdXV0oyC84X75o0fLs7GwkJiVCJpWBy+Neq8ozmUzo6enB0aNHPzKbzUMLceIxGA1NjY2NWLZs2axYuuC2lcWdOHz4CIxGI7Q67bt6vf59v88fotFoEAgEWVKpdGdcnOxVmSwuOy5OBpksDlKpFAIBHwwGE9FoBD09Pag5dmynWq3++n46tvh8Phw/foLgcXnkP/xf/4DcnNwFL2CMe6vIRWtLC86dO4fTdWfeGh0Z/UssmtqvEVdxUfFAWWkZQqHQNctvjUaDzq5O5OXlASSJ8+fPIz4hHitWrLynD+vp7kZ7e7t6LnTbRkZGfr/v669/CwKs1avXzFh3zmg04sTJk+jv6986pRBCJIxoZP71wqxYsQIlJaVwu13w+/zw+Xzw+XzZV37g8/lQVFwEyX1QwnY6nRgZGYHNZhubjw+l2+VGQ0PDisamRkglEnlycvIHCoXyVYGAf2Vh5oFWO/He+Ljmn+eLNuG95m4uXLj46soVKz9JTkqO2a7L7/ejvaP9g57unt/fggiGTCbT+wDev7Fakw0+ny9nMpmJkUjE4XK7xgL+wLzphTty9KiCx+ebXvnVrzAbIs0L556Joq+vD4cOH0Z1TfUHQ4NDv49lzo8BTFoDlJaWZIvFIpjNZsTJ5eCDRHt7OzgcDjIzMtHX34e6+jqsWrVqygcP+P2g0WhgslgIBgK4cPEi+vr7lmNOLDsCOFN3hm02m/89Eom8ufnRzfesouH1eHDs2DGcOXPmzakmrUlysiwe885CYHLHLJsnzdH4WTf9xMTEvC/FJqMkrFab2Wq1vQbgtQdxIlKr1Z+eqTvzSWlpKWK1+5ZKpRAJhVsA/H46ViOBQMAMwDwfx81qtZp/+PGHUoFA0P7ii79AYmIS8MC7lAfQ2taKL7/4EidOnlTca1MxpltVmJqa+i9klITJbIZk8maC3WaHz++DKlkFDpeD2tpTaG1tfcfn88Hj8SAcCt1l6+zF8MgwzObJaxgcGkRTUyOsFuvcid6RQFd312++/PJLdXNL8z3psPl8PtTV1eHrb74+OTIy8vF04rzzkLcw36uPdDr9e9RI3H9Eo1GcPXt2zfnz5+H1emPmfCsSiUoftLEz6A0d33333c4jR47AarU+0PeJ2WRCdU01/v3f/x2Hjxwh5oK0AIBGZ9CRkZH+rjJeCalECnlcHBhMJsxmMzIzMpGTm4uenh5cuHDeHggEB4PBEBx2OyLRyB23G01NTeju7kYkEpnsmD57Fp1dXVVznnQngcampvSvvvoKPd3diE5jNe9yuVBbexL/+V//Odje3r4xOg0ZHKPRWG2z2agZENMqhIDRZPwLNRLzA1qtrr7mWA16e3smQwizTlxxEApFeEB3rF/v2/f1R2fOnMZCDhvjDlGo1tYW/P2zv+N//I//+V5dXT0xl9fJSEpM2lZUVIQNGzYgLS39WsWORCKBQqEAh8vB2bPn0NvbV7Vy5crBwoIC8Pl8sFi3d0XWTEzgxIkTyMnJhUKpxODQIC5cuACDwdB0f7ayQZw8WUvweDzy1VdfQ35e3m0rwq7uljTj4zhZexLffPvt/s7Ozmem2zQ3ODiwtae3l6yqqprzBl4sUDkYg94Ap8NppkZj/qChoZE4ceIEmaJKgWKWRbclVyoGaTQaogtMG3Eq6O7p/s2XX365I04Wl7R8xfKYOsnPVfXkhEaD/oF+9Pf3o6GhAc3NLRKbzTbnuleMRYvKDqpUKgT8gRtWVVeN5fr6etHa2gouj1v6yCPrUFlZCeYdSCscCuHM6dPQaCawetVqgCRx+vQZtLe3V5FR8r4mTg8fOcKKRqPBF3a+gOKSEnB/RijRaARGgxHtHe04ffo0TtbWbtFoNDX3EvJzOl1oa2vDI+vWITsnh5oBb7JMCcJkNMHtcUOhUCIcDsFmty1IW40HGS6XC9U1Ne8W5Be8u3nz5lkV3max2ZBIJOByuQ/kroSMkrjc0JD8xZdfklKpFMXFxTeU8i+U0narxYLBoSF0d3ejra0Nbe1t74yNjb0/UyHqGRFXdnY2ZDIZgqEgQuEwGOEw6Nc10HW0d0CtVr+7ZvXq/YsXL74laXncbtDpdHC4XAwPD+HU6dPgcDhQpajQ3dODs2frYTAYm+73l+CwO0IHDx4iDAYDuXr1auTl5UEmlSEcDsPpdEKr1aKnpwcXL136cHBo8HczlaRq72h/c3Bo8COKuHClrNyLiYkJjI6OYmR0FMNDQ3A4HUhPT4dCocTExMQgNUrzDwMDA388dPjQu5lZmSgqKsZsF2gIhIISj8fT8WBGEkI4ffo0oVQqSJFYFNP2Asy+biWam5rQ0NiI9vY2bXd3T6HNbnPMh9w9Y2JiAps2bUJWZhY6OzogEglRUFh0TatsVD0KHo9XuW7tOqSoUm5JWm3tbZDL5aDT6Pj6m2/Q2ta6/Llnn73AZrPx/fc/oL29QzFfGko9Hg9OnTpNNDU1IyMj4yulUrEzFArDZrPu02g0b9lsdt1shS3Gx8c/Hh4e/sjn8920u4tVH5TP54M/EJhaToKYrDLkcrkzdvvFXapLBwYHcOnSJbS0tKK3r/eDsbGx33uuSGKxOWwoFcptbo+7HhTmHaKRKM6ePcfPzc31KJVKKBTKWQ0XCviCNQYYOvAA71oPHzlSlZCQ0Lhz5wuIi4tbEOc9NDiIT//2qef8hQuC2dAXnFXiamxsemPzo5t3i8VinD5zBqWlJSgoLAIwafbo8XiwcuWK7RUVFbfMCzU3N6OpuRmq5CR0dnXhx4MHS81mcweXy0NLczNO1p78aK4qTTDNnqG2trYXALwQy9zayMgITEYjUtNi6yZtt9vR2tKC9o4OOJ2OqfEWAbBYbIjFYigUCqhUycjMyIQsLm5WOv9DoRBGhodx6dIlnD5zBg0NDUkWi0V3M7EFMD4+foiiiPkLu93uPXz4yLtZmVnvbtm69QZ1nZlAJBKBz+ctA/Dxgzx+ep2+af+BAx+oklVvP7p586yNH2IovdbQ2IiR0dEX5htpAQAjGo16wpEwLly4AIIAsjKzru22Ojo7IZFIsXLlCsTfQrdMr9ej5tgxuFyTjaP19XWlBoOxg6AROH/+vN3v9/f09/f/Bg91ZZYWZrM5dsRFkhhVj+LYsWP44Ycf9/f0dD8TmGaIk8liQi6XL8vKzPyxuLhYUVlZicqKysnvnJh6938kEoHH7YbNZoPFYkF/fz/OnjuLCxcuVBkMxqaFKjpLYRL9A/1/PPD99++mpqWivLwcBDHzxQ2fzweXyy19GMavt7f39/sP7H9blZJyZfzmn7KG3+9Hd1cXao4dw7Hjx97R6XTzckHJcHvc9V1dXQiFwijIz0d6Rsa1pFw4FMKSxVUoLiq+aQKLhMOoO3MGZ8+efZskyZDX620yGIwdV5OS9fX1UupRB0bV6l0TE5q9ixYtumMl471W+XR2duDA/gM4WlO9XKfVXcQ9xuF1Wt1FnVanvHjxEk6dOv0vmzZtfHf7tu3Iy88H8xbKCW6XC2azGVabFTabDTabDVarDRaLGSaTCQaDAf39A2v0en39g1gx9jBiUlHjApGRnk4qFEqkpKTM+JgcLgcsFiv1YRm/8xcuEGlpaaRCLkdKauq8y2nV19fhwIEDaGhoJGZLyT0mxOXxeMbq688ezM/P256UlHRDmfuiRYvAYDBuWc6tHlPj1OlTGB4Z/lMkHKGe6ttgQjPx+aXLl/dWVFTepLp/rzusSDQCg96AS5cv4YcffsDFi5dm7SYLh8Po6+v7o1an/aNGM0G+9uqrKLtyHzgdDoyNjWFoeAhDQ0MYHx+H0WiCyWz6yGQyfWy32Xspawc88NbrR6urt6hSVNXPPvMsJDMUsabT6aDR6LyHZvzcHhw9Wr0hKSnp5HPPPgfZPMp39fR0Y+/eve0NDY1l832xyWDQGdDpdH/0B/w9q1etfjsajYJOp4MgCAivWDiYTSYwmUywORzQaDQEAwEcP34Czc0tWyjSunue58yZM29UVlbu3qZU3rGVAFNT7kZjUyN6enpw/vyFt0ZGR/4Si+/A5XShpqaGYDDo5GaDAaFQCP0D/ejp6UFPT88OnV5/YCpiwxTwIDaK13z33f69iQmJuzZs2DCjPsVQMIRwOPRQ9e5NTEzUfvvttx9KpbK3tmzZMmWrHExT8cdms8HpdIDD5kAZHw8ej3fHApKWllaMjIzuXAgREobb44bb7W7S6/VN6jH126FQ6IYKM5fTiUuXL0EikSAQCEAqlcJkNOHgwYMHJyYmaqjHGFOQMlLvOXXq1O6S4pIZ9XRNTGjw1b6v8N13+/l2h90b67JUn8+H4ydOsLq6u//V7XLX6/X6Q6EQRVYUgM7Ozpe//OrLXTKZDIsXL75nIV6X2wWv19f0sI1fT0/v7z777LMCFou5Zf36DTMmr0g4DLPZDLVajfHxcWgmNNDr9bBabeDxeMjIyEBWViYy0jOQkpICoVB4Lf0TjURw/vw5HD9+/KDZbO5dCOPHuL4peHBwCMPDQ8jNyb12I7Z3tKOhoQF0Oh29vX1ISkqE2WxGV1fXE1SyHVPWfTt37lxVZWVVY1Jy8h1XPrhDkcc333yLY8eOb7fb7d657H1z2B2/p75FCj+/p8+fv0CIRCKSz+ejuLj4nnK4dpsdLrerFg+hZ1VLa8vW//qv/zrq9Xi3bNy0CcppKpMEg0EY9PorfZEjGBgYQF9fv3ZoaPAJs9nSdH0zP5vNRnJy8uv5+Xm78/LykJ2VjdTUVMQnJMDv8+Lo0aPo7Op8YqHko28wkrx46eIGgiBOlpSUQCGXg85g4OTJE+ju7tnj8Xgu6PS6T7lcrjgcDjuoXAamaZpnaDpx4jhKS0tQXl4xrZXUwMAAfvjxB3z//Q87qLJxCvMFgUAAJ2snpdT+4bV/QF5+/rTaKMKhENRjaphN5j14SItdmltatrpc7n+a0E58sGnTJuTl5oF7h4Wt3+eD/gpZDQ4Noa+vD719vdXDQ8PPOBwO7+02E4FAAMPDw3uGh4f3HDt2HAkJCZuzs7OqU1JSEAwGcbmhYedCCv0TSYmJuFWJqlQm3cxkMBLNFsun1xL/1AYLM+1ZeeON18lf/vJXd7UVueoi2tTUhKPV1aivr79lDxQFCvcbYrGYuX37tuCvfvkr5OXnT7mZfXRkBP/v//f/4vDhI8TDHr0RS8TMxVVVwRUrViI/Pw+JiYng8fgIh0PwuD2w2W0wGU3QTGgwPDyMvr6+fcPDIy/M58q/Odtx4brKIY/HQ+WvMPtNz8eOHduXmJC4c/2G9YiLk9+0QiVJEnq9Hm1trbhw4QLq6ureGR4ZeX8+NgFSoAAADocjdPDQIVYwGAzuemkXSkpK7qpp6PV6cer0aXR0du6kUg6TIfkTJ04SDQ2NzIzMjK/SUtN2CAUChMIhOJ1OmEzmOq1W+89ms7meinbdZsdFATE0cmQivyD/ryuWL3+1rKwMRUVFSFGlgM3hwGq1orW1BXV1dairr393ZHjkj9RNSmGhgMfjYdWqVeSzzz6D5ctX3Daq4PV4cKbuDP7P/9ld19zcvJbq86NAEdcCAZ1BR4oq5aWKivK9ixaVIykpCf39/aiuqd7b19v3ciAQoAaJwsK7r+l0FBQW7H5006Ovr1ixAnl5eZBKJCBoNIRDIYxrxnH+3Hl8+913TS2tLVVUSwUFirgWKKRSqThOHveq1WLdOx91HSlQmC6EQiGKi4sGFi0qz1apVOBwOHA6Heju7sGlS5d2aCY0B6IRaqdFgSIuChQozLcJhkaAx+OBzWLLvV6v2e/3U4NCgSIuChQoUKDwcIFGDQEFChQoUKCIiwIFChQoUKCIiwIFChQoUKCIiwIFChQoUMRFgQIFChQoUMRFgQIFChQoUMRFgQIFChQo4qJAgQIFChQo4qJAgQIFChQo4qJAgQIFChRxUaBAgQIFChRxUaBAgQIFCriLAzIFCncCi81CYmLi8/HK+LcJAkybzb5Pp9e973a5QbnZUqBAAZQ6PIX5BIVCkbVy5YrBVatWITUlFQRBwGQ2YWhoGK2trWhtbUmyWKw6aqQoUKBA7bgozAtUVVUNvvHGGygpLgFB+ynSHAqF0Nvbg92792hrjtUQXo+XGiwKFCiAynFRwP23ZqeBwWDeQFoAwGQyUVJSiuXLlyEuLm7b/T5PgUCAoqKif1+2bGl3SmrKNiaTSX15FChQOy4KDyMuXbqc/eOPPw6KRCKoVKqb/s7j8cBhcwoAHLqf51lSUjKw8/nns5NVyRgdGT3Y3NKMxqamt9Wj6j8Fg0Hqi6RAYSEvoIVCITUKFKYMr9drm9BO1Mvlcb/KzsoCi82+4e/j42MYGBhYLBAI4svLy6uXLV36rkwm/YPD4fiz3+8PzdV5bty48X8+++yzKCwsQklJCUpKS5GcmLTJ7/e9azKb/xgMUORFgQK146Lw0MCgN9S2trZi5cqVyP7ZwicvLw+7XtolodFob2VmZSIxMQnDw0OsH77/wXOk+uiGiYmJWsxF4SFJ/vQxBIHExEQ89dRTSEpOQjQaJc+ePUdQOy8KFCjimhZoNAKpCZKXEuSid+g0QkwjCB5BgAkQIEGGyChCkWjUMaa3v6G3OGsjERI0GoG0ROkriXLRuzQawbM4vJ+M622/9wfCSE+S/jYhTvgHALA4vJ+M6e2/9/h+mpgEPBZSE6V/lol4uwDA7vIdUOtsb7g8AQAAm8VAWqL0D0qZ4Ld0GiGenPvIUDgSNQeC4UGz3bvHaHV97QuEb7gOsYDDTE2U7BYLuNt+ugaAJBGKkqTX6w82qbW21ywOrw4AuBwm0hOl/xYn4b8aiUQdap3tNb3FVR+NkkhSiFanJEg+YjHpqW5voH5Ua3vZ5vQ5cB/zRKmpqX9WKOS/ZrM5LA6HDR6PB7FYgqKiQgj4gpvek5aWjrS09Bt+V15eAaVCCYJGO/ntd98qrBarOdbnbjKb4XDYkZSU9NM9R6djcdVibN26FSMjI6+MjIx+Sk0BFChQxDVlEABKc5L2rlyUAQadBhqNAHHlDyQJREkSoVBEcfRcz1GDxcUGSAh4bCwtSf2ksiAFdBqB1j7t23an90AgGL5YmpP04YpF6SAIAsMay9vV53rHhjSWj69+XpJC/If1i3PeykiWgQDQOaR/3e7y7Xd5AjUAIBNxl61alPFecXYC6DQaCAKIRElWOBzl+wKhNL3FtaF9QPtRx6Au2eH6KeSVlij968ZlubtUSvHkNRAEQAIkSFY0SvLVOtsWt7f3VYvD+z4AJMgEr6yryno7J1WBcDiqaO7V1J1qGCw1WN0daYnSv25cmpstE/Ngtrm3H6rv3m1z+l6Y7bFXKpX5RUWFPQqFEna7DX19/Tu1Wu3XodCNkTw6g86sqqp8a+vWrVAqleBxeRAIBBAKhWCyWNP6zGSVClVVlag/W/9PVov197G+v/r7+98eGxv7oKCg8GfXxMCyZctw+vTpT0bV6k/J6I3bPxaLBYIgEAqFEI1GqRmCAgWKuH5ClCRBIwhwOQwwGbc+DWvAA68/1BS+MoFIhdznFVIBBLzJvEokGkUwHFGHI1FEolGwGHQwmQwkyUWQirjPA7hGXHIJ/3WlVAAeZ3LCDQTD8AVC7Vf/LhJwN8vEPHA5LIRCYah1NthcPiTKRUiIE0IhE0AsYCusTu+/OVz+3119n0Im2BUvE4LLYSEcjsDq8MLrD4HJpEPAZcHm9MLp9tVcfX2chP+qXCIA98p5LMpLht7iand4/ITXH2wKR6LZHDYTCpkAQj5n/awvGAhg3bq1Pa+88gqSk5JhNpvR2NS4r6bm2L7GxkbC6XRee63T4Qz19PReWLt27fK01DRwebzpR+yiUbjdbmgmNGhtbYPNavt6Lu6v8fHxP/X393+wcuUqCAQ37gxTU1JRUFCI9vaObSTIEIPBkEcjUa9AwF9dWlr6lkwmQ1tbm7atrT3Z7XZTswQFChRxXUtBwGB1DQ5rrNkEALcvAIVUgCSFCHQ6HWSURL/ahHG9/TdXkxUCHms1l/1TWbPXH0IgGNaRJODxBeEPhsFkMsDnscBhMwuu/zw+l5XGufpekoTN6YPbG7jWKMvnMJdxWJPDYXX6cK5ttKd/1LhmVXmGSSzIhJBBB4vJAJNOT7qeBEQ8NnicyeNqTQ5c6hyD0erew2LSU8UC7hatyfmu1elruvoeLodZevVzAEAs5KIsNwnjevuvrU7fXpfHvxMAWEwG2CyGgkYjEI2Ss8pchYVFKC0pBUGjQa5QIDs7G3l5efhf/+t/k6fPnCauFi6QJInm5qYVf/vb39wECP6KFSsgFInueHi9TofR0VHYbDa4XC44XU5YLBYMDw+jqal5uV6vb5ru1pzFYoHD5iASjcDv9yMSjtz1baFQCA6HA36f7ybiYjCZeGTdOigU8oMEQQOTyUQkEoZYJEZZWRkUCgWampuSjh8/Tra0tDYNDA5ssNvtDjJKqYJQoPDQF2cMjZu3Ozz+14PB8BiNIHirKzLfS5RPTowGiwtdQ/o6s93z06TPZpaymT+dcjAYRujKJBYIhu3BUERybdJn0hUEjcDVyYbDYoDNpAMAwpEoPL5AMBj6aQJksxjZzCt/d3r8cLh8BxkMupzPZYNBpyEaiUJjsMNs9+y5FlZi0sHjssBgTL5PZ3ZhcMy8w+kJ1DDoNLkvYBrzBUI3EA+byZAwr7z+KtKTZMjPUH7U0juxxuMPXuEXAiwGHQw6DcFoBLO3YCDhdrvg9fnA5/OvTeSLqxZjxYo2tLW1lRgMho6rr49Eorhw4aLA5/OfHxkdXV5UVAipVIrkZBWkUukNx/a43Whta0V7ezt8Ph/cbjfGxsZM3T09hVar1TydogwOl4PsrOzd+fl5r8fHJ0AoFCISicDpdEKv12FwaOgj9aj6N9d2RAQgFAqRlJj4LyqV6l2VKgVr1qy5LdEuKi/HovLy237+8uUrkJ+Xj+6e7sqWllb7pUuX0NLaIrFZbQ5q2qBA4SEmLqPN02u0eX7H5TCwrCSdTEuUgcGgw+sLoqVvAgPj5o3hyE95BiaDnsRk/NT4miAXoiw3uTESidhTEqQS1hVCIAgCTAYdDBqB0BXSYDLpYFx5byAYRjAUGbteVo/JpCcy6ZN/F/E5KM9Xvc1k0N7OS1OCy2FhXG9Da7/2pMnmrv2JSFk89nW7p0S5CCvLM/aTURJMBh1DGou6Y1CXfrUABAAYDBroV84jfIV0OSwGijIToNbZdvkDYYCcnIiZDDrodBoQisziVhcwmUxw2O3XiOvqTkzA54PNYWcD6Pj57qWhoWHFqHo0Kzsruzo9LS37ueeew9Jly244dCQahVKhxMoVKyESi8BkMmE2mxU1NTWmI0eOVk11t8Xj8bBu3Vry6aefRkV5BRQKBehXwsnhcBg6nRZdnV1vnjx58s3Ors69XC6vNCVFVZqenoGsrExkZmYiNTUNIqFwclt8j5DKZFi5chWWLl2GNatX48uvvrQfPVqdbTKZhqipgwKFh7gcnk4nkJem/G5pcSoUUj4ikSh6R41o6ZvYfn0RxBXVBjHtOsWGwqwEZCTJKqMkwOMyr+Wvrio80GjEtdU4nUYD7cokdiUndsPKmUGj8a8eWykVQCHhIxSJgH7ld6FQBOFw5IZqOA6LXsC6bveUmihFauJPu5BwJJLWM2IQA7j2WXTip/OwO32wu32QS/hQxYuRkSR7ncWkI0pGQSNooNOIa6+dKphMJnJyc/6clpr2ltPp0A6PjDxjMpkuhkM/VUNarVY4XU4kIfmG93p9PgQCgcGbviMGHUWFRZ8tWrRol1QqgVAoglB0c/+fSCRCRWXlTb9PSkqCyWRuPHLkCBGJ3J2EE5MSf/3kk09hy+YtoNFv3J0yGAykpKQiJSUVuXm5GBoc2sUX8JGZmQmF/CeCm9WHhMFAaVkZOBwOLBbrYM2xGuL68aRAgcJDRlwqpeT5ZaXpO1TxYoAgoDHYcKlTvVdrct6kvEAjCB7tunmcy2aCnKw+BJNOn6zo++m11yZ9AsQkiV35b5IkQZII3pj6Ia69PxyJYEhjwciEFXIpH/lpSqQmSrGqPHOnyxuoHZ6w7gEJMJmMRMZ1xOX1BWGwuuDxBcGg0zA8YW13ewOOm8opr8DlC6C5dwJZKhkW5SWjIDMeDDoNV0Nq15/TlMdTpXrlFy/84q01a1bDarUmdXR0Xjh2rMbU1Nys9Hl9k6FQpyvo9XhZP0862mw2uF3uDhqNBoVSUUKAYFmslqakxMTnf/GLF3Y99dTTEN0lx3VLIkpIRHy8EnQ6HVMhrkAgMGg0GuFyuSCWSG77uszMLGRmZk07uerxeuByuRHw+xGOhMFisSGTSid3oHcY74zMTCQnJ0/7O6FAgcIDRFx8Lgvl+cn7slPkoNPpcHn8aOrRYHDc/HIkEsWVyvJrEzkJMnR9eE9jsKNzUA+nx4+CjHjkpyvBuhK6I69vQAU5abdxJQTHmAzBSW6MoJHXLDnsLj8utKubmno0VZnJsn+SCLgf5KQpUJChxNC4efeE0bEnEIyAQafJ6dcx6ciEBedaRw6aHd49DDpNbnV6Pw+FbyypjkZ/+hwmnQaz3f2JPxBarYqXZqfES671uP102dMrCMjNzflkyeLFyM7OAQBUlFcgJztb8V9//St5/sJ5wuvxwuv1NvkD/uU/321ZzGZ4fV5kZ2X/0/bt2z4QCkU4ceKE1u/39SiV8TeGFu9QRYgrhOvzeqHVadHa2oqOjs72cGRquxTNuKbm+PHjnrKyUn5lZdW07yuXy4VgMACBQAj2z5Q9xsbHcPrUafQP9MPr9SIcDoPN5kClSsbKlStRXFQMDpd7y+P6fT64XE6EgiFq5qBA4WElroxk2e68dCX43MnFv9nmgcPta1JKBS+JUznb6TSaeExvf8Ns84wBQCRCOiJR8hrh9KlNONU4SLg8ARAEQaYlSq8RVyRKInIlv0WSk/9NkiQIggCbSQeLQU8F8RMvXE8o4UgUwVBYzWLSIOSz17OuFG3Q6XQIBRxwWExmIBgJ0WmEhHYdcbm8AZhsno8dHn8Nj80sSVKI/lUh4eu0JudfvFeinpFo9FqxBpvFBJNOT+xTm5bnpStMcgl/Mqd1jeSiiE7T30omleF6GS8Gk4lVq1bB4/HAYND/taOj87VgMDAWCoVuIC6TyQiL1Qo2i41HH930wcsv/xISiQQZ6elJ33z7bZLL6bw2Ph6PB709PTAYDFeuKYJgMAifz4d4ZTwWlZdDoVAgGArhzJkz+PKrrz4cGhz6XTQy9b6o3t7eqtFRdc9UiIuMRmGxWjE6OoLR0VGMjo4iMyMDa9euu4G4goEATp6sxe7du7ePj4/fsKNnc9jo7u4hf/PmmyguKbnl54yMjkCnoxxbKFB4aImLyaAhSxX3ekKc8Dp1CzYqC1IqaTRib5yYh3AkiqPnej4y2zxPXCEUcyQaTcN1FW9XSeBa8+8VpgpHIohcN1FGwpO9XgwaHUwGHTwui89k0BG6UvgQjkRNkQipAACJkIPKQtWOtEQpmZEchwT55DlGI1H4/SGEwpHQT5G/n4grIykOjywmq33BEARcNpQyAYxWN2ovD6jH9PYDABAKR69VQvK5LHDYjAKb02seGrfYs1MUkjjJT7uaSCSKaIScZrX7zeFFGp2OouIipKWlv9rR0flaJBJ1/Ly51mg0wm63aVNSU/6pqrIKSqUSALBq1SpYbVYkJiaCcSV/FAgEcPjIERw/fvwNEEAkHLH7A/4er8fbsX37NjI7JxsKhQICPh8cNgcECCaPxxPT6DRHIBDAVAjMYrX0arVa+Hw+cG+zAwIAo8GAhoYGNDU3o6en29PfP7A2HAmb/vG//Tf19TqKkUgEra2tOHbsmGdiYuKmMHTAH8DFixfTHt20SX0r4nI6naitrUV3d08BNW1QoPCQEpeQz5bLpXxwruvLUsgEUMgEN+SMru/H8gdDPcFQpPJ6ouOymalef3BMwGWBy568nFA4gkAw4rl+txIIhREMRyZL1wkCYgEbfA6LZw/5vAAQDIXHQpGIAgC4HBaqClNvON9wOIJhjQWD4+YPfIHQDSHGq4iXCxEvF/6MoOkQCThbABwAAF8g1BMMRQoAgMNmgMdhpdFoNAxpLE9MGB11cWL+ZB6MJBEIRRCKTK+i0O3xwOf33RyW5QvA5XJu+z67zQ6ny1VTUlz8QWZm5rXfc3k8ZGdn39ALxWKxwOGw4fF4Ljhdzo7MzMx/r6io2MflcrFu7VooFcprKhWr16wBj897U6fTvenxeDE4OIDLlxtKry+5vxUi4Qg0mnGYzWakpKTc5jVh1NbW4v/s2f320NDQn6KRKAgagY0bNpLLl6+4YedJkiQi0QjKyxfxlUolabfboNPpPxrXjP/G5XSBJEl4vd4xv99/y88ym0zo7OyE0WjspaYNChQeUuKi02hijy8Io8V1ZZdwY3MyQMIbCCEQCF+rcrM5fPsmjI5dHBYDICYJikGnKWg0YiwUisDq8IGgAQ6XH1an9/Pr00Mmm7tuXG9fIxVxARIIR0gwGbREAEMA4HD7DxosrkomnQaCICYlp8JRBENhuLwBGK0udAzq3xuZsPzzVT70+kNNZpsHEoHrxh3fTwUgcHn8iERJ+7VrcHr36czOd2kEAfKKggiTQYPJ5q4fHDdDJuaBzWQgEArD5vTWRaa543I6nfB4PDf9ns1m46onFZ1BF9NpN1brudwuRMIRe15eHpKSb6w2VMgVYHM415ExAxvWb4BUKmvv7OxEZWUFNm7cBD6PBw6XC/Z1clApKSnXiIckSQwPD+E//uM/2n/88SDL4XDcMVk0NjbuMRoM/NsRVyAQQGtrKwYHBv90NYyZlpb20tatW5Cbk3NTZeDy5StQUVEBu90Bs9mMsbGxN/v6+t48f/68tq29LZlBZ/Bu59sViUYoCSgKFB524nJ5A0NN3Zq3RyesrxI0gkmAYF63iwmRJELBUFg9pre9cY187O5DF9pH3+5TG3cRBMG0OX37XL5AE0igZ8T4qsXpfYsgCKbHG7g4brC/ef3nDU9YngmEIh/wuaxlAGCxez7x+IPX+nF0Ztcf61tH5BIBZweNIHiRaNQRDEXUgVBkyO7y7Tfb3Id+LrBrc3rrL3ao3x4YN796VWCXIMCc1Cq8IrLrCzbpzc73r32OyfnH+pZhuVjA2U6SCE0YHW9HIlGEwlG092tLLXbPB2wWIzsQCg+qdbbXpjuuNpttn8vl3nkTcbFYYDFZAAGwWaxsBpPxc7sSSCTiHWlpaeD9TNopISEB17chsDkcVFZVYVF5OWpPngSDwYBYLL5r8QZBEEhISERaWjp4fF6lw+G4eKfXazTjvzOajLtxF+mwq6Qlk8nkT2zfvnfN6jXg8ngIBoMYG1MjFAxBpVJBKBKBzeYgPp6D+Ph4FBUVYdPGjVi2bGnSZ5/tJXt6et6lDCcpUKCI67bwB8IYGDP/aQD403Tfg1u8Z0Rr/XREa/30du+1Onxmq8N3WyJwuv3oGtT/BsBvpno+vqvXMHlOU9sReQLoGjLc8nMMVneHwereOpNxtVgsnzidjp236u/i8flgMVngcLj5P6+2CwQCSEhISIuPj7/pmD/33AoFgzCaTFCr1Th77hyMRgOaW1qgUiVjyeIlyLgu1BgIBDAyMgydTgeX04VRtRpnzpzusdtsF+92LXqDYY/RaNwdjURu6ue6GrK8qnMpkUh4j23danrqqaeQmJQEt9uN8+fP4ejRo/B4PCgqKsLSpUtRVFR8U/HKsqXLABL4at9X7zJu0wdGXle8Q4ECBcqPi8Iswmq11thsNpDRKIjrdkkgCCQnJyNOHrdMIODzuZwbCx6CwSDYbPZNhRATExq4nC4kJSVBJBYDAHp6e3Ds2HH09fVifFzzic/nax8f16zPzs7anpmZeQNxeTxutLW1oamxCTq9Dr29vWv0ekP9VMJuXo8XOp3+tv1cDAYDDCYDCQkJlZs3P9q4a9cu5ObmwWqx4OTJkzhTV4dwOAyz2dL+979/9trZs2e/2759e9qmjZuQmJj4U88WQaCouBh5rXm43Y4rSkYp4qJAgSIuCrGA1+fF6OgoLBYL5ArFDX9btKgMebm5F24V1gsGg9BqtUGbzXZDY3JDQwPU6jE89tjWa8QViUQgFotQVVWFdevWvcrl8iAUCpAQn4C09HTcGKJko6CgABKJBF6PF339fXU1NcfeGRgceH8qorU6nQ4Wi+XWjcgEgZzsHLz00kuNTz31JDIyMjGh0eDwkcP4+utv3lu8ePE7r/zqV7BYLaXfffdd48mTtWn/5//sXqbRTOx74ontyM3Jvbab5LDZEAgEYNyOuCJRKsdFgQJFXBRiAhJoaGys7urq2rJ6zZobclMF+QXIy8uDQCCE+AoJ/URcIfT09padPHmyJ0WlQlp6Omg0OuLj48FisSAS/fT68kXlKF9UPiUdQL5AgNLSMpSWlgEAzGYzHA7He+ox9fsBf+Cu79fr9SaL1aLIzLq1Qsa6Rx4Bm82GQqGATqfDN99+i6+++mqL3W6v+eUvX34nJycH+YwCyOVyRCIR9dGj1cTnn39+aHR0xLN582YsXboMiYmJMJvN8Hp9t7XY+Xl7BQUKFCjiojCL6O3t3fr999+TQqEQRUVF1yoCo9EouFwukhITb1JND4VCsNvsvQcPHir1+/ztv/rVr1BYVITly1f8/+1dW3ATZ5o93epW62JZknWz5It8xRfwDWM7EAIZYJKw3J0doGpTm8k+kIetrRq2amofSNUmVck8TKqWeSAPSdWEzUwyJFQBNcMESMBxMuE+GEwMlq/Ysi3busu6tNTdUvc+yJItYzKzT0MVOq/qdre6Xf/R93/nO2f1UK8fAc/ziMWiEHgh6x3IJRLwB/wYHxvH9PTM320I4na73w8Ggr/Gky2uAKTVlBcvXsSZM2fecM26vnph8+ZoY2Nj9vp1dfVYv349rl+/8cLs7Oz3Fy9eIhyOoSObN/d92L5+PTxeD1yuWbQ0N+NJ0vtUKhXK/3flkceznIBMAAqGBkNTKoIAzfHJhQSfhChKkNMyMHIKMpJQCUmRTfDJnF+7CjkFRk7Ri+exnJCCKEpg5DIo5DRNkoSKE5ILHJfMumcAgJKhwMhplShJbJzjIQhiNp5EwdCgZIRRSIq+eELAcld6kiSgkFOQ0zKVJEFI8ILACSkQ2XuhVQCQ4AWW45P4R7dC2BiLLy9eIPyBgLRx40aYjEbIKBm8Xi88Hi/Wr2+HbIXYobS0BJZiy+6ZmZk/nzl7lrCV2KTSsrIV3oQS2BgLn98Hv9+PaDQKnuPB8zwEQQAv8BBTIiRIYNk4fD4vEokERFFCIh6H2+OGY2ioe3Z29hxBENDr9VqSJFXRaHSO41avvjwez28CwScTFwAE/H589fVXOH36i5NOp/N/q6uqf3Fg/wF1Y+PaFTaRBAgCdIbEHz169JFzyvlRT0/PNlES2bbW1huqJ4RlCoKAZDLpyy8ZeeTxDBNXgYpBc63VVVassxEgMOcL48HYnN0XYqcqS4r+u6HC8jbDUOC4JPpHXK9NzgY/y7hNNNVaB8uLdQ0EQWBqPjg2OO5uZBOCsK66+Ep1mXG7jCTh8oRiD8bnKwILcR8AaNRL1xPTIZVnh52eV+OJJEot2iNrq4o/1KgViLIc7g279kzPh7LuCma9un1tjfWOUaeGJEkYfOT+aNjpfVOtkKuaa60em7lQDQBDE56zQxOeVxP8P945PBaNoaenh7hx4wYKCgrqKYoysXG2b/euXbHq6qrHjt+6ZSt4Xjh/+fJl78CDgZIrV3ouMQzzSlVlFSRI4DgeyaQALpFAOBJBOBwGx3EQRRGSlP4hkhZ3pPtdNE1DFEV8+9137w0PD7+V6WcRBIGGxob/6ersPFpSUgqSJHH/fj+uXrtm8/v8c6v4Dgp+vx88xz2mbgSAudlZfHnhS/zhD6feHhkZecdsMTd1d3cff/EnP8np48XjcXjT24F9KwedXS7XNwCw+fnnUaApWL2KFHgkk0lvfsnII49nmLhUCrqpqcZqa6lLD7sOTbgxPR/a4wuxH5QX69/e1FoJjZpBghPgDUV/nSEuo059sGNtWUNjVTEA4PYDZ82EK9BcoGK0XU327U21VgAE/vpwSj065asB4AMAS1HBLzrX2W1r7GnBQplF153gk++OOL1vFRWq/qW1vgQ2kxYJToB/Ifbh9HyoZCmupOjDza2VKDYWApKEKMsdGZ3yvllVWnRmy/oqdYlFB0mUEI1x3cOTnqfqBbMsC5ZlhwAMmcym6ubmZthsJY8dZ6+owGuvvYbmpibT15e/5r/7y1+Of/zxyff1ev2hxsbGIzU11ZDLGTAMA7PZjKqqKiiVSigYBRQKBZQqJXQ6PbRabdYaKhqNIpHgjjknnW/F42k3D7PZ3PSzf/7Z0UMHD2YFFw7HIARBmP368uXH4kJEUYTP58VCOAzTCrEJANy5cwenPv/8veGR4Xf0Or12z67dP+zduydrWbX879RUV2PDhvZQ3927ptWCLQ0GA7SF2tWJi+MhCELeqDCPPJ5l4oonhAFuWWWymJEVWumKHk8I4Pgl9wy1Sv6ccplNVITlkOAER1Ot1WUzFgIgkEqJ8PgjCEUT2VmhwgLFy2oFnZM63FJrPeYNRD8ILLCfRWLcFpgARk5BydA2GUlktxkLlPL2zDWFZArROB8jSRIVtqJXjPqCbGqyNxT7Ic4/vTlNG9o3jLW2tkIul6/6uUKhQGdXF6pratDS0nr0zJkzR/vv99ds377tyKGDh2A0Gv9fwYypZBKimMqJcmltbflh08bnclSCdWvqsHbtWly7dp1ezU3D4/EiFAyuSlwzLhe8Hu8HclqOF198MXT48GFUVlbiccsrNf5p1y5UVlbiT+fPe7+88GX31NTUuQx5URQFk8n0xNiWBJcAz/PO/JKRRx7PMnFxAiIsh+Sif6CcpkBTMhsAKOUUmEVnB28oilAkfm5Zf6tBnnF9kCREWR46jfJAfYVFpytM9ydcnhAmZoMnEss8BRVyeuk8pKNN1lZbMTEbPD/h8h+KxBLZrSyFnAJNyZBaJCGGoZBxiI/FeXB8crym1PBxbZkRjJyCKIoYnfZixr1wFE/pqI/BaLA+//wmLPchzFQiAs9DRlHZSslgMGDXrl1g2RgmJif2OBxDmHROQq/X5wQ1ppJJgCBy+mUZh/ZoNIbR0VFcvXr1vUwOGEVTaGpqgr2iMsf8duCHHzAyMopkKik8oc/lDAaDdqwaryVCkkShrq7u4/3796Guri439Ay5Q9jNLS0wm82gafrsF1983ux2ewYAQKfTlRuNJtBPIPVEPAGe56byS0YeeTzDxCUkRcx5w7OhcNxmLCqAXqOERs1sUyvp97UaJWhahmQyhUlXAJ5g7DeZ8+Q0ZacXoz+SKREMTaGtvvTT2nIjZDIS4WgCdwZnMDkb+I/lIgk5LbPTFJlzD0a9Go1VlvY5b7ghluCzsSc0TYGiSGSiJpk0qWb8CWHQqpqba63NJWZtxsYJ9xyuS25/5Jun8i0TQGdHx2xnRyeUylzxgWNwEDdv3QJNUaisrITZYoZGU4hEIo6JiUmEw+FL/f39l0ZHRx0tLa2QLfNivP3X22AYBk1NzdnB3YGBAZw6dYp3Tk39m8/r+ywajS49b6OxvaKiIse5YnR0BJ/87hN80/sNEYvGVr19t8f9fjAYPLE6GclBUbSxq6vzjeam5hyHDb/fj/m5ORiMRlgsZhBE+v0XW614+aWX0N/ff8Pt9hQAQFlZ2QnLiu3FlfNxCY5z5JeMPPJ4xuXw4y7/3il38E6RVgWdRoGqUsMrSoZ2WY2FIAgCM+4FDDu9xzPV0GIcipVaJC4JEhoqzVAp5NCo05LvsWkvBh+5t8fifK6pr4zMzjQlOAGCkIKCobCm3IQRp/dEKiUilRJBUTJQMhIykqQBCOngSTKbk6VkaLTVl0KvUYKmKQjJJAbG5jA67duZfArnfAiSQF1d3bu7d+1G9YpZqHg8jktfXcLJkyd1EiBUVVWdKS0peUWn04FlWdy50/daMBAc2r59m9TY2JjjKjEzM4PTX5xGWXk5qquqs1t/giDA5Zr9r8mJyc9W3ktlReXnNpstp2Lr7e1Fb++3NZFw5InfwevxfuAPBE5kVSDLoNUWQlOo2W6z2VBkMCyRls+H838+j6tXr8Fut+OnP92BpnVNUC+63Ot0OhQUFKiXBXDueZKZbyaDLBFP5IkrjzyedeLyBqN9A2PzDqtR22A1FaKl1ob6CovNoFUhFudxf8QF51zwP5dXThRJZsMbaYqC3abP2RoiCAIkSagIAjmydHKZA304msAjlx82kxblxTrU2U12mYxM53VBlnF6pwEIJEFARpJZ53e9VgW9VpXjZC8jSchIUgWAfdpecN2aNe/+/PWfH9uydetjyb7Dw0Po6+vjg8HQAgDc7bu7827f3SWyp2Roa2377vDhw2hsaMRSdlUCPT09uHn7VneBpuBsPB7PEhdJkiDTzwK5mWAk6uvrasrKluJiQqEQhoeH4fV5x3/sO0SiEXi9nnQ21wq5usVigaHI8EYkEgXLsigsLMTCQggXLl7AJ5/87tjI6MivVEoVHjwY8OzYscO0YcMGWK02OIYcmJ+fv6RWq2Gz2X7Z2dmJYqv1ifcQjcYQj8fzW4V55PGsE1cqJeHh+HyjQauSNjOVyAgdIEkYGJuDY8JzaGXlRKyID1mIJJBMiShUM6BpCnV2M9y+yPlILKEORRLs8piRpYgKEcOTHkcoEm8w6NSoLTdBFCXIFisyIj1nRmcIj1yRueIPxUCSJHQaJeQ0hdY6G+b94cE+x0wFx6eempcrk8mwbdu2Yzt37kRRUVHuQhyJoLe3Fw8fDtaudi7DMGhvb598/fV/tW98bmO29yNJEu7eu4sLFy7MzkzPnAuHI2DZJb5WKpWQM3L7yq3K6qrqX3Z1dsG8TGCxsLCAaDT6N4eRJVFKWz8FAihdQVzl5eUwGo3tN27ccFitxQ0dHR0YGBjAp59++tHo2OivIKWVlVevXjMPDQ2Vt7Wtd7a1tSISiaCsrPSVjo4Oad26dejq7IRCsXpemSimEI1GkOAS+RUjjzzyzhlAJMZhdMp3rL7C/F5GXMEmBAxNeDDnC59+vF2Tm3TsmHBjcjbAt9WXymvLjFAp5Wips8E5H/z9/dG5VzPzQ6IkZdOSaUoGPplyPhyf/6iyxHC8zm7O6edLkCBJELIstgwsJ6BvyIVYnMNzTXZYTVqYijRoWVNin3EvHMgkHT8t24Q6nT4nBDKDvrt96O39tsfn8+VUESRJoqS0ZPemjRvPH9i/Hxs6OnOMd8fGRnH69Gn03+8vEUURgUAA4XA4+7nZbIbRYDxCkuSboiiioKAA9fX13x04sH9LV1dXjhegJP39jutO51TM7Z5XZ5wyMrBZbSgvL8fNmze3/Pa3H//7zZu33n706NHZQYfjzZVeiD6ff+r7778nUqmUtHXrVrz00kuoW1OXtr/6EbUky7KIRqNIJVP5FSOPPPLElUahmnlZpVhSc/lCMcwHIsd5IbWKiix3sZv1hnH9/iQjpyjJaixEYYECFoMGFbai7rFpP6Ist1jdibwoSvJMn4qhqZppd2jnoxn/8bJiHZZfPyVKECWJzV5vWUkQjwuYmgv0OCY8O4y6Asli0IAkSVSWFKGsWHfC5Vk4lxKfDmlhMpnEvXt3MfjwOTQ3N2dJw+f14srlK3AMOXasJK22ttYr+/fv375j+w6UlZXlOMxPTk7g1KlT6P3225qMkGJ2dvY9n993LHOM3V6Bffv2wmQySqlUCuXl5ejq7EJra2vWpDcDhVIJZpWh4tUwOjq6Y3x8/EZLc0sO+TEKBWpqqqHRaLaNjY+9Mz4+/k4qlXoiIabEFIKh4PnJiYk9SqUSSoUSlVVVq5L78nToSCSaXy3yyCNPXJntLAKlFt0Wo169PKARkRj3zeoLzxIBgSAgp9I9qflA5GQwzL5RWKAASZKwGgtRVKg8EGW5cwDACalxIZlqSDuB01Aq6BohKWJs2ne8vsJ8tLJ0qbGfFEQkU6nFbSIpPc+1KAygaRkomczEJgR4AlHE4jw0agU0KgaWIo1NpZAjwnJ4Wgx3r1+/LmcYht+3bx/Wrl0HvV6PW7du4dbt2yfYWG5Lzmot3nbw4MHt3d2v5oRJsiyL8fExnDt3Dn/84582eD1LPamZmZm3xsbGj23atAkqlRpFRUXo7n4VL7ywBZIkwWgwrOp4AQA6rTZNGAT+5nbhvHv+5q2bt9DR0YHKylxJv91egeJiyzGn03n6bz0SgRdw7+69vf33+mEptrR3dXbd2bt3DzZt3PQYsS5Vaj4sLCzE8stFHnk8Hfg/wlHk1N3wJzsAAAAASUVORK5CYII=';
+['logoA','logoB','logoC','logoD'].forEach(id=>$('#'+id).src=LOGO);
+
+/* ================================================================
+   音效（WebAudio；店內預設靜音）
+   ================================================================ */
+/* ================================================================
+   音效引擎（全部即時合成，免外部音檔）
+   烤網底噪：滋滋油爆（帶通雜訊）＋炭火低鳴（低通雜訊）＋隨機油爆劈啪聲
+   火力全開時三者一起加強；各種動作都有自己的聲音
+   ================================================================ */
+let actx=null, master=null, muted=S.get('muted2',false);
+const PENTA=[587.33,622.25,783.99,880,932.33,1174.66,1244.5,1567.98,1760,1864.66];   // 都節音階（D Eb G A Bb），日式味道
+function ac(){
+  if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)();
+    const comp=actx.createDynamicsCompressor(); comp.threshold.value=-14; comp.ratio.value=4;
+    master=actx.createGain(); master.gain.value=muted?0:.9; master.connect(comp).connect(actx.destination); }catch(e){} }
+  if(actx&&actx.state==='suspended') actx.resume().catch(()=>{}); return actx;
+}
+const now=()=>actx.currentTime;
+function env(g,t0,a,peak,d){ g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(peak,t0+a); g.gain.exponentialRampToValueAtTime(0.0001,t0+a+d); }
+function tone(f,d,type,v,slide,delay,attack){ const a=ac(); if(!a||muted) return; const t0=now()+(delay||0); const o=a.createOscillator(), g=a.createGain();
+  o.type=type||'sine'; o.frequency.setValueAtTime(f,t0); if(slide) o.frequency.exponentialRampToValueAtTime(Math.max(20,f*slide),t0+d);
+  env(g,t0,attack||.005,v||.1,d); o.connect(g).connect(master); o.start(t0); o.stop(t0+d+.05); }
+let noiseBuf=null;
+function nbuf(){ if(!noiseBuf){ const n=actx.sampleRate*2; noiseBuf=actx.createBuffer(1,n,actx.sampleRate); const x=noiseBuf.getChannelData(0); for(let i=0;i<n;i++) x[i]=Math.random()*2-1; } return noiseBuf; }
+function noise(d,v,type,freq,q,delay,attack,sweepTo){ const a=ac(); if(!a||muted) return; const t0=now()+(delay||0);
+  const s=a.createBufferSource(); s.buffer=nbuf(); s.loop=true; const f=a.createBiquadFilter(); f.type=type||'highpass'; f.frequency.setValueAtTime(freq||2800,t0); if(q) f.Q.value=q;
+  if(sweepTo) f.frequency.exponentialRampToValueAtTime(sweepTo,t0+d); const g=a.createGain(); env(g,t0,attack||.005,v||.08,d);
+  s.connect(f).connect(g).connect(master); s.start(t0,Math.random()*1.5); s.stop(t0+d+.05); }
+// 金屬鈴（非諧波泛音）：鉦、風鈴
+function bell(f,d,v,delay){ [1,2.76,5.4,8.93].forEach((m,i)=>tone(f*m,d/(1+i*.6),'sine',(v||.08)/(1+i*1.6),0,delay)); }
+// 木頭聲：拍子木／木魚
+function wood(f,v,delay){ tone(f,.07,'triangle',v||.12,.6,delay); noise(.03,(v||.12)*.5,'bandpass',f*2,6,delay); }
+// 太鼓
+function taiko(v,delay){ tone(95,.45,'sine',v||.35,.45,delay,.004); noise(.12,(v||.35)*.25,'lowpass',600,1,delay); }
+
+/* ---------- 烤網底噪 ---------- */
+const Amb = {
+  on:false, nodes:null, level:0, crackleAcc:0,
+  start(){ const a=ac(); if(!a||this.on) return; this.on=true;
+    const mk=(type,freq,q)=>{ const s=a.createBufferSource(); s.buffer=nbuf(); s.loop=true; const f=a.createBiquadFilter(); f.type=type; f.frequency.value=freq; f.Q.value=q; const g=a.createGain(); g.gain.value=0; s.connect(f).connect(g).connect(master); s.start(0,Math.random()); return {s,f,g}; };
+    this.nodes={ sizzle:mk('bandpass',4200,.6), hiss:mk('highpass',7000,.5), roar:mk('lowpass',320,.8) };
+    // 油爆的抖動：用低頻振盪讓滋滋聲有起伏
+    const lfo=a.createOscillator(), lg=a.createGain(); lfo.frequency.value=7.3; lg.gain.value=.012; lfo.connect(lg).connect(this.nodes.sizzle.g.gain); lfo.start(); this.nodes.lfo=lfo;
+  },
+  set(meats,fever,awaken){ if(!this.on||!this.nodes) return; const t=now();
+    const lv = .25 + Math.min(9,meats)*.075 + (fever?.65:0) + (awaken?.25:0); this.level=lv;
+    this.nodes.sizzle.g.gain.setTargetAtTime(.028*lv,t,.15);
+    this.nodes.hiss.g.gain.setTargetAtTime(.010*lv,t,.15);
+    this.nodes.roar.g.gain.setTargetAtTime(fever? .16 : .045+.01*meats,t,.25);
+    this.nodes.roar.f.frequency.setTargetAtTime(fever?520:320,t,.3);
+  },
+  tick(dt){ if(!this.on||muted) return; this.crackleAcc+=dt*(1.2+this.level*6); while(this.crackleAcc>1){ this.crackleAcc-=Math.random()*1.6;
+      const v=.03+Math.random()*.05*this.level; noise(.012+Math.random()*.02,v,'highpass',2500+Math.random()*3000,0,Math.random()*.05,.001); } },
+  stop(){ if(!this.on) return; this.on=false; const n=this.nodes; this.nodes=null; if(!n) return; const t=now();
+    ['sizzle','hiss','roar'].forEach(k=>{ n[k].g.gain.setTargetAtTime(0,t,.2); n[k].s.stop(t+1); }); n.lfo.stop(t+1); }
+};
+
+/* ---------- 各種動作音效 ---------- */
+let lastReady=0, lastPerf=0;
+const SFX = {
+  click(){ wood(1400,.05); },
+  drop(){ noise(.38,.16,'highpass',1800,0,0,.004,5200); noise(.18,.06,'bandpass',900,1.2); },                     // 肉放上烤網：滋——
+  ready(){ const t=performance.now(); if(t-lastReady<90) return; lastReady=t; tone(1975,.18,'sine',.035); },          // 進入金色區：輕輕一聲
+  perfZone(){ const t=performance.now(); if(t-lastPerf<90) return; lastPerf=t; tone(2637,.22,'sine',.045); tone(3520,.16,'sine',.025,0,.03); },  // 完美時刻：清亮一點
+  pick(){ tone(1318,.1,'triangle',.07); noise(.05,.05,'bandpass',3000,3); },                                      // 夾起：夾子輕碰
+  perfect(c){ const b=PENTA[Math.min(PENTA.length-1,4+((c||0)%6))]; bell(b,.9,.07); tone(b*2,.5,'sine',.035,0,.06); noise(.05,.05,'bandpass',3200,3); },  // 完美夾起：風鈴
+  early(){ tone(220,.16,'triangle',.07,.8); noise(.08,.03,'lowpass',800); },                                     // 還沒熟：悶悶一聲
+  burnt(){ noise(.55,.12,'bandpass',2200,.8,0,.01,600); for(let i=0;i<9;i++) noise(.015,.08,'highpass',3500,0,Math.random()*.35,.001); tone(140,.4,'sine',.08,.6); }, // 烤焦：劈啪＋嘶
+  toss(){ noise(.12,.06,'bandpass',1200,1.5,0,.005,500); },                                                       // 清掉焦肉
+  combo(n){ const k=Math.min(5,Math.floor(n/10)); for(let i=0;i<=k;i++) tone(PENTA[i+2],.18,'triangle',.05,0,i*.06); },
+  fever(){ taiko(.4); taiko(.3,.18); noise(.9,.12,'lowpass',200,1,0,.2,3000); [0,1,2,3].forEach(i=>wood(1100+i*90,.09,.35+i*.07)); },    // 火力全開：太鼓＋火焰呼嘯＋拍子木
+  awaken(){ bell(220,2.4,.14); bell(330,2,.06,.05); noise(1.2,.04,'highpass',6000,0,0,.3); },                    // 職人覺醒：鉦
+  bag(){ tone(400,.08,'sine',.12,2.2); [6,7,8,9].forEach((p,i)=>tone(PENTA[p],.25,'sine',.05,0,.08+i*.05)); },   // 福袋：啵＋閃亮
+  mascotIn(){ tone(500,.18,'sine',.09,1.8); tone(900,.12,'sine',.05,1.4,.12); },                                 // 脂寶現身：叮咚
+  mascotCatch(){ tone(700,.12,'square',.04,1.6); tone(1050,.15,'square',.03,1.5,.08); bell(1568,.6,.05,.1); },
+  cake(){ [2,4,5,7,8].forEach((p,i)=>tone(PENTA[p],.3,'triangle',.06,0,i*.11)); },
+  gold(){ for(let i=0;i<10;i++) tone(PENTA[i],.5,'sine',.045,0,i*.045); bell(1174.66,1.6,.08,.5); },
+  secret(){ [5,7,9,7].forEach((p,i)=>tone(PENTA[p],.4,'triangle',.06,0,i*.09)); },                             // 琴音般撥弦
+  level(){ taiko(.35); [2,4,5,7].forEach((p,i)=>tone(PENTA[p],.35,'triangle',.07,0,.12+i*.1)); bell(1567.98,1.2,.06,.55); },
+  over(){ [7,5,4,2].forEach((p,i)=>tone(PENTA[p],.5,'sine',.07,0,i*.16)); },
+  tick(){ wood(900,.1); }, go(){ taiko(.35); wood(1500,.1,.02); },
+  clock(){ wood(1800,.05); },                                                                                     // 最後 5 秒滴答
+  stamp(){ tone(90,.25,'sine',.3,.5); noise(.08,.1,'lowpass',900); bell(1174.66,.8,.06,.12); },                    // 核銷蓋章
+  err(){ tone(180,.12,'square',.04); tone(150,.16,'square',.04,0,.13); }
+};
+function setMute(v){ muted=v; S.set('muted2',muted); ac(); if(master) master.gain.setTargetAtTime(muted?0:.9,actx.currentTime,.05); $('#gMute').onclick=()=>setMute(!muted);
+setMuteUI(); if(!muted) SFX.click(); }
+function setMuteUI(){ const gm=$('#gMute'); if(gm) gm.innerHTML = muted ? '<svg class="ico" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M17 9l4 6M21 9l-4 6"/></svg>' : '<svg class="ico" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>';
+  $('#muteTxt').textContent = muted?'靜音':'音效'; $('#muteIco').innerHTML = muted ? '<path d="M4 10v4h4l5 4V6L8 10z"/><path d="M17 9l4 6M21 9l-4 6"/>' : '<path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/>'; }
+$('#btnMute').onclick=()=>setMute(!muted);
+setMuteUI();
+
+/* ================================================================
+   玩家 / 每日局數
+   ================================================================ */
+let player = S.get('player', null);
+/* 掃門店 QR Code 進來：網址帶 ?s=yl / ?s=ch / ?s=bt（或 #yl），自動鎖定該分店 */
+const URL_STORE = (()=>{ try{ const q=new URLSearchParams(location.search).get('s') || location.hash.replace('#',''); return STORES.some(x=>x.id===q) ? q : null; }catch(e){ return null; } })();
+if(URL_STORE && player && player.store!==URL_STORE){ player.store=URL_STORE; S.set('player',player); }
+function daily(){ const d=S.get('daily',{}); const k=today()+'|'+(player?player.name:''); return d[k]||{n:0,used:false}; }
+function setDaily(v){ const d=S.get('daily',{}); const k=today()+'|'+player.name; d[k]=v; const keep={}; Object.keys(d).filter(x=>x.startsWith(today())).forEach(x=>keep[x]=d[x]); S.set('daily',keep); }
+
+/* ================================================================
+   排行榜（可替換為雲端 API）
+   ================================================================ */
+const MOCK_NAMES = {
+  yl:['員林小米媽','阿哲爸','Yuki','烤肉小王子','芊芊','大胃王凱','Momo','柚子','Leo','豆豆','小琪','Jenny'],
+  ch:['彰化烤神','妞妞','Amy','和牛控阿翔','肉食女孩','KK','小胖','Ivy','米米','阿凱','蘋果','Sean'],
+  bt:['北屯Emma','台中阿傑','可可','Ray','嘟嘟','安安','Kelly','小熊','Max','欣欣','Joe','Nana']
+};
+function mockBoard(store, wk){
+  wk = wk || weekKey();
+  const r = seeded(hashStr(wk+store));
+  const dayOfWeek = wk===weekKey() ? (tw().getDay()+6)%7 + 1 : 7;   // 週間分數逐日上升，感覺像真的在競爭
+  const scale = (.55 + .45*dayOfWeek/7) * (.82 + r()*.22);
+  return MOCK_NAMES[store].map((n,i)=>{ const base = 9000 - i*620 - r()*400; const s=Math.max(180, Math.round(base*scale)); return {name:n, store, score:s, level: levelFor(s), mock:true}; });
+}
+function levelFor(score){ let acc=0,L=1; while(true){ acc+=target(L)*1.15; if(score<acc) return L; L++; if(L>30) return L; } }
+const Board = {
+  async submit(e){
+    if(CFG.API_URL){ try{ await fetch(CFG.API_URL,{method:'POST',body:JSON.stringify(Object.assign({action:'submit'},e))}); }catch(err){} }
+    const all=S.get('board',[]).filter(x=>x.week===weekKey()||x.week===lastWeekKey());   // 保留上週供發獎
+    all.push(e); S.set('board',all);
+  },
+  async list(scope, wk){
+    wk = wk || weekKey();
+    if(CFG.API_URL){ try{ const r=await fetch(CFG.API_URL+'?action=board&scope='+scope+'&week='+wk); return await r.json(); }catch(err){} }
+    const local=S.get('board',[]).filter(x=>x.week===wk && (scope==='all'||x.store===scope));
+    const best={}; local.forEach(x=>{ const k=x.name+'|'+x.store; if(!best[k]||x.score>best[k].score) best[k]=x; });
+    let rows = Object.values(best);
+    const mocks = scope==='all' ? STORES.flatMap(s=>mockBoard(s.id,wk)) : mockBoard(scope,wk);
+    rows = rows.concat(mocks).sort((a,b)=>b.score-a.score);
+    return rows;
+  }
+};
+async function rankOf(scope){ if(!player) return null; const rows=await Board.list(scope); const i=rows.findIndex(x=>!x.mock&&x.name===player.name&&x.store===player.store); return i<0?null:i+1; }
+
+/* ================================================================
+   畫面切換
+   ================================================================ */
+let cur='entry', hist=[];
+function show(id){
+  if(id==='back'){ id=hist.pop()||'home'; if(id==='game'||id==='entry') id='home'; }
+  else if(id!==cur){ if(['home','game','entry'].includes(id)) hist=[]; else hist.push(cur); if(hist.length>8) hist.shift(); }
+  cur=id;
+  $$('.screen').forEach(s=>s.classList.toggle('on', s.id===id));
+  if(id==='home') renderHome();
+  if(id==='board') renderBoard(player?player.store:'yl');
+  if(id==='dex') renderDex();
+  if(id==='treat') renderTreat();
+  if(id==='wallet') renderWallet();
+  if(id==='entry') renderEntry();
+}
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-go]'); if(b) show(b.dataset.go); });
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('on'),2200); }
+function modal(t,p,cb){ $('#mT').textContent=t; $('#mP').innerHTML=p; $('#modal').classList.add('on'); $('#mOk').onclick=()=>{ $('#modal').classList.remove('on'); cb&&cb(); }; }
+
+/* 名字 */
+let pickStore = URL_STORE || (player?player.store:null);
+function renderEntry(){
+  $('#nameIn').value = player?player.name:'';
+  renderStores();
+}
+function renderStores(){
+  if(URL_STORE){ $('#storePick').innerHTML=`<button class="on" style="flex:none;padding:12px 28px">${STORES.find(x=>x.id===URL_STORE).name}</button>`; $('#storeHint').textContent='歡迎光臨，祝你候位愉快'; return; }
+  $('#storePick').innerHTML = STORES.map(s=>`<button data-s="${s.id}" class="${pickStore===s.id?'on':''}">${s.name}</button>`).join('');
+  $$('#storePick button').forEach(b=>b.onclick=()=>{ pickStore=b.dataset.s; renderStores(); });
+}
+$('#btnEnter').onclick=()=>{
+  const n=$('#nameIn').value.trim().replace(/\s+/g,' ');
+  if(n.length<1){ toast('請輸入名字'); return; }
+  if(!pickStore){ toast('請選擇分店'); return; }
+  player={name:n.slice(0,10), store:pickStore}; S.set('player',player);
+  ac(); show(S.get('seenHow',false)?'home':'howto'); S.set('seenHow',true);
+};
+$('#btnRename').onclick=()=>show('entry');
+
+/* 首頁 */
+function treatHTML(d){
+  const n=Math.min(CFG.CHEF_GOAL,d.n), C=163.4;
+  const ready=d.n>=CFG.CHEF_GOAL;
+  return {n, dash:`${C*n/CFG.CHEF_GOAL} 999`, ready,
+    h: d.used ? '今日主廚招待・已享用' : ready ? '主廚招待・已解鎖' : '主廚招待',
+    p: d.used ? '明天再來挑戰，招待重新計算' : ready ? '點此出示給服務人員' : `今天再玩 ${CFG.CHEF_GOAL-d.n} 局（約 ${Math.ceil((CFG.CHEF_GOAL-d.n)*35/60)} 分鐘），招待主廚小點`};
+}
+async function renderHome(){
+  if(!player){ show('entry'); return; }
+  $('#pName').textContent=player.name; $('#pStore').textContent=STORES.find(s=>s.id===player.store).name;
+  $('#heroMascot').innerHTML=mascot('normal');
+  const d=daily(), t=treatHTML(d);
+  $('#treatRing').setAttribute('stroke-dasharray',t.dash); $('#treatN').textContent=t.n;
+  $('#treatH').textContent=t.h; $('#treatP').textContent=t.p;
+  $('#treatCard').classList.toggle('ready', t.ready&&!d.used);
+  $('#treatCard').onclick = ()=>{ if(t.ready) openVoucher(treatId()); };
+  refreshWalletDot();
+  const best=S.get('best',{score:0,level:0});
+  $('#hBest').textContent=best.score; $('#hLv').textContent=best.level?kanji(best.level):'—';
+  const r=await rankOf(player.store); $('#hRank').textContent=r?r:'—';
+}
+
+/* ================================================================
+   特效畫布：備長炭、火星、煙、金粉
+   ================================================================ */
+const cvs=$('#fx'), ctx=cvs.getContext('2d');
+let coals=[], parts=[], fxRaf=0, fxW=0;
+function fxResize(){ const r=cvs.getBoundingClientRect(); const dpr=Math.min(2,window.devicePixelRatio||1); cvs.width=r.width*dpr; cvs.height=r.height*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); fxW=r.width;
+  coals=[]; const rr=seeded(42); for(let i=0;i<26;i++){ const a=rr()*Math.PI*2, d=Math.sqrt(rr())*.42; coals.push({x:.5+Math.cos(a)*d, y:.5+Math.sin(a)*d, r:.07+rr()*.07, ph:rr()*6.28, sp:.8+rr()*1.6}); } }
+function burst(x,y,color,n,spd){ for(let i=0;i<n;i++){ const a=Math.random()*6.28, v=(spd||60)*(.4+Math.random()); parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-20,life:.7+Math.random()*.4,max:1,c:color,s:1+Math.random()*2.2,type:'spark'}); } }
+function smoke(x,y){ for(let i=0;i<6;i++) parts.push({x:x+(Math.random()-.5)*16,y,vx:(Math.random()-.5)*10,vy:-18-Math.random()*16,life:1.6,max:1.6,s:10+Math.random()*10,type:'smoke'}); }
+let fxLast=0;
+function fxLoop(t){
+  const dt=Math.min(.05,(t-fxLast)/1000)||.016; fxLast=t;
+  const w=fxW, h=fxW; ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#120b08'; ctx.fillRect(0,0,w,h);
+  const heat = G&&G.fever>0 ? 1.35 : G&&G.awaken>0 ? 1.2 : 1;
+  ctx.globalCompositeOperation='lighter';
+  for(const c of coals){ const f=.65+.35*Math.sin(t/1000*c.sp+c.ph); const rg=ctx.createRadialGradient(c.x*w,c.y*h,0,c.x*w,c.y*h,c.r*w*1.8);
+    const hot = G&&G.awaken>0 ? `rgba(255,214,150,${.42*f*heat})` : `rgba(255,${100+40*f|0},40,${.38*f*heat})`;
+    rg.addColorStop(0,hot); rg.addColorStop(.45,`rgba(160,40,15,${.22*f*heat})`); rg.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(c.x*w,c.y*h,c.r*w*1.8,0,6.28); ctx.fill(); }
+  // 火星
+  if(Math.random()<.18*heat) parts.push({x:w*(.2+Math.random()*.6),y:h*(.6+Math.random()*.3),vx:(Math.random()-.5)*8,vy:-25-Math.random()*30,life:1.4,max:1.4,s:1+Math.random()*1.4,c:'255,150,70',type:'ember'});
+  for(let i=parts.length-1;i>=0;i--){ const p=parts[i]; p.life-=dt; if(p.life<=0){ parts.splice(i,1); continue; }
+    p.x+=p.vx*dt; p.y+=p.vy*dt; const k=p.life/p.max;
+    if(p.type==='smoke'){ ctx.globalCompositeOperation='source-over'; ctx.fillStyle=`rgba(200,200,200,${.18*k})`; ctx.beginPath(); ctx.arc(p.x,p.y,p.s*(1.8-k),0,6.28); ctx.fill(); ctx.globalCompositeOperation='lighter'; }
+    else { p.vy+= (p.type==='spark'?60:0)*dt; ctx.fillStyle=`rgba(${p.c},${k})`; ctx.beginPath(); ctx.arc(p.x,p.y,p.s,0,6.28); ctx.fill(); } }
+  ctx.globalCompositeOperation='source-over';
+  fxRaf=requestAnimationFrame(fxLoop);
+}
+window.addEventListener('resize',()=>{ if(cur==='game') fxResize(); });
+
+/* ================================================================
+   遊戲核心
+   ================================================================ */
+let G=null, raf=0, last=0;
+const spotsEl=$('#spots');
+for(let i=0;i<9;i++){ const s=document.createElement('div'); s.className='spot'; spotsEl.appendChild(s); }
+const spotEls=$$('.spot');
+let uid=0;
+
+function ringSVG(c, P){
+  const C=2*Math.PI*46, a0=P.ws/P.burn, a1=P.we/P.burn, pm=(P.ps+P.pe)/2/P.burn;
+  return `<svg viewBox="0 0 100 100" class="ring">
+    <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(250,247,232,.10)" stroke-width="1.5"/>
+    <circle cx="50" cy="50" r="46" fill="none" stroke="#b1946d" stroke-width="3" stroke-dasharray="${C*(a1-a0)} ${C}" stroke-dashoffset="${-C*a0}" opacity=".85"/>
+    <circle class="pz-glow" cx="50" cy="50" r="46" fill="none" stroke="#ffd98a" stroke-width="14" stroke-dasharray="${C*(P.pe-P.ps)/P.burn} ${C}" stroke-dashoffset="${-C*P.ps/P.burn}" opacity=".35"/>
+    <circle class="pz" cx="50" cy="50" r="46" fill="none" stroke="#fff7e0" stroke-width="7" stroke-dasharray="${C*(P.pe-P.ps)/P.burn} ${C}" stroke-dashoffset="${-C*P.ps/P.burn}"/>
+    <line x1="${50+40*Math.cos(2*Math.PI*P.ps/P.burn)}" y1="${50+40*Math.sin(2*Math.PI*P.ps/P.burn)}" x2="${50+52*Math.cos(2*Math.PI*P.ps/P.burn)}" y2="${50+52*Math.sin(2*Math.PI*P.ps/P.burn)}" stroke="#fff7e0" stroke-width="1.6"/>
+    <line x1="${50+40*Math.cos(2*Math.PI*P.pe/P.burn)}" y1="${50+40*Math.sin(2*Math.PI*P.pe/P.burn)}" x2="${50+52*Math.cos(2*Math.PI*P.pe/P.burn)}" y2="${50+52*Math.sin(2*Math.PI*P.pe/P.burn)}" stroke="#fff7e0" stroke-width="1.6"/>
+    <circle class="prog" cx="50" cy="50" r="46" fill="none" stroke="rgba(250,247,232,.55)" stroke-width="1.5" stroke-dasharray="0 ${C}"/>
+    <circle class="dot" cx="96" cy="50" r="3.4" fill="#faf7e8"/>
+  </svg>`;
+}
+function cookParams(c){
+  const lp=G.lp, sp=lp.speed*(G.fever>0?1.2:1);
+  const mid=(c.ws+c.we)/2, half=(c.we-c.ws)/2*lp.win;
+  const ws=(mid-half)/sp, we=(mid+half)/sp, burn=(we + (c.burn-c.we)*lp.win/sp);
+  const w=we-ws; return {ws, we, burn, ps:ws+w*.32, pe:ws+w*.68};
+}
+function pickCut(){
+  const L=G.level, el=CFG.LEVEL_TIME-G.time;
+  if(!G.cakeDone && L>=2 && G.cakeLv===L && el>G.cakeAt){ G.cakeDone=true; return CUT.cake; }
+  if(!G.goldDone && L>=3 && Math.random()<.008){ G.goldDone=true; return CUT.gold; }
+  const pool=CUTS.filter(c=>c.w>0 && (!c.minL||L>=c.minL));
+  const tot=pool.reduce((s,c)=>s+c.w,0); let r=Math.random()*tot;
+  for(const c of pool){ r-=c.w; if(r<=0) return c; } return pool[0];
+}
+function freeSpot(){ const f=G.spots.map((m,i)=>m?null:i).filter(i=>i!==null); return f.length? f[Math.floor(Math.random()*f.length)] : -1; }
+const foodImg = id => { const I=FoodArt.IMG[id]||{}; return `<div class="food"><img class="raw" src="${I.raw||''}" alt=""><img class="cook" src="${I.cooked||''}" alt=""><img class="sear" src="${I.sear||''}" alt=""></div>`; };
+const foodIcon = id => `<img src="${(FoodArt.IMG[id]||{}).raw||''}" alt="">`;
+function placeItem(kind, c){
+  const i=freeSpot(); if(i<0) return;
+  const el=document.createElement('div'); el.className='item'+(kind!=='meat'?' special':'');
+  let m;
+  if(kind==='meat'){
+    const P=cookParams(c); const u='u'+(uid++);
+    el.innerHTML = '<div class="halo"></div>' + ringSVG(c,P) + foodImg(c.id);
+    m={kind, c, P, t:0, el, i, state:'cook', raw:el.querySelector('.raw'), cook:el.querySelector('.cook'), sear:el.querySelector('.sear'), prog:el.querySelector('.prog'), dot:el.querySelector('.dot'), wasReady:false, wasPerf:false};
+  } else {
+    el.innerHTML = kind==='bag' ? foodImg('bag') : ART[kind]; m={kind, el, i, state:'cook', t:0, life: kind==='mascot'?1.7:2.4};
+    if(kind==='mascot') SFX.mascotIn(); else SFX.bag();
+  }
+  el.addEventListener('pointerdown',ev=>{ ev.preventDefault(); tap(m); });
+  spotEls[i].appendChild(el); G.spots[i]=m; if(kind==='meat') SFX.drop();
+}
+function spotCenter(i){ const g=$('#grill').getBoundingClientRect(), s=spotEls[i].getBoundingClientRect(); return {x:s.left-g.left+s.width/2, y:s.top-g.top+s.height/2}; }
+function pop(i,txt,cls){ spotEls[i].querySelectorAll('.pop').forEach(x=>x.remove()); const p=document.createElement('div'); p.className='pop '+cls; p.textContent=txt; spotEls[i].appendChild(p); setTimeout(()=>p.remove(),850); }
+// 橫幅排隊：同一時間只顯示一個，避免「突破」「火力全開」「秘技」文字疊在一起
+let bQueue=[], bBusy=false, bTimer=0;
+function banner(k,s,red){ if(bQueue.length>=3) bQueue.shift(); bQueue.push([k,s,red]); if(!bBusy) nextBanner(); }
+function nextBanner(){ const x=bQueue.shift(); if(!x){ bBusy=false; $('#callout').classList.remove('busy'); return; } bBusy=true;
+  const b=document.createElement('div'); b.className='banner'+(x[2]?' red':''); b.innerHTML=`<div class="k">${x[0]}</div>${x[1]?`<div class="s">${x[1]}</div>`:''}`;
+  $('#callout').appendChild(b); $('#callout').classList.add('busy'); bTimer=setTimeout(()=>{ b.remove(); $('#callout').classList.remove('busy'); nextBanner(); },1150); }
+function clearBanners(){ bQueue=[]; clearTimeout(bTimer); bBusy=false; $$('#callout .banner').forEach(b=>b.remove()); $('#callout').classList.remove('busy'); }
+let coachT=0;
+function coach(t,mood){ $('#coachT').textContent=t; $('#coachM').innerHTML=mascot(mood||'normal'); clearTimeout(coachT); coachT=setTimeout(()=>$('#coachM').innerHTML=mascot('normal'),1100); }
+function mult(){ return Math.min(2, 1 + Math.floor(G.combo/10)*.25); }
+function remove(m,cls){ m.state='done'; G.spots[m.i]=null; m.el.classList.remove('perf','ready'); m.el.classList.add(cls); setTimeout(()=>m.el.remove(),420); }
+function addScore(n){ G.lvScore+=n; G.total+=n; }
+
+function tap(m){
+  if(!G||!G.running||m.state==='done') return;
+  const pos=spotCenter(m.i);
+  if(m.kind==='mascot'){ SFX.mascotCatch(); G.time=Math.min(CFG.LEVEL_TIME,G.time+3); remove(m,'gone'); burst(pos.x,pos.y,'250,247,232',18); pop(m.i,'+3 秒','p'); unlockSecret('mascot',m.i); coach('被你抓到了！送你 3 秒～','happy'); return; }
+  if(m.kind==='bag'){ remove(m,'gone'); burst(pos.x,pos.y,'220,195,155',22); openBag(m.i); return; }
+  if(m.state==='burnt'){ SFX.toss(); remove(m,'toss'); return; }
+  const P=m.P, t=m.t, c=m.c;
+  if(t<P.ws){ G.combo=0; G.pstreak=0; G.recent=[]; pop(m.i,'還沒熟','b'); SFX.early(); coach('再等一下，光點進金色區再夾','sad'); hud(); return; }
+  const perfect = (G.awaken>0) || (t>=P.ps && t<=P.pe);
+  G.combo++; G.maxCombo=Math.max(G.maxCombo,G.combo);
+  let pts=c.pts*(perfect?1.5:1)*mult()*(G.fever>0?1.5:1)*(G.power==='x2'?2:1);
+  pts=Math.round(pts); addScore(pts);
+  if(perfect){ G.perfect++; G.lvPerfect++; G.pstreak = (G.lastPerfectId===c.id||G.pstreak===0)?G.pstreak+1:1; G.lastPerfectId=c.id; G.anyStreak++; SFX.perfect(G.combo); pop(m.i,'完美 '+pts,'p'); burst(pos.x,pos.y,'240,220,170',14);
+    G.perfectCuts[c.id]=(G.perfectCuts[c.id]||0)+1; }
+  else { G.pstreak=0; G.anyStreak=0; G.lastPerfectId=null; SFX.pick(); pop(m.i,'+'+pts,'g'); burst(pos.x,pos.y,'250,180,110',6,40); }
+  G.served[c.id]=(G.served[c.id]||0)+1;
+  G.recent.push({id:c.id,perfect}); if(G.recent.length>3) G.recent.shift();
+  if(c.id==='cake'){ G.time=Math.min(CFG.LEVEL_TIME,G.time+3); banner('生日快樂','＋3 秒'); SFX.cake(); }
+  if(c.id==='gold'){ SFX.gold(); unlockSecret('gold',m.i); banner('金箔傳說','+300'); }
+  checkSecrets(m.i, c, perfect);
+  if(G.anyStreak>=5 && G.awaken<=0){ G.awaken=5; G.anyStreak=0; $('#grill').classList.add('awaken'); banner('職人覺醒','五秒內 全部完美'); SFX.awaken(); }
+  if(G.fever<=0){ G.feverG++; if(G.feverG>=12){ G.fever=6; G.feverG=0; G.fevers++; $('#grill').classList.add('fever'); banner('火力全開','分數 ×1.5',true); SFX.fever(); } }
+  if(c.id==='a5' && perfect) coach('A5 和牛完美烤點，漂亮！','happy');
+  else if(G.combo%10===0){ coach(G.combo+' 連擊，手感正好','happy'); SFX.combo(G.combo); }
+  remove(m,'gone'); hud();
+}
+function checkSecrets(i,c,perfect){
+  const ids=G.recent.map(r=>r.id);
+  const setEq=(arr)=> ids.length===3 && arr.every(x=>ids.includes(x)) && new Set(ids).size===3;
+  if(setEq(['corn','chicken','shiitake'])) unlockSecret('kids',i);
+  if(setEq(['prawn','saba','angus'])) unlockSecret('surf',i);
+  const last2=G.recent.slice(-2);
+  if(last2.length===2 && last2.every(r=>r.perfect) && last2.map(r=>r.id).sort().join()==='iberico,pork') unlockSecret('pig',i);
+  if(perfect && G.pstreak>=3){ unlockSecret('triple',i); G.pstreak=0; }
+  if(c.id==='a5' && perfect && G.fever>0) unlockSecret('moon',i);
+}
+function unlockSecret(id,i){
+  const s=SECRETS.find(x=>x.id===id); const got=S.get('secrets',{});
+  const first=!got[id]; if(first){ got[id]=today(); S.set('secrets',got); G.newSecrets.push(id); }
+  if(s.bonus) addScore(s.bonus);
+  if(id!=='gold' && id!=='mascot') banner(s.name, (s.bonus?'+'+s.bonus:'')+(first?'・新秘技':''));
+  SFX.secret(); if(i!=null){ const p=spotCenter(i); burst(p.x,p.y,'220,195,155',26,90); }
+  hud();
+}
+function openBag(i){
+  const opts=[
+    ['加時','＋3 秒',()=>{ G.time=Math.min(CFG.LEVEL_TIME,G.time+3); }],
+    ['神之手','三秒自動完美',()=>{ G.power='hand'; G.powerT=3; }],
+    ['雙倍','五秒分數 ×2',()=>{ G.power='x2'; G.powerT=5; }],
+    ['淨網','焦肉清空・全部剛好',()=>{ G.spots.forEach(m=>{ if(m&&m.kind==='meat'){ if(m.state==='burnt') remove(m,'toss'); else m.t=(m.P.ps+m.P.pe)/2; } }); }]
+  ];
+  const o=opts[Math.floor(Math.random()*opts.length)]; o[2]();
+  banner('福袋・'+o[0], o[1]); SFX.secret(); badges();
+}
+function badges(){
+  const b=[]; if(G.power==='hand') b.push('<span class="badge">神之手</span>'); if(G.power==='x2') b.push('<span class="badge">分數 ×2</span>');
+  if(G.awaken>0) b.push('<span class="badge">職人覺醒</span>'); if(G.fever>0) b.push('<span class="badge red">火力全開</span>');
+  $('#badges').innerHTML=b.join('');
+}
+function hud(){
+  $('#gTotal').textContent=G.total; $('#gLvScore').textContent=G.lvScore; $('#gTarget').textContent=G.target;
+  const r=Math.min(1,G.lvScore/G.target); $('#gGoalFill').style.width=(r*100)+'%'; $('#goalbar').classList.toggle('met',r>=1);
+  $('#gCombo').classList.toggle('on',G.combo>=2); $('#gComboN').textContent=G.combo; $('#gMult').textContent='×'+mult();
+  $('#gFever').style.width=(G.fever>0?G.fever/6*100:G.feverG/12*100)+'%';
+}
+
+function loop(now){
+  if(!G||!G.running) return;
+  const dt=Math.min(.05,(now-last)/1000); last=now;
+  G.time-=dt;
+  if(G.fever>0){ G.fever-=dt; if(G.fever<=0){ G.fever=0; $('#grill').classList.remove('fever'); badges(); } }
+  if(G.awaken>0){ G.awaken-=dt; if(G.awaken<=0){ G.awaken=0; $('#grill').classList.remove('awaken'); badges(); } }
+  if(G.power){ G.powerT-=dt; if(G.powerT<=0){ G.power=null; badges(); } }
+  if(G.fever>0||G.awaken>0) badges.t=(badges.t||0)+dt; if((badges.t||0)>.5){ badges.t=0; badges(); }
+  // 生成
+  G.spawnT-=dt;
+  if(G.spawnT<=0){ G.spawnT=G.lp.spawn*(G.fever>0?.65:1)*(.85+Math.random()*.3); placeItem('meat',pickCut()); }
+  const el=CFG.LEVEL_TIME-G.time;
+  if(G.level>=3 && !G.mascotDone && el>G.mascotAt){ G.mascotDone=true; if(Math.random()<.45) placeItem('mascot'); }
+  if(G.level>=2 && !G.bagDone && el>G.bagAt){ G.bagDone=true; if(Math.random()<.6) placeItem('bag'); }
+  const C=2*Math.PI*46;
+  for(const m of G.spots){
+    if(!m) continue;
+    if(m.kind!=='meat'){ m.t+=dt; if(m.t>m.life) remove(m,'toss'); continue; }
+    if(m.state==='cook'){
+      m.t+=dt; const P=m.P, k=Math.min(1,m.t/P.burn);
+      const cookA=Math.min(1,m.t/P.ws), searA=Math.max(0,Math.min(1,(m.t-P.ws*.6)/(P.ws*.8)));
+      m.cook.style.opacity=cookA.toFixed(2); m.sear.style.opacity=(searA*.9).toFixed(2); m.raw.style.opacity=(1-cookA).toFixed(2);
+      m.prog.setAttribute('stroke-dasharray',`${C*k} ${C}`);
+      const ang=k*Math.PI*2; m.dot.setAttribute('cx',50+46*Math.cos(ang)); m.dot.setAttribute('cy',50+46*Math.sin(ang));
+      const ready=m.t>=P.ws&&m.t<=P.we, perf=ready && (G.awaken>0 || (m.t>=P.ps&&m.t<=P.pe));
+      m.el.classList.toggle('ready',ready); m.el.classList.toggle('perf',perf);
+      if(ready&&!m.wasReady) SFX.ready(); if(perf&&!m.wasPerf) SFX.perfZone(); m.wasReady=ready; m.wasPerf=perf;
+      if(ready && G.power==='hand' && m.t>=P.ps){ tap(m); continue; }
+      if(m.t>=P.burn){ m.state='burnt'; m.bt=1.4; m.el.classList.remove('ready','perf'); m.el.classList.add('burnt');
+        const p=spotCenter(m.i); smoke(p.x,p.y); G.combo=0; G.anyStreak=0; G.pstreak=0; G.recent=[]; G.burnt++; G.lvBurnt++; G.lvScore=Math.max(0,G.lvScore-5); G.total=Math.max(0,G.total-5);
+        pop(m.i,'烤焦 −5','b'); SFX.burnt(); coach('啊，焦了！早一點夾','sad'); hud(); }
+    } else if(m.state==='burnt'){ m.bt-=dt; if(m.bt<=0) remove(m,'toss'); }
+  }
+  const meats=G.spots.filter(m=>m&&m.kind==='meat'&&m.state==='cook').length;
+  Amb.set(meats, G.fever>0, G.awaken>0); Amb.tick(dt);
+  const sec=Math.ceil(G.time); if(sec<=5 && sec>0 && sec!==G.lastSec){ G.lastSec=sec; SFX.clock(); }
+  const tl=Math.max(0,G.time);
+  $('#gTime').textContent=Math.ceil(tl); $('#gTime').classList.toggle('warn',tl<=5); $('#gTbar').style.width=(tl/CFG.LEVEL_TIME*100)+'%';
+  if(G.time<=0){ endLevel(); return; }
+  raf=requestAnimationFrame(loop);
+}
+
+function newGame(){
+  G={level:1,total:0,combo:0,maxCombo:0,perfect:0,burnt:0,fevers:0,feverG:0,fever:0,awaken:0,anyStreak:0,pstreak:0,lastPerfectId:null,
+     power:null,powerT:0,served:{},perfectCuts:{},recent:[],newSecrets:[],goldDone:false,cakeDone:false,cakeLv:2+Math.floor(Math.random()*3),running:false};
+  show('game'); fxResize(); cancelAnimationFrame(fxRaf); fxRaf=requestAnimationFrame(fxLoop);
+  startLevel(1);
+}
+function startLevel(L){
+  G.level=L; G.lp=levelParams(L); G.target=target(L); G.lvScore=0; G.lvPerfect=0; G.lvBurnt=0; G.time=CFG.LEVEL_TIME;
+  G.spots=Array(9).fill(null); G.spawnT=.2; G.fever=0; G.awaken=0; G.power=null;
+  G.cakeAt=6+Math.random()*12; G.mascotAt=5+Math.random()*14; G.mascotDone=false; G.bagAt=4+Math.random()*16; G.bagDone=false;
+  spotEls.forEach(s=>s.innerHTML=''); $('#grill').classList.remove('fever','awaken'); badges(); clearBanners();
+  $('#gLv').textContent=kanji(L); $('#gDaily').textContent=Math.min(daily().n,99); hud();
+  $('#gTime').textContent=CFG.LEVEL_TIME; $('#gTbar').style.width='100%';
+  const notes=['','A5 和牛開始登場','福袋與脂寶可能現身','烤得更快了，專心','金色區變短了','職人的領域','只有少數人到過這裡'];
+  const note = L===1 ? '金色光點進入時輕點夾起' : (notes[Math.min(notes.length-1,L-1)] || '');
+  const ov=$('#lvOverlay');
+  $('#lvBox').innerHTML=`<div class="lvcard"><div class="kanji"><small>LEVEL</small>第 <span style="font-family:var(--num);font-size:1.5em;color:var(--gold-hi)">${L}</span> 關</div><div class="goal">本關目標<b>${G.target}</b>分</div><div class="note">${note}</div><button class="btn" id="btnGo">開 始</button></div>`;
+  ov.classList.add('on');
+  $('#btnGo').onclick=()=>countdown();
+  if(L>1) setTimeout(()=>{ if(ov.classList.contains('on') && $('#btnGo')) countdown(); },2600);
+}
+function countdown(){
+  const ov=$('#lvOverlay'); let k=3;
+  const tick=()=>{ if(k===0){ ov.classList.remove('on'); SFX.go(); Amb.start(); G.lastSec=99; G.running=true; last=performance.now(); raf=requestAnimationFrame(loop); return; }
+    $('#lvBox').innerHTML=`<div class="cd">${k}</div>`; SFX.tick(); k--; setTimeout(tick,650); };
+  tick();
+}
+function endLevel(){
+  G.running=false; cancelAnimationFrame(raf); Amb.set(0,false,false);
+  // 局數 +1
+  const d=daily(); const before=d.n; d.n++; setDaily(d);
+  if(before<CFG.CHEF_GOAL && d.n>=CFG.CHEF_GOAL) G.treatJust=true;
+  if(G.lvBurnt===0 && G.lvPerfect>=8) unlockSecret('clean',null);
+  spotEls.forEach(s=>s.querySelectorAll('.item').forEach(e=>e.classList.add('gone')));
+  const cleared = G.lvScore>=G.target;
+  if(cleared){
+    SFX.level(); banner('突破',`第 ${G.level} 關・${G.lvScore} 分`);
+    const msg = G.treatJust ? '主廚招待解鎖！闖完再去領' : '';
+    if(G.treatJust){ G.treatJust=false; setTimeout(()=>toast('今日 15 局達成：主廚招待已解鎖'),300); }
+    setTimeout(()=>startLevel(G.level+1),1400);
+  } else {
+    G.failGap=G.target-G.lvScore; setTimeout(gameOver,600);
+  }
+}
+async function gameOver(){
+  Amb.stop(); SFX.over(); cancelAnimationFrame(fxRaf);
+  const s=G, reached=s.level, best=S.get('best',{score:0,level:0});
+  const isBest=s.total>best.score; if(isBest||reached>best.level) S.set('best',{score:Math.max(best.score,s.total),level:Math.max(best.level,reached)});
+  await Board.submit({name:player.name,store:player.store,score:s.total,level:reached,week:weekKey(),ts:Date.now()});
+  // 圖鑑
+  const dex=S.get('dex',{}); const newly=[];
+  CUTS.forEach(c=>{ if(dex[c.id]) return; const ok = (c.tier==='稀有'||c.tier==='傳說'||c.secret) ? (s.perfectCuts[c.id]>0||(c.secret&&s.served[c.id]>0)) : s.served[c.id]>0; if(ok){ dex[c.id]=today(); newly.push(c); } });
+  S.set('dex',dex);
+  // 結算 UI
+  show('over');
+  const el=$('#oScore'); let v=0; const step=Math.max(1,Math.ceil(s.total/40)); const iv=setInterval(()=>{ v=Math.min(s.total,v+step); el.textContent=v; if(v>=s.total) clearInterval(iv); },22);
+  $('#oLv').textContent=kanji(reached);
+  $('#oTags').innerHTML = (isBest?'<span class="newrec">新紀錄</span> ':'') + `<span class="near">差 ${s.failGap} 分就過第 ${reached} 關</span>`;
+  $('#oTitle').textContent=titleOf(reached); $('#oTitleP').textContent=TITLE_DESC[Math.min(TITLE_DESC.length-1,reached-1)]; $('#oMascot').innerHTML=mascot(reached>=3?'happy':'normal');
+  $('#oStoreLbl').textContent=STORES.find(x=>x.id===player.store).name+'週排名';
+  G.result={score:s.total,level:reached};
+  const [r1,r2]=await Promise.all([rankOf(player.store),rankOf('all')]);
+  $('#oStoreRank').textContent=r1||'—'; $('#oAllRank').textContent=r2||'—';
+  if(G.result) G.result.storeRank=r1;
+  const d=daily(), t=treatHTML(d);
+  $('#oTreat').className='treat'+(t.ready&&!d.used?' ready':'');
+  $('#oTreat').innerHTML=`<div class="ringwrap"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="#2c2927" stroke-width="3"/><circle cx="30" cy="30" r="26" fill="none" stroke="#dcc39b" stroke-width="3" stroke-linecap="round" stroke-dasharray="${t.dash}"/></svg><span>${t.n}</span></div><div style="flex:1;text-align:left"><h4>${t.h}</h4><p>${t.p}</p></div>`;
+  $('#oTreat').onclick=()=>{ if(t.ready) openVoucher(treatId()); };
+  const cards = newly.map(c=>`<div class="unlock">${foodIcon(c.id)}<div>${c.name}</div></div>`)
+    .concat(s.newSecrets.map(id=>{ const z=SECRETS.find(x=>x.id===id); return `<div class="unlock secret"><div style="font-family:var(--serif);font-size:22px;color:var(--hi-hi);height:42px;line-height:42px">秘</div><div>${z.name}</div></div>`; }));
+  $('#oUnlockWrap').style.display=cards.length?'block':'none'; $('#oUnlocks').innerHTML=cards.join('');
+  G.result=Object.assign(G.result||{}, {score:s.total,level:reached});
+  if(t.ready && !d.used && !S.get('treatShown_'+today()+player.name,false)){ S.set('treatShown_'+today()+player.name,true); setTimeout(()=>modal('主廚招待','今天已完成 15 局！<br>點「主廚招待」卡片，出示給服務人員。<br>入座後就先放下手機，好好吃肉吧～',()=>openVoucher(treatId())),700); }
+}
+$('#btnStart').onclick=()=>{ ac(); newGame(); };
+$('#btnAgain').onclick=()=>{ ac(); newGame(); };
+$('#btnShare').onclick=()=>{ if(!G||!G.result) return; const st=STORES.find(x=>x.id===player.store).name;
+  const txt=`我在脂本燒肉${st}闖到「脂寶烤烤樂」第 ${G.result.level} 關、${G.result.score} 分，稱號【${titleOf(G.result.level)}】。你烤得贏我嗎？ #脂本燒肉 #脂寶烤烤樂`;
+  try{ navigator.clipboard.writeText(txt).then(()=>toast('已複製，貼到 IG 或 LINE 分享'),()=>toast(txt)); }catch(e){ toast(txt); } };
+
+/* ================================================================
+   票券與核銷：所有票券都必須由服務人員輸入核銷碼
+   ================================================================ */
+const vcode = id => { let h=Math.abs(hashStr('zb#'+id)); const A='ACDEFGHJKMNPQRTUVWXY3479'; let c=''; for(let i=0;i<6;i++){ c+=A[h%A.length]; h=Math.floor(h/A.length)+i*7919; } return 'ZB-'+c.slice(0,3)+'-'+c.slice(3); };
+const treatId = ()=>'T-'+today()+'-'+player.store+'-'+player.name;
+let weeklyCache=null;
+async function weeklyVouchers(){
+  if(!player) return [];
+  const lw=lastWeekKey(), key=lw+player.name+player.store;
+  if(weeklyCache&&weeklyCache.key===key) return weeklyCache.list;
+  const list=[]; const st=STORES.find(x=>x.id===player.store).name;
+  const ws=weekStart(), exp=ymd(new Date(ws.getFullYear(),ws.getMonth(),ws.getDate()+6));
+  const rows=await Board.list(player.store, lw);
+  const i=rows.findIndex(x=>!x.mock&&x.name===player.name&&x.store===player.store);
+  if(i>=0 && i<3) list.push({id:`W-${lw}-${player.store}-${i+1}-${player.name}`, type:'weekly', title: i===0?'A5 和牛霜降一份':'手切松阪豬一份', eye:'Weekly Prize', desc:`${st}週排行第 ${i+1} 名（${weekRange(lw)}）`, exp});
+  const all=await Board.list('all', lw);
+  const j=all.findIndex(x=>!x.mock&&x.name===player.name&&x.store===player.store);
+  if(j===0) list.push({id:`G-${lw}-${player.name}`, type:'grand', title:'月見和牛飯', eye:'Grand Champion', desc:`三店總榜冠軍・脂本烤神（${weekRange(lw)}）`, exp});
+  weeklyCache={key,list}; return list;
+}
+function redeemedMap(){ return S.get('redeemed',{}); }
+async function myVouchers(){
+  if(!player) return [];
+  const out=[]; const d=daily();
+  if(d.n>=CFG.CHEF_GOAL) out.push({id:treatId(), type:'treat', title:'主廚招待', eye:"Chef's Treat", desc:'今日完成 15 局候位挑戰', exp:today()});
+  (await weeklyVouchers()).forEach(v=>out.push(v));
+  const rm=redeemedMap();
+  out.forEach(v=>{ v.code=vcode(v.id); v.used=rm[v.id]||null; v.expired = !v.used && today()>v.exp; });
+  return out;
+}
+async function refreshWalletDot(){ const n=(await myVouchers()).filter(v=>!v.used&&!v.expired).length; const el=$('#walletDot'); el.textContent=n; el.classList.toggle('on',n>0); }
+async function renderWallet(){
+  const vs=await myVouchers();
+  $('#vList').innerHTML = vs.length ? vs.map(v=>`<div class="v ${v.used||v.expired?'off':''}" data-v="${esc(v.id)}"><div class="vi">${v.type==='treat'?'招':v.type==='grand'?'神':'賞'}</div><div><h4>${v.title}</h4><p>${v.desc}<br>${v.code}</p></div><div class="st">${v.used?'已核銷':v.expired?'已過期':'可使用'}</div></div>`).join('')
+    : '<div class="empty">目前沒有票券<br>今天玩滿 15 局就有主廚招待，<br>週排行前三名下週可領獎品。</div>';
+  $$('#vList .v').forEach(el=>el.onclick=()=>openVoucher(el.dataset.v));
+}
+let curVoucher=null, clockIv=0;
+async function openVoucher(id){
+  const vs=await myVouchers(); const v=id?vs.find(x=>x.id===id):vs.find(x=>x.type==='treat');
+  if(!v){ toast('找不到這張票券'); return; }
+  curVoucher=v; show('treat');
+}
+function renderTreat(){
+  const v=curVoucher; if(!v){ show('home'); return; }
+  $('#tEye').textContent=v.eye; $('#tTitle').textContent=v.title; $('#tDesc').textContent=v.desc;
+  $('#tWho').textContent=player.name+'・'+STORES.find(s=>s.id===player.store).name;
+  $('#tVcode').textContent=v.code; $('#tCode').textContent=WORDS[dayIdx()%WORDS.length];
+  $('#tExp').textContent = v.used ? `核銷時間 ${v.used.at}・${STORES.find(s=>s.id===v.used.store).name}` : (v.type==='treat'?'限今日使用':`有效期限至 ${v.exp.slice(5).replace('-','/')}`);
+  $('#ticket').classList.toggle('used',!!v.used);
+  const off=!!v.used||v.expired; $('#btnRedeem').disabled=off; $('#btnRedeem').textContent = v.used?'已 核 銷':v.expired?'已 過 期':'服 務 人 員 核 銷';
+  clearInterval(clockIv); const tick=()=>{ $('#tClock').textContent=new Date().toLocaleTimeString('zh-TW',{hour12:false}); }; tick(); clockIv=setInterval(tick,1000);
+}
+/* 核銷碼鍵盤 */
+const Redeem = {
+  locked(){ const l=S.get('pinLock',{fails:0,until:0}); return l.until>Date.now() ? Math.ceil((l.until-Date.now())/60000) : 0; },
+  fail(){ const l=S.get('pinLock',{fails:0,until:0}); l.fails++; if(l.fails>=CFG.PIN_MAX_FAIL){ l.until=Date.now()+CFG.PIN_LOCK_MIN*60000; l.fails=0; } S.set('pinLock',l); return l; },
+  ok(){ S.set('pinLock',{fails:0,until:0}); },
+  async verify(v,pin){
+    if(CFG.API_URL){   // 正式版：後端驗證核銷碼、檢查是否重複核銷、寫入核銷紀錄
+      try{ const r=await fetch(CFG.API_URL,{method:'POST',body:JSON.stringify({action:'redeem',voucher:v.id,code:v.code,type:v.type,name:player.name,store:player.store,pin})}); const j=await r.json(); return j.ok?'ok':(j.error||'bad_pin'); }catch(e){ return 'network'; }
+    }
+    return pin===CFG.STAFF_PIN[player.store] ? 'ok' : 'bad_pin';
+  }
+};
+let pinBuf='';
+(function(){
+  const keys=['1','2','3','4','5','6','7','8','9','清除','0','⌫'];
+  $('#keypad').innerHTML=keys.map(k=>`<button class="${k.length>1?'fn':''}" data-k="${k}">${k}</button>`).join('');
+  const dots=()=>$$('#pinDots i').forEach((d,i)=>d.classList.toggle('on',i<pinBuf.length));
+  $$('#keypad button').forEach(b=>b.onclick=async()=>{
+    const k=b.dataset.k; if(Redeem.locked()) return; SFX.click();
+    if(k==='清除') pinBuf=''; else if(k==='⌫') pinBuf=pinBuf.slice(0,-1); else if(pinBuf.length<4) pinBuf+=k;
+    dots(); $('#pinErr').textContent='';
+    if(pinBuf.length===4){
+      const res=await Redeem.verify(curVoucher,pinBuf);
+      if(res==='ok'){
+        Redeem.ok(); const rm=redeemedMap(); const now=new Date();
+        rm[curVoucher.id]={at:`${now.getMonth()+1}/${now.getDate()} ${now.toLocaleTimeString('zh-TW',{hour12:false,hour:'2-digit',minute:'2-digit'})}`, store:player.store};
+        S.set('redeemed',rm); if(curVoucher.type==='treat'){ const d=daily(); d.used=true; setDaily(d); }
+        curVoucher.used=rm[curVoucher.id]; $('#pinModal').classList.remove('on'); renderTreat(); SFX.stamp(); toast('核銷完成，請享用'); refreshWalletDot();
+      } else {
+        const msg = res==='used'?'這張票券已經核銷過了': res==='network'?'網路連線失敗，請稍後再試': res==='not_winner'?'查無此得獎紀錄': res==='locked'?'本店錯誤次數過多，請 10 分鐘後再試':'';
+        if(msg){ $('#pinErr').textContent=msg; }
+        else { const l=Redeem.fail(); const left=Redeem.locked(); $('#pinErr').textContent = left ? `錯誤次數過多，請 ${left} 分鐘後再試` : `核銷碼錯誤（再錯 ${CFG.PIN_MAX_FAIL-l.fails} 次將鎖定）`; }
+        SFX.err(); $('#pinDots').classList.remove('shake'); void $('#pinDots').offsetWidth; $('#pinDots').classList.add('shake'); pinBuf=''; setTimeout(dots,300);
+      }
+    }
+  });
+  $('#btnRedeem').onclick=()=>{ if(!curVoucher||curVoucher.used) return; pinBuf=''; dots(); const left=Redeem.locked(); $('#pinErr').textContent=left?`錯誤次數過多，請 ${left} 分鐘後再試`:''; $('#pinModal').classList.add('on'); };
+  $('#pinCancel').onclick=()=>$('#pinModal').classList.remove('on');
+})();
+
+/* ================================================================
+   戰績圖：產生 1080×1350 圖片，可下載或長按儲存
+   ================================================================ */
+function loadImg(src){ return new Promise((ok,no)=>{ const im=new Image(); im.onload=()=>ok(im); im.onerror=no; im.src=src; }); }
+async function makeCard(r){
+  try{ await document.fonts.ready; }catch(e){}
+  const W=1080,H=1350, c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d');
+  x.fillStyle='#141313'; x.fillRect(0,0,W,H);
+  let g=x.createRadialGradient(W/2,-80,10,W/2,-80,900); g.addColorStop(0,'rgba(177,148,109,.30)'); g.addColorStop(1,'rgba(177,148,109,0)'); x.fillStyle=g; x.fillRect(0,0,W,H);
+  g=x.createRadialGradient(W/2,H+120,10,W/2,H+120,900); g.addColorStop(0,'rgba(178,80,70,.40)'); g.addColorStop(1,'rgba(178,80,70,0)'); x.fillStyle=g; x.fillRect(0,0,W,H);
+  // 青海波
+  x.strokeStyle='rgba(177,148,109,.06)'; x.lineWidth=2; for(let yy=0;yy<H+40;yy+=40) for(let xx=(yy/40%2)*40;xx<W+80;xx+=80){ for(const rr of [36,24,12]){ x.beginPath(); x.arc(xx,yy,rr,Math.PI,0); x.stroke(); } }
+  // 雙金框
+  x.strokeStyle='#b1946d'; x.lineWidth=2; x.strokeRect(40,40,W-80,H-80); x.strokeStyle='rgba(177,148,109,.4)'; x.lineWidth=1; x.strokeRect(54,54,W-108,H-108);
+  const logo=await loadImg(LOGO); const lw=300, lh=lw*logo.height/logo.width; x.drawImage(logo,(W-lw)/2,110,lw,lh);
+  const ctr=(t,y,font,fill,sp)=>{ x.font=font; x.fillStyle=fill; x.textAlign='center'; if(sp){ x.letterSpacing=sp; } x.fillText(t,W/2,y); x.letterSpacing='0px'; };
+  ctr('脂 寶 烤 烤 樂', 110+lh+90, '900 64px "Noto Serif TC", serif', '#dcc39b');
+  // 分隔菱形
+  let yy=110+lh+130; const lg=x.createLinearGradient(200,0,W-200,0); lg.addColorStop(0,'rgba(177,148,109,0)'); lg.addColorStop(.5,'#b1946d'); lg.addColorStop(1,'rgba(177,148,109,0)');
+  x.strokeStyle=lg; x.lineWidth=2; x.beginPath(); x.moveTo(200,yy); x.lineTo(W-200,yy); x.stroke(); x.fillStyle='#b1946d'; x.save(); x.translate(W/2,yy); x.rotate(Math.PI/4); x.fillRect(-6,-6,12,12); x.restore();
+  // 依字型實際尺寸往下排版（不同手機字型高度不同，避免文字疊在一起）
+  try{ await Promise.all(['600 200px "Cormorant Garamond"','500 26px "Cormorant Garamond"','900 56px "Noto Serif TC"','700 48px "Noto Serif TC"','500 38px "Noto Sans TC"'].map(f=>document.fonts.load(f))); }catch(e){}
+  let y=yy+20;
+  const line=(t,font,fill,gap,sp)=>{ x.font=font; x.textAlign='center'; x.textBaseline='alphabetic'; if(sp) x.letterSpacing=sp;
+    const m=x.measureText(t), asc=m.actualBoundingBoxAscent||parseInt(font.match(/(\d+)px/)[1])*.8, desc=m.actualBoundingBoxDescent||0;
+    y+=gap+asc; x.fillStyle=typeof fill==='function'?fill(y-asc,y+desc):fill; x.fillText(t,W/2,y,W-200); y+=desc; x.letterSpacing='0px'; };
+  line('S C O R E','500 26px "Cormorant Garamond", serif','#8d8a84',40);
+  line(String(r.score),'600 200px "Cormorant Garamond", "Noto Serif TC", serif',(t,b)=>{ const sg=x.createLinearGradient(0,t,0,b); sg.addColorStop(0,'#f3e2bd'); sg.addColorStop(1,'#b1946d'); return sg; },34);
+  line(`闖 到 第 ${r.level} 關`,'700 46px "Noto Serif TC", serif','#faf7e8',44);
+  line(`【 ${titleOf(r.level)} 】`,'900 54px "Noto Serif TC", serif','#dcc39b',30);
+  const st=STORES.find(s=>s.id===player.store).name;
+  line(`${player.name}　・　脂本燒肉 ${st}`,'500 36px "Noto Sans TC", sans-serif','#d9d4c4',44);
+  if(r.storeRank) line(`本週 ${st}排行 第 ${r.storeRank} 名`,'400 29px "Noto Sans TC", sans-serif','#b1946d',22);
+  // 脂寶
+  const msvg=mascot('happy').replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" ').replace(/url\(#gGold\)/g,'#cdb184');
+  try{ const m=await loadImg('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(msvg)); x.drawImage(m,W-300,H-330,220,220); }catch(e){}
+  x.textAlign='left'; x.font='400 28px "Noto Sans TC", sans-serif'; x.fillStyle='#8d8a84';
+  const d=tw(); x.fillText(`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`,100,H-210);
+  x.font='500 30px "Noto Sans TC", sans-serif'; x.fillStyle='#d9d4c4'; x.fillText('#脂本燒肉　#脂寶烤烤樂',100,H-160);
+  x.font='400 26px "Noto Serif TC", serif'; x.fillStyle='#b1946d'; x.fillText('一火一刻・剛好就是最好',100,H-112);
+  return new Promise(ok=>c.toBlob(ok,'image/png'));
+}
+let cardBlob=null, cardUrl='';
+$('#btnCard').onclick=async()=>{
+  if(!G||!G.result) return; toast('戰績圖產生中…');
+  cardBlob=await makeCard(G.result); if(cardUrl) URL.revokeObjectURL(cardUrl); cardUrl=URL.createObjectURL(cardBlob);
+  $('#cardImg').src=cardUrl; $('#cardModal').classList.add('on');
+};
+$('#cardClose').onclick=()=>$('#cardModal').classList.remove('on');
+$('#cardSave').onclick=async()=>{
+  if(!cardBlob) return; const name=`zhiben-yknk-score-${G.result.score}.png`;
+  // 1) 在 Claude 頁面內：用 downloads 能力
+  try{ if(window.claude&&typeof window.claude.use==='function'){ const dl=await window.claude.use('downloads'); if(dl){ await dl.save({filename:name,data:cardBlob}); toast('已儲存戰績圖'); return; } } }
+  catch(e){ if(e&&e.code==='declined') return; }
+  // 2) 手機分享面板（自架正式版）
+  try{ const f=new File([cardBlob],name,{type:'image/png'}); if(navigator.canShare&&navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:'脂寶烤烤樂'}); return; } }catch(e){ if(e&&e.name==='AbortError') return; }
+  // 3) 一般下載
+  try{ const a=document.createElement('a'); a.href=cardUrl; a.download=name; document.body.appendChild(a); a.click(); a.remove(); toast('若沒有開始下載，請長按圖片儲存'); }catch(e){ toast('請長按圖片儲存'); }
+};
+
+/* 排行榜 */
+const SCOPES=[...STORES.map(s=>({id:s.id,name:s.name})),{id:'all',name:'總榜'}];
+async function renderBoard(scope){
+  $('#bTabs').innerHTML=SCOPES.map(s=>`<button data-sc="${s.id}" class="${s.id===scope?'on':''}">${s.name}</button>`).join('');
+  $$('#bTabs button').forEach(b=>b.onclick=()=>renderBoard(b.dataset.sc));
+  const ws=weekStart(), we=new Date(ws.getFullYear(),ws.getMonth(),ws.getDate()+6);
+  $('#bWeek').textContent=`${ws.getMonth()+1}/${ws.getDate()} – ${we.getMonth()+1}/${we.getDate()}`;
+  const end=new Date(ws.getFullYear(),ws.getMonth(),ws.getDate()+7); const left=end-tw();
+  $('#bLeft').textContent=`${Math.floor(left/864e5)} 天 ${Math.floor(left%864e5/36e5)} 時`;
+  $('#bPrize').innerHTML = scope==='all'
+    ? '總榜冠軍：<b>「脂本烤神」稱號＋月見和牛飯招待</b>，名字登上三店烤神榜。'
+    : '本店第 1 名：<b>A5 和牛霜降一份</b>　第 2–3 名：<b>手切松阪豬一份</b><br>獎品於下週內來店使用。';
+  const rows=await Board.list(scope);
+  const meIdx=rows.findIndex(x=>!x.mock&&player&&x.name===player.name&&x.store===player.store);
+  let html=rows.slice(0,20).map((x,i)=>row(x,i,i===meIdx)).join('');
+  if(meIdx>=20) html+=row(rows[meIdx],meIdx,true);
+  if(meIdx<0) html+=`<div class="brow"><div class="no">—</div><div class="nm" style="color:var(--dim)">本週還沒有成績，挑戰一局就上榜</div></div>`;
+  $('#bList').innerHTML=html;
+  function row(x,i,me){ const st=STORES.find(s=>s.id===x.store); return `<div class="brow ${i<3?'r'+(i+1):''} ${me?'me':''}"><div class="no">${i+1}</div><div class="nm">${esc(x.name)}${scope==='all'?`<small>${st?st.name:''}</small>`:''}</div><div class="lvl">第 ${x.level} 關</div><div class="sc">${x.score}</div></div>`; }
+}
+function esc(t){ return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* 圖鑑 */
+function renderDex(){
+  const dex=S.get('dex',{}), sec=S.get('secrets',{});
+  const visible=CUTS.filter(c=>!c.secret||dex[c.id]);
+  $('#dexCount').textContent=`食材 ${Object.keys(dex).length} / ${CUTS.length}　秘技 ${Object.keys(sec).length} / ${SECRETS.length}`;
+  $('#dexGrid').innerHTML=CUTS.map(c=>{ const got=!!dex[c.id]; if(c.secret&&!got) return `<div class="card"><div class="r">秘藏</div><div style="height:50px;line-height:50px;font-family:var(--serif);font-size:22px;color:#55524d">？</div><h4>？？？</h4></div>`;
+    return `<div class="card ${got?'got':''}" data-c="${c.id}"><div class="r">${c.tier}</div>${foodIcon(c.id)}<h4>${got?c.name:'？？？'}</h4></div>`; }).join('');
+  $$('#dexGrid .card[data-c]').forEach(el=>el.onclick=()=>{ const c=CUT[el.dataset.c], got=!!dex[c.id]; const d=$('#dexDetail');
+    d.innerHTML = got ? `<b>${c.name}</b>　<span style="color:var(--dim)">${c.pts} 分・${c.tier}</span><br>${c.tip}` : `<b>？？？</b><br>${c.tier==='稀有'||c.tier==='傳說'?'完美夾起這道食材才能解鎖。':'在遊戲中夾起這道食材就能解鎖。'}`; d.classList.add('on'); });
+  $('#secList').innerHTML=SECRETS.map((s,i)=>{ const got=!!sec[s.id]; return `<div class="sec ${got?'got':''}"><div class="seal"><span>${got?'秘':i+1}</span></div><div><h4>${got?s.name:'？？？'}</h4><p>${got?s.how+(s.bonus?`（+${s.bonus}）`:''):'提示：'+s.hint}</p></div></div>`; }).join('');
+}
+
+/* 暫停：切到背景 */
+document.addEventListener('visibilitychange',()=>{ if(document.hidden&&G&&G.running){ G.running=false; cancelAnimationFrame(raf); Amb.stop(); modal('暫停','回來了嗎？按「好」繼續。',()=>{ Amb.start(); G.running=true; last=performance.now(); raf=requestAnimationFrame(loop); }); } });
+document.addEventListener('gesturestart',e=>e.preventDefault());
+document.addEventListener('contextmenu',e=>{ if(e.target.closest('.item,.hold')) e.preventDefault(); });
+
+/* 啟動：食材圖片一次產生好（約 0.3 秒） */
+$('#btnStart').disabled=true; $('#btnStart').textContent='準 備 中';
+FoodArt.rasterize(256).then(()=>{ $('#btnStart').disabled=false; $('#btnStart').textContent='開 始 挑 戰'; if(cur==='dex') renderDex(); });
+show(player?'home':'entry');
+window.__ZB={get G(){return G;}, CFG, newGame, startLevel, countdown};
+})();
+</script>
+</body>
+</html>

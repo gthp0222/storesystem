@@ -1,0 +1,12 @@
+{
+  "name": "脂寶烤烤樂｜脂本燒肉",
+  "short_name": "脂寶烤烤樂",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#141313",
+  "theme_color": "#141313",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
